@@ -11,13 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('riwayats', function (Blueprint $table) {
+        Schema::create('medical_check_up', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('barang_id')->constrained()->onDelete('cascade');
-            $table->foreignId('ruangan_id')->constrained()->onDelete('cascade');
-            $table->dateTime('tgl_masuk');
-            $table->dateTime('tgl_keluar');
-            $table->string('penanggung_jawab');
+            $table->foreignId('employee_id')->constrained('employees')->onDelete('cascade');
+            $table->enum('status', ['check-in', 'belum check-in']);
+            $table->datetime('tanggal_mcu');
             $table->timestamps();
         });
     }
@@ -27,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('riwayats');
+        Schema::dropIfExists('medical_check_up');
     }
 };

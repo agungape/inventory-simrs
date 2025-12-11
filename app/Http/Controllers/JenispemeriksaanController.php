@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Ruangan;
+use App\Models\Jenispemeriksaan;
 use Illuminate\Http\Request;
 
-class RuanganController extends Controller
+class JenispemeriksaanController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -34,7 +34,7 @@ class RuanganController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Ruangan $ruangan)
+    public function show(Jenispemeriksaan $jenispemeriksaan)
     {
         //
     }
@@ -42,7 +42,7 @@ class RuanganController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Ruangan $ruangan)
+    public function edit(Jenispemeriksaan $jenispemeriksaan)
     {
         //
     }
@@ -50,7 +50,7 @@ class RuanganController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Ruangan $ruangan)
+    public function update(Request $request, Jenispemeriksaan $jenispemeriksaan)
     {
         //
     }
@@ -58,7 +58,7 @@ class RuanganController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Ruangan $ruangan)
+    public function destroy(Jenispemeriksaan $jenispemeriksaan)
     {
         //
     }
