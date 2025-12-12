@@ -22,6 +22,7 @@
                                                     <label class="form-label">Karyawan</label>
                                                     <select class="form-select" name="employee_id" required>
                                                         <option value="">Pilih Karyawan</option>
+                                                        <option value="Test">Karyawan Test</option>
                                                         <!-- Data karyawan akan diisi dari database -->
                                                     </select>
                                                 </div>
@@ -262,7 +263,7 @@
                                                         <div class="card-header">
                                                             <h6 class="mb-0">Pemeriksaan Gigi</h6>
                                                         </div>
-                                                        <div class="card-body">
+                                                        <div class="card-body" id="CardBodyPemeriksaanGigi">
                                                             <div class="row">
                                                                 <div class="row">
                                                                     <div class="col-md-8">
@@ -1061,9 +1062,26 @@
             const problemType = document.getElementById('problemType').value;
             const problemTypeText = document.getElementById('problemType').options[document.getElementById('problemType').selectedIndex].text;
 
+            let hasNewData = false; // Flag untuk menandai apakah ada data baru
+
             selectedTeeth.forEach(toothNumber => {
+                // Cek apakah gigi dengan nomor dan tipe masalah yang sama sudah ada
+                const isDuplicate = teethProblems.some(problem =>
+                    problem.toothNumber === toothNumber &&
+                    problem.problemType === problemType
+                );
+
+                if (isDuplicate) {
+                    // Tampilkan pesan untuk gigi yang duplikat
+                    const tooth = teethData.find(t => t.number === toothNumber);
+                    // alert(`Gigi ${toothNumber} (${tooth ? tooth.name : ''}) dengan masalah "${problemTypeText}" sudah tercatat.`);
+                    return; // Lewati gigi ini
+                }
+
+                // Jika tidak duplikat, tambahkan data baru
                 const tooth = teethData.find(t => t.number === toothNumber);
                 const problem = {
+                    id: Date.now() + Math.random(), // ID unik untuk setiap item
                     toothNumber: toothNumber,
                     toothName: tooth ? tooth.name : `Gigi ${toothNumber}`,
                     problemType: problemType,
@@ -1072,13 +1090,56 @@
                 };
 
                 teethProblems.push(problem);
+                hasNewData = true;
             });
 
-            // Reset seleksi
-            selectedTeeth = [];
-            renderTeethDiagram();
-            renderTeethProblemsList();
-            saveToHiddenInput();
+            // Reset seleksi hanya jika ada data baru yang ditambahkan
+            if (hasNewData) {
+                selectedTeeth = [];
+                renderTeethDiagram();
+                renderTeethProblemsList();
+                saveToHiddenInput();
+
+                // Beri feedback sukses
+                showSuccessMessage('Data gigi bermasalah berhasil ditambahkan!');
+            } else {
+                // Jika semua gigi duplikat, reset seleksi saja
+                selectedTeeth = [];
+                renderTeethDiagram();
+            }
+        }
+
+        // Fungsi untuk menampilkan pesan sukses
+        function showSuccessMessage(message) {
+            // Buat elemen pesan sementara
+            // Buat elemen pesan dengan jQuery
+            const successMsg = $(`
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="bi bi-check-circle-fill me-2"></i>
+                    ${message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            `);
+
+
+            // Tempatkan pesan di atas form
+            const cardBody = $('#CardBodyPemeriksaanGigi');
+            if (cardBody.length) {
+                // Tambahkan ke card body
+                cardBody.prepend(successMsg);
+
+                // Animasi fade in
+                successMsg.fadeIn(500);
+
+                // Hapus otomatis setelah 3 detik dengan efek fade out
+                setTimeout(() => {
+                    if (successMsg.parent().length) {
+                        successMsg.fadeOut(500, function() {
+                            $(this).remove();
+                        });
+                    }
+                }, 3000);
+            }
         }
 
         // Render daftar masalah gigi
