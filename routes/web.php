@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\FormController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\BarangController;
 use App\Http\Controllers\EmployeeController;
@@ -20,4 +21,5 @@ Route::get('/', function () {
 });
 
 Route::resource('employees', EmployeeController::class);
+Route::get('form', [FormController::class,'index']);
 Route::get('check-in', [EmployeeController::class, 'checkin'])->name('checkin');

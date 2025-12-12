@@ -38,6 +38,7 @@
     * Author: BootstrapMade.com
     * License: https://bootstrapmade.com/license/
     ======================================================== -->
+    @stack('styles')
 </head>
 
 <body>
@@ -89,7 +90,7 @@
 
     <!-- Template Main JS File -->
     <script src="{{ asset('assets') }}/js/main.js"></script>
-
+    @stack('scripts')
 </body>
 
 </html>
