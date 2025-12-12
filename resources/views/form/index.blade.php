@@ -6,7 +6,7 @@
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-body">
-                        <form method="POST" action="">
+                        <form method="POST" action="{{ route('form.store') }}">
                             @csrf
 
                             <div class="row">
@@ -22,7 +22,7 @@
                                                     <label class="form-label">Karyawan</label>
                                                     <select class="form-select" name="employee_id" required>
                                                         <option value="">Pilih Karyawan</option>
-                                                        <option value="Test">Karyawan Test</option>
+                                                        <option value="1">Karyawan Test</option>
                                                         <!-- Data karyawan akan diisi dari database -->
                                                     </select>
                                                 </div>

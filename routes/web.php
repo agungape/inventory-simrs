@@ -22,4 +22,5 @@ Route::get('/', function () {
 
 Route::resource('employees', EmployeeController::class);
 Route::get('form', [FormController::class,'index']);
+Route::post('form', [FormController::class,'store'])->name('form.store');
 Route::get('check-in', [EmployeeController::class, 'checkin'])->name('checkin');
