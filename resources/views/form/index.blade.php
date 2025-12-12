@@ -274,11 +274,15 @@
                                                                         <div class="mb-3">
                                                                             <label class="form-label">Jenis Masalah</label>
                                                                             <select class="form-select" id="problemType">
-                                                                                <option value="berlubang">Gigi Berlubang</option>
-                                                                                <option value="tambalan">Tambalan</option>
                                                                                 <option value="karang_gigi">Karang Gigi</option>
-                                                                                <option value="sisa_akar">Sisa Akar</option>
                                                                                 <option value="gigi_tanggal">Gigi Tanggal</option>
+                                                                                <option value="gigi_berlubang">Gigi Berlubang</option>
+                                                                                <option value="sisa_akar">Sisa Akar</option>
+                                                                                <option value="tambalan_gigi">Dipaksa Tidak Tumbuh</option>
+                                                                                <option value="perawatan_salakar">Perawatan Salakar</option>
+                                                                                <option value="tumpatan">Tumpatan</option>
+                                                                                <option value="gigi_palsu">Gigi Palsu</option>
+                                                                                <option value="lain_lain">Lain-lain</option>
                                                                             </select>
                                                                         </div>
                                                                         <div class="mb-3">
