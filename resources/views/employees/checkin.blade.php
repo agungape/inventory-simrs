@@ -19,6 +19,12 @@
                                     </button>
                                 </form>
                             </div>
+                            <div class="col-md-6 text-end">
+                                <div class="badge bg-light text-dark p-2">
+                                    <i class="bi bi-calendar me-1"></i>
+                                    Tanggal: {{ date('d F Y') }}
+                                </div>
+                            </div>
                         </div>
 
                         <!-- Pesan ketika pencarian kosong -->
@@ -42,241 +48,226 @@
                                             <th scope="col">Departemen</th>
                                             <th scope="col">Jabatan</th>
                                             <th scope="col">Bagian</th>
-                                            <th scope="col" width="10%">Aksi</th>
+                                            <th scope="col" width="15%">Status Check-in</th>
+                                            <th scope="col" width="12%">Aksi</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         @foreach ($employees as $employee)
-                                            <tr>
+                                            @php
+                                                $sudahCheckin = $employee->sudahCheckinHariIni();
+                                                $checkinData = $employee->getCheckinHariIni();
+                                                // Ambil data jenis pemeriksaan untuk label
+                                                $jenisLabels = $checkinData
+                                                    ? $checkinData->jenisPemeriksaans
+                                                    : collect();
+                                            @endphp
+                                            <tr class="{{ $sudahCheckin ? 'table-success' : '' }}">
                                                 <td scope="row">
                                                     {{ ($employees->currentPage() - 1) * $employees->perPage() + $loop->iteration }}
                                                 </td>
                                                 <td>{{ $employee->nrp }}</td>
-                                                <td>{{ $employee->nama }}</td>
+                                                <td>
+                                                    {{ $employee->nama }}
+                                                    @if ($sudahCheckin)
+                                                        <i class="bi bi-check-circle-fill text-success ms-1"
+                                                            data-bs-toggle="tooltip" title="Sudah check-in hari ini"></i>
+                                                    @endif
+                                                </td>
                                                 <td>{{ $employee->nik }}</td>
                                                 <td>{{ $employee->departement }}</td>
                                                 <td>{{ $employee->jabatan }}</td>
                                                 <td>{{ $employee->bagian }}</td>
                                                 <td>
-                                                    <!-- Tombol Checkin dengan Modal -->
-                                                    <button type="button" class="btn btn-sm btn-primary"
-                                                        data-bs-toggle="modal"
-                                                        data-bs-target="#checkinModal{{ $employee->id }}">
-                                                        <i class="bi bi-check-circle"></i> Checkin
-                                                    </button>
+                                                    @if ($sudahCheckin && $checkinData)
+                                                        <div class="d-flex flex-column">
+                                                            <span class="badge bg-success mb-1">
+                                                                <i class="bi bi-check-circle me-1"></i> Sudah Check-in
+                                                            </span>
+                                                            <small class="text-muted">
+                                                                <i class="bi bi-clock me-1"></i>
+                                                                {{ \Carbon\Carbon::parse($checkinData->tanggal_mcu)->format('H:i') }}
+                                                            </small>
+                                                        </div>
+                                                    @else
+                                                        <span class="badge bg-warning">
+                                                            <i class="bi bi-clock me-1"></i> Belum Check-in
+                                                        </span>
+                                                    @endif
+                                                </td>
+                                                <td>
+                                                    @if ($sudahCheckin)
+                                                        <!-- Tombol Ubah Checkin -->
+                                                        {{-- <button type="button" class="btn btn-sm btn-warning"
+                                                            data-bs-toggle="modal"
+                                                            data-bs-target="#editCheckinModal{{ $employee->id }}"
+                                                            data-checkin-id="{{ $checkinData->id ?? '' }}">
+                                                            <i class="bi bi-pencil"></i> Ubah
+                                                        </button> --}}
+
+                                                        <!-- Tombol Cetak Label (langsung tanpa modal) -->
+                                                        @if ($jenisLabels->count() > 0)
+                                                            <button type="button"
+                                                                class="btn btn-sm btn-info mt-1 btn-cetak-label"
+                                                                data-employee-id="{{ $employee->id }}"
+                                                                data-employee-name="{{ $employee->nama }}"
+                                                                data-employee-nrp="{{ $employee->nrp }}"
+                                                                data-checkin-id="{{ $checkinData->id ?? '' }}"
+                                                                data-checkin-date="{{ $checkinData->tanggal_mcu ?? '' }}"
+                                                                data-jenis-pemeriksaan='@json($jenisLabels->pluck('nama_pemeriksaan'))'>
+                                                                <i class="bi bi-printer"></i> Cetak Label
+                                                            </button>
+                                                        @endif
+                                                    @else
+                                                        <!-- Tombol Checkin Baru -->
+                                                        <button type="button" class="btn btn-sm btn-primary"
+                                                            data-bs-toggle="modal"
+                                                            data-bs-target="#checkinModal{{ $employee->id }}">
+                                                            <i class="bi bi-check-circle"></i> Checkin
+                                                        </button>
+                                                    @endif
                                                 </td>
                                             </tr>
 
-                                            <!-- Modal untuk Checkin -->
+                                            <!-- Modal untuk Checkin Baru -->
                                             <div class="modal fade" id="checkinModal{{ $employee->id }}" tabindex="-1">
                                                 <div class="modal-dialog modal-lg">
                                                     <div class="modal-content">
                                                         <div class="modal-header">
-                                                            <h5 class="modal-title">Checkin Karyawan</h5>
+                                                            <h5 class="modal-title">Checkin Karyawan Baru</h5>
                                                             <button type="button" class="btn-close"
                                                                 data-bs-dismiss="modal"></button>
                                                         </div>
-                                                        <div class="modal-body">
-                                                            <!-- Data Karyawan dalam Grid -->
-                                                            <div class="row mb-4">
-                                                                <div class="col-12">
-                                                                    <h6 class="text-primary mb-3"><i
-                                                                            class="bi bi-person-badge me-2"></i> Data
-                                                                        Karyawan</h6>
-                                                                </div>
-                                                                <div class="col-md-6 mb-2">
-                                                                    <div class="d-flex">
-                                                                        <span class="fw-bold text-dark"
-                                                                            style="min-width: 100px;">Nama</span>
-                                                                        <span class="mx-2">:</span>
-                                                                        <span>{{ $employee->nama }}</span>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-md-6 mb-2">
-                                                                    <div class="d-flex">
-                                                                        <span class="fw-bold text-dark"
-                                                                            style="min-width: 100px;">NRP</span>
-                                                                        <span class="mx-2">:</span>
-                                                                        <span>{{ $employee->nrp }}</span>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-md-6 mb-2">
-                                                                    <div class="d-flex">
-                                                                        <span class="fw-bold text-dark"
-                                                                            style="min-width: 100px;">Departemen</span>
-                                                                        <span class="mx-2">:</span>
-                                                                        <span>{{ $employee->departement }}</span>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-md-6 mb-2">
-                                                                    <div class="d-flex">
-                                                                        <span class="fw-bold text-dark"
-                                                                            style="min-width: 100px;">Jabatan</span>
-                                                                        <span class="mx-2">:</span>
-                                                                        <span>{{ $employee->jabatan }}</span>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-md-6 mb-2">
-                                                                    <div class="d-flex">
-                                                                        <span class="fw-bold text-dark"
-                                                                            style="min-width: 100px;">Bagian</span>
-                                                                        <span class="mx-2">:</span>
-                                                                        <span>{{ $employee->bagian }}</span>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-md-6 mb-2">
-                                                                    <div class="d-flex">
-                                                                        <span class="fw-bold text-dark"
-                                                                            style="min-width: 100px;">Perusahaan</span>
-                                                                        <span class="mx-2">:</span>
-                                                                        <span>{{ $employee->nama_perusahaan }}</span>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
 
-                                                            <hr>
-                                                            <h6 class="text-primary mb-3"><i
-                                                                    class="bi bi-clipboard-check me-2"></i> Form Checkin
-                                                            </h6>
+                                                        <form id="checkinForm{{ $employee->id }}" method="POST"
+                                                            action="{{ route('mcu.checkin.store') }}">
+                                                            @csrf
+                                                            <input type="hidden" name="employee_id"
+                                                                value="{{ $employee->id }}">
+                                                            <input type="hidden" name="foto_data"
+                                                                id="fotoData{{ $employee->id }}">
 
-                                                            <form id="checkinForm{{ $employee->id }}" method="POST"
-                                                                action="">
-                                                                @csrf
-                                                                <input type="hidden" name="employee_id"
-                                                                    value="{{ $employee->id }}">
-                                                                <input type="hidden" name="foto_data"
-                                                                    id="fotoData{{ $employee->id }}">
+                                                            <div class="modal-body">
+                                                                <!-- Alert Container -->
+                                                                <div class="alert-container mb-3"></div>
+
+                                                                <!-- Data Karyawan dalam Grid -->
+                                                                <div class="row mb-4">
+                                                                    <div class="col-12">
+                                                                        <h6 class="text-primary mb-3">
+                                                                            <i class="bi bi-person-badge me-2"></i>
+                                                                            Data Karyawan
+                                                                        </h6>
+                                                                    </div>
+                                                                    <div class="col-md-6 mb-2">
+                                                                        <div class="d-flex">
+                                                                            <span class="fw-bold text-dark"
+                                                                                style="min-width: 100px;">Nama</span>
+                                                                            <span class="mx-2">:</span>
+                                                                            <span>{{ $employee->nama }}</span>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-6 mb-2">
+                                                                        <div class="d-flex">
+                                                                            <span class="fw-bold text-dark"
+                                                                                style="min-width: 100px;">NRP</span>
+                                                                            <span class="mx-2">:</span>
+                                                                            <span>{{ $employee->nrp }}</span>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-6 mb-2">
+                                                                        <div class="d-flex">
+                                                                            <span class="fw-bold text-dark"
+                                                                                style="min-width: 100px;">Departemen</span>
+                                                                            <span class="mx-2">:</span>
+                                                                            <span>{{ $employee->departement }}</span>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-6 mb-2">
+                                                                        <div class="d-flex">
+                                                                            <span class="fw-bold text-dark"
+                                                                                style="min-width: 100px;">Jabatan</span>
+                                                                            <span class="mx-2">:</span>
+                                                                            <span>{{ $employee->jabatan }}</span>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                                <hr>
+                                                                <h6 class="text-primary mb-3">
+                                                                    <i class="bi bi-clipboard-check me-2"></i>
+                                                                    Form Checkin
+                                                                </h6>
 
                                                                 <div class="mb-3">
-                                                                    <label for="checkin_time{{ $employee->id }}"
+                                                                    <label for="tanggal_mcu_{{ $employee->id }}"
                                                                         class="form-label fw-bold">
-                                                                        <i class="bi bi-clock me-1"></i> Waktu Checkin
+                                                                        <i class="bi bi-clock me-1"></i> Tanggal & Waktu
+                                                                        MCU
                                                                     </label>
                                                                     <input type="datetime-local" class="form-control"
-                                                                        id="checkin_time{{ $employee->id }}"
-                                                                        name="checkin_time"
+                                                                        id="tanggal_mcu_{{ $employee->id }}"
+                                                                        name="tanggal_mcu"
                                                                         value="{{ now()->format('Y-m-d\TH:i') }}"
                                                                         required>
                                                                 </div>
 
+                                                                <!-- Jenis Pemeriksaan dengan Pilih Semua -->
                                                                 <div class="mb-3">
-                                                                    <label class="form-label fw-bold mb-3">
-                                                                        <i class="bi bi-clipboard-pulse me-1"></i> Jenis
-                                                                        Pemeriksaan
-                                                                        <small class="text-muted fw-normal"> (Bisa pilih
-                                                                            lebih dari satu)</small>
-                                                                    </label>
+                                                                    <div
+                                                                        class="d-flex justify-content-between align-items-center mb-3">
+                                                                        <label class="form-label fw-bold mb-0">
+                                                                            <i class="bi bi-clipboard-pulse me-1"></i>
+                                                                            Jenis Pemeriksaan
+                                                                            <small class="text-muted fw-normal">
+                                                                                (Bisa pilih lebih dari satu)
+                                                                            </small>
+                                                                        </label>
 
-                                                                    <div class="row g-2">
-                                                                        <!-- Pemeriksaan Umum -->
-                                                                        <div class="col-md-4">
-                                                                            <div class="form-check">
-                                                                                <input class="form-check-input"
-                                                                                    type="checkbox"
-                                                                                    name="jenis_pemeriksaan[]"
-                                                                                    value="rutin"
-                                                                                    id="rutin{{ $employee->id }}">
-                                                                                <label class="form-check-label"
-                                                                                    for="rutin{{ $employee->id }}">Pemeriksaan
-                                                                                    Rutin</label>
-                                                                            </div>
-                                                                            <div class="form-check">
-                                                                                <input class="form-check-input"
-                                                                                    type="checkbox"
-                                                                                    name="jenis_pemeriksaan[]"
-                                                                                    value="darurat"
-                                                                                    id="darurat{{ $employee->id }}">
-                                                                                <label class="form-check-label"
-                                                                                    for="darurat{{ $employee->id }}">Pemeriksaan
-                                                                                    Darurat</label>
-                                                                            </div>
-                                                                            <div class="form-check">
-                                                                                <input class="form-check-input"
-                                                                                    type="checkbox"
-                                                                                    name="jenis_pemeriksaan[]"
-                                                                                    value="konsultasi"
-                                                                                    id="konsultasi{{ $employee->id }}">
-                                                                                <label class="form-check-label"
-                                                                                    for="konsultasi{{ $employee->id }}">Konsultasi</label>
-                                                                            </div>
-                                                                        </div>
-
-                                                                        <!-- Pemeriksaan Spesifik -->
-                                                                        <div class="col-md-4">
-                                                                            <div class="form-check">
-                                                                                <input class="form-check-input"
-                                                                                    type="checkbox"
-                                                                                    name="jenis_pemeriksaan[]"
-                                                                                    value="lab"
-                                                                                    id="lab{{ $employee->id }}">
-                                                                                <label class="form-check-label"
-                                                                                    for="lab{{ $employee->id }}">Laboratorium</label>
-                                                                            </div>
-                                                                            <div class="form-check">
-                                                                                <input class="form-check-input"
-                                                                                    type="checkbox"
-                                                                                    name="jenis_pemeriksaan[]"
-                                                                                    value="radiologi"
-                                                                                    id="radiologi{{ $employee->id }}">
-                                                                                <label class="form-check-label"
-                                                                                    for="radiologi{{ $employee->id }}">Radiologi</label>
-                                                                            </div>
-                                                                            <div class="form-check">
-                                                                                <input class="form-check-input"
-                                                                                    type="checkbox"
-                                                                                    name="jenis_pemeriksaan[]"
-                                                                                    value="pemeriksaan_gigi"
-                                                                                    id="pemeriksaan_gigi{{ $employee->id }}">
-                                                                                <label class="form-check-label"
-                                                                                    for="pemeriksaan_gigi{{ $employee->id }}">Gigi</label>
-                                                                            </div>
-                                                                        </div>
-
-                                                                        <!-- Layanan Lainnya -->
-                                                                        <div class="col-md-4">
-                                                                            <div class="form-check">
-                                                                                <input class="form-check-input"
-                                                                                    type="checkbox"
-                                                                                    name="jenis_pemeriksaan[]"
-                                                                                    value="pengobatan"
-                                                                                    id="pengobatan{{ $employee->id }}">
-                                                                                <label class="form-check-label"
-                                                                                    for="pengobatan{{ $employee->id }}">Pengobatan</label>
-                                                                            </div>
-                                                                            <div class="form-check">
-                                                                                <input class="form-check-input"
-                                                                                    type="checkbox"
-                                                                                    name="jenis_pemeriksaan[]"
-                                                                                    value="vaksinasi"
-                                                                                    id="vaksinasi{{ $employee->id }}">
-                                                                                <label class="form-check-label"
-                                                                                    for="vaksinasi{{ $employee->id }}">Vaksinasi</label>
-                                                                            </div>
-                                                                            <div class="form-check">
-                                                                                <input class="form-check-input"
-                                                                                    type="checkbox"
-                                                                                    name="jenis_pemeriksaan[]"
-                                                                                    value="surat_keterangan"
-                                                                                    id="surat_keterangan{{ $employee->id }}">
-                                                                                <label class="form-check-label"
-                                                                                    for="surat_keterangan{{ $employee->id }}">Surat
-                                                                                    Keterangan</label>
-                                                                            </div>
-                                                                        </div>
-
-                                                                        <!-- Checkbox Lainnya -->
-                                                                        <div class="col-12 mt-2">
-                                                                            <div class="form-check">
-                                                                                <input class="form-check-input"
-                                                                                    type="checkbox"
-                                                                                    name="jenis_pemeriksaan[]"
-                                                                                    value="lainnya"
-                                                                                    id="lainnya{{ $employee->id }}">
-                                                                                <label class="form-check-label"
-                                                                                    for="lainnya{{ $employee->id }}">Lainnya</label>
-                                                                            </div>
+                                                                        <!-- Tombol Pilih Semua -->
+                                                                        <div>
+                                                                            <button type="button"
+                                                                                class="btn btn-sm btn-outline-primary select-all-btn"
+                                                                                data-modal-id="{{ $employee->id }}">
+                                                                                <i class="bi bi-check-all me-1"></i> Pilih
+                                                                                Semua
+                                                                            </button>
+                                                                            <button type="button"
+                                                                                class="btn btn-sm btn-outline-secondary deselect-all-btn"
+                                                                                data-modal-id="{{ $employee->id }}">
+                                                                                <i class="bi bi-x-circle me-1"></i> Batal
+                                                                                Semua
+                                                                            </button>
                                                                         </div>
                                                                     </div>
+
+                                                                    @if ($jenisPemeriksaans->count() > 0)
+                                                                        <div class="row g-2">
+                                                                            @foreach ($jenisPemeriksaans->chunk(ceil($jenisPemeriksaans->count() / 3)) as $chunkIndex => $chunk)
+                                                                                <div class="col-md-4">
+                                                                                    @foreach ($chunk as $jenis)
+                                                                                        <div class="form-check mb-2">
+                                                                                            <input
+                                                                                                class="form-check-input jenis-checkbox-{{ $employee->id }}"
+                                                                                                type="checkbox"
+                                                                                                name="jenis_pemeriksaan[]"
+                                                                                                value="{{ $jenis->id }}"
+                                                                                                id="jenis_{{ $employee->id }}_{{ $jenis->id }}">
+                                                                                            <label class="form-check-label"
+                                                                                                for="jenis_{{ $employee->id }}_{{ $jenis->id }}">
+                                                                                                {{ $jenis->nama_pemeriksaan }}
+                                                                                            </label>
+                                                                                        </div>
+                                                                                    @endforeach
+                                                                                </div>
+                                                                            @endforeach
+                                                                        </div>
+                                                                    @else
+                                                                        <div class="alert alert-warning">
+                                                                            <i class="bi bi-exclamation-triangle me-2"></i>
+                                                                            Data jenis pemeriksaan belum tersedia.
+                                                                        </div>
+                                                                    @endif
                                                                 </div>
 
                                                                 <!-- Bagian Rekam Wajah -->
@@ -291,7 +282,7 @@
                                                                         class="border border-gray-300 rounded-lg overflow-hidden mb-3">
                                                                         <video id="video{{ $employee->id }}"
                                                                             width="100%" height="auto" autoplay
-                                                                            class="rounded"></video>
+                                                                            playsinline class="rounded"></video>
                                                                     </div>
 
                                                                     <!-- Canvas Preview -->
@@ -318,16 +309,17 @@
                                                                         </button>
                                                                     </div>
                                                                 </div>
-                                                            </form>
-                                                        </div>
-                                                        <div class="modal-footer">
-                                                            <button type="button" class="btn btn-secondary"
-                                                                data-bs-dismiss="modal">Batal</button>
-                                                            <button type="submit" form="checkinForm{{ $employee->id }}"
-                                                                class="btn btn-primary">
-                                                                <i class="bi bi-check-circle"></i> Simpan Checkin
-                                                            </button>
-                                                        </div>
+
+                                                                <div class="modal-footer">
+                                                                    <button type="button" class="btn btn-secondary"
+                                                                        data-bs-dismiss="modal">Batal</button>
+                                                                    <button type="submit"
+                                                                        form="checkinForm{{ $employee->id }}"
+                                                                        class="btn btn-primary">
+                                                                        <i class="bi bi-check-circle"></i> Simpan Checkin
+                                                                    </button>
+                                                                </div>
+                                                        </form>
                                                     </div>
                                                 </div>
                                             </div>
@@ -373,218 +365,408 @@
 
 @push('scripts')
     <script>
-        // Set waktu default ke waktu sekarang saat modal dibuka
         document.addEventListener('DOMContentLoaded', function() {
+            // Set waktu default ke waktu sekarang saat modal dibuka
             var modals = document.querySelectorAll('[id^="checkinModal"]');
             modals.forEach(function(modal) {
                 modal.addEventListener('show.bs.modal', function() {
                     var now = new Date();
                     var formatted = now.toISOString().slice(0, 16);
                     var employeeId = this.id.replace('checkinModal', '');
-                    var timeInput = document.getElementById('checkin_time' + employeeId);
+                    var timeInput = document.getElementById('tanggal_mcu_' + employeeId);
                     if (timeInput) {
                         timeInput.value = formatted;
                     }
                 });
             });
-        });
 
-        // Fungsi untuk membuka kamera di setiap modal
-        document.addEventListener('DOMContentLoaded', function() {
-            var modals = document.querySelectorAll('[id^="checkinModal"]');
+            // Initialize tooltips
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            var tooltipList = tooltipTriggerList.map(function(tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl);
+            });
 
-            modals.forEach(function(modal) {
-                var modalId = modal.id;
-                var employeeId = modalId.replace('checkinModal', '');
+            // Fungsi untuk Pilih Semua - CARA 1: Menggunakan event delegation
+            document.addEventListener('click', function(e) {
+                // Tombol Pilih Semua
+                if (e.target.classList.contains('select-all-btn') ||
+                    e.target.closest('.select-all-btn')) {
+                    var button = e.target.classList.contains('select-all-btn') ?
+                        e.target : e.target.closest('.select-all-btn');
+                    var modalId = button.getAttribute('data-modal-id');
 
-                // Saat modal dibuka
-                modal.addEventListener('shown.bs.modal', function() {
-                    startCamera(employeeId);
-                });
+                    // Debug: cek modalId
+                    console.log('Pilih Semua untuk modal:', modalId);
 
-                // Saat modal ditutup
-                modal.addEventListener('hidden.bs.modal', function() {
-                    stopCamera(employeeId);
-                });
+                    // Pilih semua checkbox untuk modal ini
+                    var checkboxes = document.querySelectorAll('.jenis-checkbox-' + modalId);
+                    console.log('Jumlah checkbox ditemukan:', checkboxes.length);
 
-                // Event listener untuk tombol ambil foto
-                var captureBtn = document.getElementById('capture' + employeeId);
-                if (captureBtn) {
-                    captureBtn.addEventListener('click', function() {
-                        capturePhoto(employeeId);
+                    checkboxes.forEach(function(checkbox) {
+                        checkbox.checked = true;
+                        console.log('Checkbox ID', checkbox.id, 'di-centang');
                     });
                 }
 
-                // Event listener untuk tombol simpan foto
-                var saveBtn = document.getElementById('saveButton' + employeeId);
-                if (saveBtn) {
-                    saveBtn.addEventListener('click', function() {
-                        savePhoto(employeeId);
+                // Tombol Batal Semua
+                if (e.target.classList.contains('deselect-all-btn') ||
+                    e.target.closest('.deselect-all-btn')) {
+                    var button = e.target.classList.contains('deselect-all-btn') ?
+                        e.target : e.target.closest('.deselect-all-btn');
+                    var modalId = button.getAttribute('data-modal-id');
+
+                    // Batal semua checkbox untuk modal ini
+                    var checkboxes = document.querySelectorAll('.jenis-checkbox-' + modalId);
+                    checkboxes.forEach(function(checkbox) {
+                        checkbox.checked = false;
                     });
                 }
             });
-        });
 
-        // Variabel global untuk menyimpan stream kamera
-        var cameraStreams = {};
+            // Validasi form sebelum submit
+            document.querySelectorAll('[id^="checkinForm"]').forEach(function(form) {
+                form.addEventListener('submit', function(e) {
+                    var formId = this.id;
+                    var employeeId = formId.replace('checkinForm', '');
+                    var checkboxes = document.querySelectorAll('.jenis-checkbox-' + employeeId);
+                    var checkedCount = 0;
 
-        // Fungsi untuk memulai kamera
-        function startCamera(employeeId) {
-            var videoElement = document.getElementById('video' + employeeId);
-            if (!videoElement) {
-                console.error('Video element not found for employee ' + employeeId);
-                return;
-            }
+                    checkboxes.forEach(function(checkbox) {
+                        if (checkbox.checked) checkedCount++;
+                    });
 
-            // Cek apakah browser mendukung getUserMedia
-            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-                alert(
-                    'Browser Anda tidak mendukung akses kamera. Silakan gunakan browser terbaru seperti Chrome, Firefox, atau Edge.');
-                return;
-            }
-
-            // Minta akses kamera
-            navigator.mediaDevices.getUserMedia({
-                    video: {
-                        facingMode: 'user', // Gunakan kamera depan
-                        width: {
-                            ideal: 640
-                        },
-                        height: {
-                            ideal: 480
+                    if (checkedCount === 0) {
+                        e.preventDefault();
+                        // Tampilkan alert di dalam modal
+                        var alertContainer = this.querySelector('.alert-container');
+                        if (alertContainer) {
+                            alertContainer.innerHTML = `
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                <i class="bi bi-exclamation-triangle me-2"></i>
+                                Harap pilih minimal satu jenis pemeriksaan!
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        `;
+                        } else {
+                            alert('Harap pilih minimal satu jenis pemeriksaan!');
                         }
-                    },
-                    audio: false
-                })
-                .then(function(stream) {
-                    // Simpan stream untuk nanti dihentikan
-                    cameraStreams[employeeId] = stream;
-
-                    // Tampilkan stream di video element
-                    videoElement.srcObject = stream;
-                    videoElement.play();
-
-                    // Perbarui UI untuk menunjukkan kamera aktif
-                    var captureBtn = document.getElementById('capture' + employeeId);
-                    if (captureBtn) {
-                        captureBtn.disabled = false;
-                        captureBtn.innerHTML = '<i class="bi bi-camera"></i><span>Ambil Foto</span>';
-                    }
-                })
-                .catch(function(error) {
-                    console.error('Error accessing camera:', error);
-
-                    // Tampilkan pesan error yang lebih user-friendly
-                    var errorMessage = 'Gagal mengakses kamera. ';
-                    if (error.name === 'NotAllowedError') {
-                        errorMessage += 'Izin kamera ditolak. Silakan berikan izin akses kamera.';
-                    } else if (error.name === 'NotFoundError') {
-                        errorMessage += 'Tidak ditemukan kamera yang tersedia.';
-                    } else if (error.name === 'NotSupportedError') {
-                        errorMessage += 'Browser tidak mendukung fitur ini.';
-                    } else {
-                        errorMessage += 'Error: ' + error.message;
-                    }
-
-                    alert(errorMessage);
-
-                    // Nonaktifkan tombol ambil foto
-                    var captureBtn = document.getElementById('capture' + employeeId);
-                    if (captureBtn) {
-                        captureBtn.disabled = true;
-                        captureBtn.innerHTML = '<i class="bi bi-camera"></i><span>Kamera Tidak Tersedia</span>';
+                        return false;
                     }
                 });
-        }
+            });
 
-        // Fungsi untuk menghentikan kamera
-        function stopCamera(employeeId) {
-            if (cameraStreams[employeeId]) {
-                // Hentikan semua track
-                cameraStreams[employeeId].getTracks().forEach(function(track) {
-                    track.stop();
+            // ========== FUNGSI CETAK LABEL ==========
+
+            function createLabelContent(employeeName, employeeNRP, jenisNama, checkinDate) {
+                var tanggal = new Date(checkinDate).toLocaleDateString('id-ID', {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
                 });
 
-                // Hapus dari memori
-                delete cameraStreams[employeeId];
+                return `
+                    <!DOCTYPE html>
+                    <html>
+                    <head>
+                        <title>Label ${jenisNama}</title>
+                        <style>
+                            * {
+                                margin: 0;
+                                padding: 0;
+                                box-sizing: border-box;
+                            }
+                            body {
+                                font-family: 'Arial', sans-serif;
+                                font-size: 12px;
+                                background: #fff;
+                            }
+                            .label-page {
+                                width: 80mm;
+                                height: 65mm;
+                                border: 1px solid #000;
+                                padding: 3mm;
+                                margin: 0;
+                                position: relative;
+                            }
+                            .header {
+                                text-align: center;
+                                font-weight: bold;
+                                font-size: 14px;
+                                margin-bottom: 5px;
+                                padding-bottom: 3px;
+                                border-bottom: 2px solid #2c3e50;
+                                color: #2c3e50;
+                            }
+                            .content {
+                                font-size: 11px;
+                                line-height: 1.4;
+                                margin-top: 3mm;
+                            }
+                            .data-row {
+                                display: flex;
+                                margin-bottom: 3px;
+                                align-items: flex-start;
+                            }
+                            .data-label {
+                                min-width: 100px;
+                                font-weight: bold;
+                                color: #2c3e50;
+                                white-space: nowrap;
+                            }
+                            .data-separator {
+                                margin: 0 5px;
+                                font-weight: bold;
+                                color: #2c3e50;
+                            }
+                            .data-value {
+                                flex: 1;
+                            }
+                            .jenis-pemeriksaan-container {
+                                text-align: center;
+                                margin: 6px 0 8px 0;
+                                padding: 5px;
+                                background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+                                border-radius: 4px;
+                                border: 1px solid #dee2e6;
+                            }
+                            .jenis-pemeriksaan {
+                                font-weight: bold;
+                                font-size: 13px;
+                                color: #2c3e50;
+                                text-transform: uppercase;
+                                letter-spacing: 0.5px;
+                            }
+                            .barcode-container {
+                                text-align: center;
+                                margin: 6px 0;
+                                padding: 4px;
+                                border: 1px dashed #95a5a6;
+                                border-radius: 3px;
+                                background: #f8f9fa;
+                            }
+                            .barcode {
+                                font-family: 'Courier New', monospace;
+                                font-weight: bold;
+                                letter-spacing: 1.5px;
+                                font-size: 12px;
+                                color: #2c3e50;
+                            }
+                            .timestamp-container {
+                                margin-top: 6px;
+                                padding-top: 4px;
+                                border-top: 1px dotted #bdc3c7;
+                                text-align: center;
+                            }
+                            .timestamp {
+                                font-size: 10px;
+                                color: #7f8c8d;
+                                font-style: italic;
+                            }
+                            .footer {
+                                text-align: center;
+                                font-size: 9px;
+                                color: #95a5a6;
+                                margin-top: 8px;
+                                padding-top: 4px;
+                                border-top: 1px solid #ecf0f1;
+                            }
+                            .hospital-logo {
+                                font-weight: bold;
+                                color: #2980b9;
+                                margin-top: 2px;
+                            }
+                            @media print {
+                                body { margin: 0; }
+                                .label-page {
+                                    margin: 0;
+                                    page-break-inside: avoid;
+                                    -webkit-print-color-adjust: exact;
+                                    print-color-adjust: exact;
+                                }
+                            }
+                        </style>
+                    </head>
+                    <body>
+                        <div class="label-page">
+                            <div class="header">
+                                <div>UPKK RSUD Konawe</div>
+                            </div>
 
-                // Hapus srcObject dari video element
-                var videoElement = document.getElementById('video' + employeeId);
-                if (videoElement) {
-                    videoElement.srcObject = null;
+                            <div class="content">
+                                <!-- Data Karyawan dengan struktur tabel inline -->
+                                <div class="data-row">
+                                    <div class="data-label">No.RM</div>
+                                    <div class="data-separator">:</div>
+                                    <div class="data-value">0000000</div>
+                                </div>
+                                   <div class="data-row">
+                                    <div class="data-label">NRP</div>
+                                    <div class="data-separator">:</div>
+                                    <div class="data-value">${employeeNRP}</div>
+                                </div>
+                                <div class="data-row">
+                                    <div class="data-label">Nama</div>
+                                    <div class="data-separator">:</div>
+                                    <div class="data-value">${employeeName}</div>
+                                </div>
+                                <div class="data-row">
+                                    <div class="data-label">Tgl. Lahir/Umur</div>
+                                    <div class="data-separator">:</div>
+                                    <div class="data-value">02-07-2005 / 19 Tahun 2 Bulan</div>
+                                </div>
+                                <div class="data-row">
+                                    <div class="data-label">Telp.</div>
+                                    <div class="data-separator">:</div>
+                                    <div class="data-value">082195611014</div>
+                                </div>
+                                <div class="data-row">
+                                    <div class="data-label">Perusahaan</div>
+                                    <div class="data-separator">:</div>
+                                    <div class="data-value">PT. MINERAL CAHAYA</div>
+                                </div>
+
+                                <!-- Jenis Pemeriksaan -->
+                                <div class="jenis-pemeriksaan-container">
+                                    <div class="jenis-pemeriksaan">${jenisNama}</div>
+                                </div>
+
+                                <!-- Barcode -->
+                                <div class="barcode-container">
+                                    <div class="barcode">
+                                        ${employeeNRP}-${jenisNama.substring(0,3).toUpperCase()}
+                                    </div>
+                                </div>
+
+                                <!-- Waktu -->
+                                <div class="timestamp-container">
+                                    <div class="timestamp">
+                                        ${new Date(checkinDate).toLocaleTimeString('id-ID', {
+                                            hour: '2-digit',
+                                            minute: '2-digit'
+                                        })}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </body>
+                    </html>`;
+            }
+
+            // Fungsi untuk mencetak label
+            function printLabels(employeeName, employeeNRP, jenisLabels, checkinDate) {
+                if (!jenisLabels || jenisLabels.length === 0) {
+                    alert('Tidak ada jenis pemeriksaan untuk dicetak!');
+                    return;
                 }
-            }
-        }
 
-        // Fungsi untuk mengambil foto
-        function capturePhoto(employeeId) {
-            var videoElement = document.getElementById('video' + employeeId);
-            var canvasElement = document.getElementById('canvas' + employeeId);
-
-            if (!videoElement || !canvasElement) {
-                alert('Elemen video atau canvas tidak ditemukan!');
-                return;
-            }
-
-            if (!videoElement.srcObject) {
-                alert('Kamera belum aktif!');
-                return;
-            }
-
-            // Ambil dimensi video
-            var width = videoElement.videoWidth;
-            var height = videoElement.videoHeight;
-
-            // Set ukuran canvas sesuai video
-            canvasElement.width = width;
-            canvasElement.height = height;
-
-            // Gambar frame video ke canvas
-            var context = canvasElement.getContext('2d');
-            context.drawImage(videoElement, 0, 0, width, height);
-
-            // Tampilkan canvas dan sembunyikan video
-            canvasElement.classList.remove('d-none');
-            videoElement.classList.add('d-none');
-
-            // Perbarui teks tombol
-            var captureBtn = document.getElementById('capture' + employeeId);
-            if (captureBtn) {
-                captureBtn.innerHTML = '<i class="bi bi-arrow-clockwise"></i><span>Ambil Ulang</span>';
-            }
-        }
-
-        // Fungsi untuk menyimpan foto
-        function savePhoto(employeeId) {
-            var canvasElement = document.getElementById('canvas' + employeeId);
-            var videoElement = document.getElementById('video' + employeeId);
-
-            if (!canvasElement || canvasElement.classList.contains('d-none')) {
-                alert('Silakan ambil foto terlebih dahulu!');
-                return;
-            }
-
-            // Konversi canvas ke data URL (format base64)
-            var imageData = canvasElement.toDataURL('image/jpeg', 0.8);
-
-            // Simpan ke hidden input untuk dikirim ke server
-            var fotoDataInput = document.getElementById('fotoData' + employeeId);
-            if (fotoDataInput) {
-                fotoDataInput.value = imageData;
-                alert('Foto berhasil disimpan!');
-
-                // Kembalikan tampilan ke video untuk pengambilan ulang
-                canvasElement.classList.add('d-none');
-                videoElement.classList.remove('d-none');
-
-                // Reset teks tombol
-                var captureBtn = document.getElementById('capture' + employeeId);
-                if (captureBtn) {
-                    captureBtn.innerHTML = '<i class="bi bi-camera"></i><span>Ambil Foto</span>';
+                // Tampilkan konfirmasi
+                if (!confirm(`Akan mencetak ${jenisLabels.length} label untuk ${employeeName}?`)) {
+                    return;
                 }
-            } else {
-                alert('Gagal menyimpan foto!');
+
+                // Buka window baru untuk print
+                var printWindow = window.open('', '_blank');
+                var combinedContent = '';
+
+                // Buat satu label per halaman
+                jenisLabels.forEach(function(jenisNama, index) {
+                    combinedContent += createLabelContent(employeeName, employeeNRP, jenisNama,
+                        checkinDate);
+
+                    // Tambahkan page break kecuali untuk label terakhir
+                    if (index < jenisLabels.length - 1) {
+                        combinedContent += '<div style="page-break-after: always;"></div>';
+                    }
+                });
+
+                printWindow.document.open();
+                printWindow.document.write(combinedContent);
+                printWindow.document.close();
+
+                // Tunggu sebentar lalu print
+                setTimeout(function() {
+                    printWindow.focus();
+                    printWindow.print();
+
+                    // Tampilkan notifikasi
+                    showNotification(`Sedang mencetak ${jenisLabels.length} label untuk ${employeeName}`,
+                        'success');
+                }, 500);
             }
-        }
+
+            // Fungsi untuk menampilkan notifikasi
+            function showNotification(message, type = 'info') {
+                // Cek jika ada container notifikasi
+                var notificationContainer = document.getElementById('notification-container');
+                if (!notificationContainer) {
+                    notificationContainer = document.createElement('div');
+                    notificationContainer.id = 'notification-container';
+                    notificationContainer.style.cssText = `
+                        position: fixed;
+                        top: 20px;
+                        right: 20px;
+                        z-index: 9999;
+                        width: 300px;
+                    `;
+                    document.body.appendChild(notificationContainer);
+                }
+
+                var alertClass = type === 'success' ? 'alert-success' : 'alert-info';
+                var icon = type === 'success' ? 'bi-check-circle' : 'bi-info-circle';
+
+                var alertDiv = document.createElement('div');
+                alertDiv.className = `alert ${alertClass} alert-dismissible fade show`;
+                alertDiv.innerHTML = `
+                    <i class="bi ${icon} me-2"></i>
+                    ${message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                `;
+
+                notificationContainer.appendChild(alertDiv);
+
+                // Hapus notifikasi setelah 3 detik
+                setTimeout(function() {
+                    var bsAlert = new bootstrap.Alert(alertDiv);
+                    bsAlert.close();
+                }, 3000);
+            }
+
+            // Event listener untuk tombol cetak label
+            document.querySelectorAll('.btn-cetak-label').forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    var employeeName = this.getAttribute('data-employee-name');
+                    var employeeNRP = this.getAttribute('data-employee-nrp');
+                    var checkinDate = this.getAttribute('data-checkin-date');
+                    var jenisPemeriksaan = JSON.parse(this.getAttribute('data-jenis-pemeriksaan'));
+
+                    // Cetak semua label sekaligus
+                    printLabels(employeeName, employeeNRP, jenisPemeriksaan, checkinDate);
+                });
+            });
+
+            // Tambahkan style untuk notifikasi
+            var style = document.createElement('style');
+            style.textContent = `
+                #notification-container .alert {
+                    margin-bottom: 10px;
+                    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+                    animation: slideIn 0.3s ease-out;
+                }
+                @keyframes slideIn {
+                    from {
+                        transform: translateX(100%);
+                        opacity: 0;
+                    }
+                    to {
+                        transform: translateX(0);
+                        opacity: 1;
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+        });
     </script>
 @endpush

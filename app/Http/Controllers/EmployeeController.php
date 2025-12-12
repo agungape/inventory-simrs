@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Employee;
+use App\Models\Jenispemeriksaan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -26,7 +27,7 @@ class EmployeeController extends Controller
         }
 
         // Urutkan berdasarkan nama
-        $employees = $query->orderBy('nama')->paginate(10);
+        $employees = $query->orderBy('nama')->paginate(5);
 
         return view('employees.index', ['employees' => $employees]);
     }
@@ -205,21 +206,52 @@ class EmployeeController extends Controller
 
     public function checkin(Request $request)
     {
-        $employees = collect(); // Collection kosong untuk pertama kali
+        $employees = collect();
+        $jenisPemeriksaans = Jenispemeriksaan::orderBy('nama_pemeriksaan')->get();
+        $today = date('Y-m-d');
 
-        // Filter berdasarkan pencarian
+        // Simpan parameter pencarian ke session
+        if ($request->has('search') && !empty($request->search)) {
+            $request->session()->put('last_search', $request->search);
+        }
+
         if ($request->has('search') && !empty($request->search)) {
             $query = Employee::query();
             $search = $request->search;
+
             $query->where(function ($q) use ($search) {
                 $q->where('nama', 'LIKE', "%{$search}%")
                     ->orWhere('nik', 'LIKE', "%{$search}%")
                     ->orWhere('nrp', 'LIKE', "%{$search}%");
             });
-            // Urutkan berdasarkan nama
+
+            // Eager loading dengan relasi yang diperlukan untuk label
+            $query->with([
+                'medicalCheckUps' => function ($q) use ($today) {
+                    $q->whereDate('tanggal_mcu', $today)
+                        ->with(['jenisPemeriksaans']); // Tambahkan ini
+                }
+            ]);
+
             $employees = $query->orderBy('nama')->paginate(10);
+
+            // Tambahkan attribute sudah_checkin untuk setiap employee
+            $employees->getCollection()->transform(function ($employee) use ($today) {
+                $employee->sudah_checkin_today = $employee->medicalCheckUps
+                    ->where('tanggal_mcu', '>=', $today . ' 00:00:00')
+                    ->where('tanggal_mcu', '<=', $today . ' 23:59:59')
+                    ->isNotEmpty();
+
+                // Ambil data checkin hari ini
+                $employee->checkin_today = $employee->medicalCheckUps
+                    ->where('tanggal_mcu', '>=', $today . ' 00:00:00')
+                    ->where('tanggal_mcu', '<=', $today . ' 23:59:59')
+                    ->first();
+
+                return $employee;
+            });
         }
 
-        return view('employees.checkin', compact('employees'));
+        return view('employees.checkin', compact('employees', 'jenisPemeriksaans', 'today'));
     }
 }
