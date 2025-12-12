@@ -5,20 +5,20 @@
 
         <li class="nav-item">
             <a class="nav-link collapsed" href="index.html">
-                <i class="bi bi-grid"></i>
+                <i class="bi bi-house"></i>
                 <span>Dashboard</span>
             </a>
         </li>
 
         <li class="nav-item">
             <a class="nav-link @yield('MenuEmployees', 'collapsed')" href="{{ route('employees.index') }}">
-                <i class="bi bi-person-check"></i>
+                <i class="bi bi-person-lines-fill"></i>
                 <span>Data Pegawai</span>
             </a>
         </li>
         <li class="nav-item">
             <a class="nav-link @yield('MenuCheckin', 'collapsed')" href="{{ route('checkin') }}">
-                <i class="bi bi-person-check"></i>
+                <i class="bi bi-calendar-check-fill"></i>
                 <span>Check-in</span>
             </a>
         </li>

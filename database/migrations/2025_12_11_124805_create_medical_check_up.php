@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('employee_id')->constrained('employees')->onDelete('cascade');
             $table->enum('status', ['check-in', 'belum check-in']);
+            $table->string('foto')->nullable();
             $table->datetime('tanggal_mcu');
             $table->timestamps();
         });
