@@ -287,12 +287,14 @@
                                                                                 <span class="badge bg-secondary me-1">Belum ada gigi dipilih</span>
                                                                             </div>
                                                                         </div>
-                                                                        <button type="button" class="btn btn-primary btn-sm" onclick="addToothProblem()">
-                                                                            <i class="fas fa-plus"></i> Tambah Gigi Bermasalah
-                                                                        </button>
-                                                                        <button type="button" class="btn btn-danger btn-sm mt-2" onclick="clearSelectedTeeth()">
-                                                                            <i class="fas fa-trash"></i> Hapus Pilihan
-                                                                        </button>
+                                                                        <div class="form-group">
+                                                                            <button type="button" class="btn btn-primary btn-sm mb-2" onclick="addToothProblem()">
+                                                                                <i class="fas fa-plus"></i> Tambah Gigi Bermasalah
+                                                                            </button>
+                                                                            <button type="button" class="btn btn-danger btn-sm mb-2" onclick="clearSelectedTeeth()">
+                                                                                <i class="fas fa-trash"></i> Hapus Pilihan
+                                                                            </button>
+                                                                        </div>
                                                                     </div>
                                                                 </div>
 
@@ -1110,7 +1112,7 @@
             </div>
             <div>
                 <span class="remove-btn" onclick="removeToothProblems('${problemType}')">
-                    <i class="fas fa-times"></i>
+                    <i class="bi bi-x-circle"></i>
                 </span>
             </div>
         `;
