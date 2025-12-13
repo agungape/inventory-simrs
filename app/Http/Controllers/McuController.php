@@ -26,6 +26,7 @@ class McuController extends Controller
             'foto_data' => 'nullable|string'
         ]);
 
+
         if ($validator->fails()) {
             return redirect()->back()
                 ->withErrors($validator)
@@ -62,9 +63,23 @@ class McuController extends Controller
             }
 
             // Simpan foto ke storage jika ada
+            $data = $validated['foto_data'];
+
+            if (!$data) {
+                return response()->json(['message' => 'No image data provided.'], 400);
+            }
+
+            // Decode base64 image
+            list($type, $data) = explode(';', $data);
+            list(, $data)      = explode(',', $data);
+            $data = base64_decode($data);
+
+
+
             $fotoPath = null;
             if (!empty($validated['foto_data'])) {
-                $fotoPath = $this->saveFoto($validated['foto_data'], $validated['employee_id']);
+                $fotoPath = 'employee-mcu-foto/foto_mcu_'.$validated['employee_id'].'_' . uniqid() . '.png';
+                Storage::disk('public')->put($fotoPath, $data);
             }
 
             // Buat data Medical Check Up

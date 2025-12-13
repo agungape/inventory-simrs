@@ -277,18 +277,20 @@
                                                                         Pegawai: {{ $employee->nama }}
                                                                     </h6>
 
+                                                                    <input type="hidden" name="foto_data" id="imageInput{{ $employee->id }}">
+
                                                                     <!-- Video Preview -->
                                                                     <div
-                                                                        class="border border-gray-300 rounded-lg overflow-hidden mb-3">
+                                                                        class="border border-gray-300 rounded-lg overflow-hidden mb-3 text-center">
                                                                         <video id="video{{ $employee->id }}"
-                                                                            width="100%" height="auto" autoplay
+                                                                            width="300" height="auto" autoplay
                                                                             playsinline class="rounded"></video>
-                                                                    </div>
 
                                                                     <!-- Canvas Preview -->
-                                                                    <canvas id="canvas{{ $employee->id }}" width="640"
-                                                                        height="480"
+                                                                    <canvas id="canvas{{ $employee->id }}" width="300"
+                                                                        height="400"
                                                                         class="d-none border border-gray-300 rounded-lg mb-3"></canvas>
+                                                                    </div>
 
                                                                     <!-- Buttons -->
                                                                     <div class="d-flex gap-2">
@@ -299,13 +301,11 @@
                                                                             <i class="bi bi-camera"></i>
                                                                             <span>Ambil Foto</span>
                                                                         </button>
-
-                                                                        <!-- Tombol Simpan Foto -->
-                                                                        <button id="saveButton{{ $employee->id }}"
+                                                                        <button id="removeCapture{{ $employee->id }}"
                                                                             type="button"
-                                                                            class="btn btn-primary d-flex align-items-center gap-2">
-                                                                            <i class="bi bi-check-circle"></i>
-                                                                            <span>Simpan Foto</span>
+                                                                            class="d-none btn btn-warning d-flex align-items-center gap-2">
+                                                                            <i class="bi bi-trash-fill"></i>
+                                                                            <span>Hapus Foto</span>
                                                                         </button>
                                                                     </div>
                                                                 </div>
@@ -366,9 +366,12 @@
 @push('scripts')
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+
             // Set waktu default ke waktu sekarang saat modal dibuka
             var modals = document.querySelectorAll('[id^="checkinModal"]');
             modals.forEach(function(modal) {
+
+                let cameraStream = null;
                 modal.addEventListener('show.bs.modal', function() {
                     var now = new Date();
                     var formatted = now.toISOString().slice(0, 16);
@@ -376,6 +379,66 @@
                     var timeInput = document.getElementById('tanggal_mcu_' + employeeId);
                     if (timeInput) {
                         timeInput.value = formatted;
+                    }
+
+                    const video = document.getElementById('video'+employeeId);
+                    const canvas = document.getElementById('canvas'+employeeId);
+                    const captureButton = document.getElementById('capture'+employeeId);
+                    const removeCaptureButton = document.getElementById('removeCapture'+employeeId);
+                    const saveButton = document.getElementById('saveButton'+employeeId);
+
+                    var imageData = '';
+                    // Aktifkan Kamera
+                    navigator.mediaDevices.getUserMedia({
+                        video: {
+                            width: { ideal: 300 },
+                            height: { ideal: 400 },
+                            facingMode: "user"
+                        }
+                    })
+                        .then(stream => {
+                            cameraStream = stream;
+                            video.srcObject = stream;
+                        })
+                        .catch(error => {
+                            alert('Kamera tidak bisa diakses: ' + error.message);
+                        });
+
+                    // Ambil Foto
+                    captureButton.addEventListener('click', () => {
+                        const context = canvas.getContext('2d');
+                        // Tampilkan tombol hapus capture
+                        canvas.classList.remove('d-none');
+                        removeCaptureButton.classList.remove('d-none');
+
+                        // Sembunyikan tombol capture
+                        captureButton.classList.add('d-none');
+                        video.classList.add('d-none');
+
+                        context.drawImage(video, 0, 0, canvas.width, canvas.height);
+                        imageData = canvas.toDataURL('image/png');
+
+                        document.getElementById('imageInput'+employeeId).value = imageData;
+                    });
+
+                    removeCaptureButton.addEventListener('click', () => {
+                        // Tampilkan tombol hapus capture
+                        canvas.classList.add('d-none');
+                        removeCaptureButton.classList.add('d-none');
+
+                        // Sembunyikan tombol capture
+                        captureButton.classList.remove('d-none');
+                        video.classList.remove('d-none');
+
+                        imageData = '';
+                        document.getElementById('imageInput'+employeeId).value = imageData;
+                    });
+
+                });
+                modal.addEventListener('hide.bs.modal', function() {
+                    if (cameraStream) {
+                        cameraStream.getTracks().forEach(track => track.stop());
+                        cameraStream = null;
                     }
                 });
             });
