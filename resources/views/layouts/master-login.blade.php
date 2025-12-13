@@ -42,7 +42,7 @@
 </head>
 
 <body>
-    <main style="background-image: url('{{ asset('/login_background.jpg') }}'); background-size: cover; background-repeat: no-repeat">
+    <main style="background-image: url('{{ asset('assets/img/login_background2.jpg') }}'); background-size: cover; background-repeat: no-repeat">
 
         <div class="container">
 
