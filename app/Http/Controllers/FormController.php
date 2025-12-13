@@ -20,7 +20,7 @@ class FormController extends Controller
 {
     public function index()
     {
-        return view('form.index');
+        return view('pemeriksaan.index');
     }
 
     public function store(Request $request)
@@ -65,7 +65,6 @@ class FormController extends Controller
 
             return redirect()->route('mcu.index')
                 ->with('success', 'Data Medical Check Up berhasil disimpan!');
-
         } catch (\Exception $e) {
             DB::rollBack();
 

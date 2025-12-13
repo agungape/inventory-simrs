@@ -23,7 +23,6 @@ return new class extends Migration
             $table->string('bagian');
             $table->string('nama_perusahaan');
             $table->string('no_hp');
-            $table->string('foto')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

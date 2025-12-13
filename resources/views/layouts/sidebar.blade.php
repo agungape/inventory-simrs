@@ -23,9 +23,9 @@
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link collapsed" href="{{ route('employees.index') }}">
-                <i class="bi bi-file-medical-fill"></i>
-                <span>Pendaftaran MCU</span>
+            <a class="nav-link @yield('MenuPemeriksaan', 'collapsed')" href="{{ route('pemeriksaan.index') }}">
+                <i class="bi bi-clipboard2-pulse-fill"></i>
+                <span>Pemeriksaan MCU</span>
             </a>
         </li>
     </ul>
