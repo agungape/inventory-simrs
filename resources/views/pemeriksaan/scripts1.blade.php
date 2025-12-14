@@ -537,4 +537,89 @@
         const input = document.getElementById('teethProblemsData');
         input.value = JSON.stringify(teethProblems);
     }
+
+    // Fungsi untuk toggle detail berdasarkan checkbox
+    function toggleDetails(checkbox) {
+        const targetId = checkbox.getAttribute('data-target');
+        const targetElement = document.getElementById(targetId);
+
+        if (checkbox.checked) {
+            targetElement.style.display = 'block';
+        } else {
+            targetElement.style.display = 'none';
+            // Clear input fields ketika checkbox tidak dicentang
+            const inputs = targetElement.querySelectorAll('input');
+            inputs.forEach(input => input.value = '');
+        }
+    }
+
+    // Event listener untuk semua checkbox dengan data-target
+    document.addEventListener('DOMContentLoaded', function() {
+        // Bahaya lingkungan kerja
+        document.querySelectorAll('.bahaya-checkbox').forEach(function(checkbox) {
+            checkbox.addEventListener('change', function() {
+                toggleDetails(this);
+            });
+            // Set initial state
+            if (checkbox.checked) {
+                toggleDetails(checkbox);
+            }
+        });
+
+        // Kecelakaan kerja
+        document.querySelectorAll('.kecelakaan-checkbox').forEach(function(checkbox) {
+            checkbox.addEventListener('change', function() {
+                toggleDetails(this);
+            });
+            if (checkbox.checked) {
+                toggleDetails(checkbox);
+            }
+        });
+
+        // Kebiasaan
+        document.querySelectorAll('.kebiasaan-checkbox').forEach(function(checkbox) {
+            checkbox.addEventListener('change', function() {
+                toggleDetails(this);
+            });
+            if (checkbox.checked) {
+                toggleDetails(checkbox);
+            }
+        });
+
+        // Penyakit
+        document.querySelectorAll('.penyakit-checkbox').forEach(function(checkbox) {
+            checkbox.addEventListener('change', function() {
+                toggleDetails(this);
+            });
+            if (checkbox.checked) {
+                toggleDetails(checkbox);
+            }
+        });
+
+        // Buta warna
+        const butaWarnaCheck = document.querySelector('input[name="buta_warna_check"]');
+        if (butaWarnaCheck) {
+            butaWarnaCheck.addEventListener('change', function() {
+                toggleDetails(this);
+            });
+            if (butaWarnaCheck.checked) {
+                toggleDetails(butaWarnaCheck);
+            }
+        }
+
+        // Visus dan lainnya
+        document.querySelectorAll('input[data-target]').forEach(function(checkbox) {
+            if (!checkbox.classList.contains('bahaya-checkbox') &&
+                !checkbox.classList.contains('kecelakaan-checkbox') &&
+                !checkbox.classList.contains('kebiasaan-checkbox') &&
+                !checkbox.classList.contains('penyakit-checkbox')) {
+                checkbox.addEventListener('change', function() {
+                    toggleDetails(this);
+                });
+                if (checkbox.checked) {
+                    toggleDetails(checkbox);
+                }
+            }
+        });
+    });
 </script>
