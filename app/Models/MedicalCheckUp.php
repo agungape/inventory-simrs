@@ -45,4 +45,44 @@ class MedicalCheckUp extends Model
         return $this->belongsToMany(Jenispemeriksaan::class, 'pemeriksaan_pegawai', 'mcu_id', 'jenispemeriksaan_id')
             ->withTimestamps();
     }
+
+    public function dataAwal()
+    {
+        return $this->hasOne(Dataawal::class, 'mcu_id');
+    }
+
+    public function riwayatBahayaLingkunganKerja()
+    {
+        return $this->hasOne(Riwayatlingkungankerja::class, 'mcu_id');
+    }
+
+    public function riwayatKecelakaanKerja()
+    {
+        return $this->hasOne(Riwayatkecelakaankerja::class, 'mcu_id');
+    }
+
+    public function kebiasaan()
+    {
+        return $this->hasOne(Kebiasaan::class, 'mcu_id');
+    }
+
+    public function riwayatPenyakitKeluarga()
+    {
+        return $this->hasOne(Riwayatpenyakitkeluarga::class, 'mcu_id');
+    }
+
+    public function riwayatPenyakitPasien()
+    {
+        return $this->hasOne(Riwayatpenyakitpasien::class, 'mcu_id');
+    }
+
+    public function pemeriksaanTandaVitalStatusGizi()
+    {
+        return $this->hasOne(Pemeriksaanvitalgizi::class, 'mcu_id');
+    }
+
+    public function pemeriksaanFisik()
+    {
+        return $this->hasOne(Pemeriksaanfisik::class, 'mcu_id');
+    }
 }

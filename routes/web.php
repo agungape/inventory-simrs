@@ -2,31 +2,54 @@
 
 use App\Http\Controllers\FormController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\BarangController;
 use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\McuController;
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "web" middleware group. Make something great!
-|
-*/
-
 Route::middleware(['auth'])->group(function () {
-    Route::get('/', function () {
-        return view('welcome');
-    });
+    Route::get('/', [HomeController::class, 'index'])->name('home');
 
     Route::resource('employees', EmployeeController::class);
-    Route::get('form', [FormController::class, 'index']);
-    Route::post('form', [FormController::class, 'store'])->name('form.store');
+
+    // ========== MCU ROUTES ==========
+    // Check-in
     Route::get('check-in', [EmployeeController::class, 'checkin'])->name('checkin');
-    Route::post('/mcu/checkin', [McuController::class, 'store'])->name('mcu.checkin.store');
-    Route::get('/checkin/print-label/{checkinId}/{jenisId}', [McuController::class, 'printLabel'])
+    Route::post('mcu/checkin', [McuController::class, 'store'])->name('mcu.checkin.store');
+    Route::get('checkin/print-label/{checkinId}/{jenisId}', [McuController::class, 'printLabel'])
         ->name('checkin.print-label');
+
+    // MCU Management
+    Route::get('mcu', [McuController::class, 'index'])->name('mcu.index');
+    Route::get('mcu/{id}', [McuController::class, 'show'])->name('mcu.show');
+    Route::put('mcu/{id}/complete', [McuController::class, 'complete'])->name('mcu.complete');
+
+    // ========== FORM PEMERIKSAAN ROUTES ==========
+    Route::prefix('form')->name('form.')->group(function () {
+        // Main form
+        Route::get('pemeriksaan-mcu', [FormController::class, 'index'])->name('pemeriksaan.index');
+        Route::get('pemeriksaan-mcu/{mcu_id}', [FormController::class, 'edit'])->name('pemeriksaan.edit');
+
+        // API endpoints
+        Route::get('check-mcu-status/{employee_id}', [FormController::class, 'checkMCUStatus'])
+            ->name('check-mcu-status');
+
+        // Store endpoints untuk masing-masing tab
+        Route::post('data-awal', [FormController::class, 'storeDataAwal'])->name('data-awal.store');
+        Route::post('bahaya-lingkungan', [FormController::class, 'storeBahayaLingkungan'])->name('bahaya-lingkungan.store');
+        Route::post('kecelakaan-kerja', [FormController::class, 'storeKecelakaanKerja'])->name('kecelakaan-kerja.store');
+        Route::post('kebiasaan', [FormController::class, 'storeKebiasaan'])->name('kebiasaan.store');
+        Route::post('riwayat-keluarga', [FormController::class, 'storeRiwayatKeluarga'])->name('riwayat-keluarga.store');
+        Route::post('riwayat-pasien', [FormController::class, 'storeRiwayatPasien'])->name('riwayat-pasien.store');
+        Route::post('tanda-vital', [FormController::class, 'storeTandaVital'])->name('tanda-vital.store');
+        Route::post('pemeriksaan-fisik', [FormController::class, 'storePemeriksaanFisik'])->name('pemeriksaan-fisik.store');
+        Route::post('tht', [FormController::class, 'storeTHT'])->name('tht.store');
+        Route::post('gigi', [FormController::class, 'storeGigi'])->name('gigi.store');
+        Route::post('thorax', [FormController::class, 'storeThorax'])->name('thorax.store');
+        Route::post('abdomen', [FormController::class, 'storeAbdomen'])->name('abdomen.store');
+        Route::post('muskuloskeletal', [FormController::class, 'storeMuskuloskeletal'])->name('muskuloskeletal.store');
+        Route::post('neurologis', [FormController::class, 'storeNeurologis'])->name('neurologis.store');
+        Route::post('neurologis-khusus', [FormController::class, 'storeNeurologisKhusus'])->name('neurologis-khusus.store');
+    });
+
+    // Route::post('form', [FormController::class, 'store'])->name('form.store');
 });

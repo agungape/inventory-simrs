@@ -30,7 +30,7 @@ return new class extends Migration {
             $table->boolean('anemis')->nullable();
             $table->boolean('pterigium')->nullable();
             // OD / OS
-            $table->bolean('od_os')->nullable();
+            $table->boolean('od_os')->nullable();
             $table->string('od_nilai')->nullable();
             $table->string('os_nilai')->nullable();
 
@@ -46,7 +46,7 @@ return new class extends Migration {
 
             // Buta warna
             $table->boolean('buta_warna')->nullable();
-            $table->enum('buta_warna', ['parsial', 'total'])->nullable();
+            $table->enum('nilai_buta_warna', ['parsial', 'total'])->nullable();
 
             $table->timestamps();
         });

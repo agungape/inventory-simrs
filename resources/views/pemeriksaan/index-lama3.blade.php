@@ -29,29 +29,6 @@
                                                         <!-- Data karyawan akan diisi dari database -->
                                                     </select>
                                                 </div>
-                                                <div class="col-md-6">
-                                                    <label class="form-label">Tanggal MCU <span
-                                                            class="text-danger">*</span></label>
-                                                    <input type="datetime-local" class="form-control" name="tanggal_mcu"
-                                                        required>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <label class="form-label">Status <span
-                                                            class="text-danger">*</span></label>
-                                                    <div class="d-flex gap-3">
-                                                        <div class="form-check">
-                                                            <input class="form-check-input" type="radio" name="status"
-                                                                id="checkin" value="check-in" required>
-                                                            <label class="form-check-label" for="checkin">Check-in</label>
-                                                        </div>
-                                                        <div class="form-check">
-                                                            <input class="form-check-input" type="radio" name="status"
-                                                                id="belumCheckin" value="belum check-in">
-                                                            <label class="form-check-label" for="belumCheckin">Belum
-                                                                Check-in</label>
-                                                        </div>
-                                                    </div>
-                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -65,7 +42,7 @@
                                         <div class="card-body">
                                             <ul class="nav nav-tabs nav-tabs-bordered" id="mcuTab" role="tablist">
                                                 <li class="nav-item" role="presentation">
-                                                    <button class="nav-link" id="data-awal-tab" data-bs-toggle="tab"
+                                                    <button class="nav-link active" id="data-awal-tab" data-bs-toggle="tab"
                                                         data-bs-target="#data-awal" type="button" role="tab">
                                                         <i class="bi bi-file-earmark-text me-1"></i> Data Awal
                                                     </button>
@@ -107,14 +84,13 @@
                                                     </button>
                                                 </li>
                                                 <li class="nav-item" role="presentation">
-                                                    <button class="nav-link" id="pemeriksaan-fisik-tab"
-                                                        data-bs-toggle="tab" data-bs-target="#pemeriksaan-fisik"
-                                                        type="button" role="tab">
+                                                    <button class="nav-link" id="pemeriksaan-fisik-tab" data-bs-toggle="tab"
+                                                        data-bs-target="#pemeriksaan-fisik" type="button" role="tab">
                                                         <i class="bi bi-clipboard2-pulse me-1"></i> Pemeriksaan Fisik
                                                     </button>
                                                 </li>
                                                 <li class="nav-item" role="presentation">
-                                                    <button class="nav-link active" id="tht-tab" data-bs-toggle="tab"
+                                                    <button class="nav-link" id="tht-tab" data-bs-toggle="tab"
                                                         data-bs-target="#tht" type="button" role="tab">
                                                         <i class="bi bi-ear me-1"></i> THT
                                                     </button>
@@ -1888,7 +1864,7 @@
                                                 </div>
 
                                                 <!-- Tab 1: Pemeriksaan THT -->
-                                                <div class="tab-pane fade show active" id="tht" role="tabpanel">
+                                                <div class="tab-pane fade" id="tht" role="tabpanel">
                                                     <div class="row g-3">
                                                         <div class="col-md-6 col-lg-4">
                                                             <label class="form-label">Daun Telinga</label>

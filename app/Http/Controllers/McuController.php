@@ -78,7 +78,7 @@ class McuController extends Controller
 
             $fotoPath = null;
             if (!empty($validated['foto_data'])) {
-                $fotoPath = 'employee-mcu-foto/foto_mcu_'.$validated['employee_id'].'_' . uniqid() . '.png';
+                $fotoPath = 'employee-mcu-foto/foto_mcu_' . $validated['employee_id'] . '_' . uniqid() . '.png';
                 Storage::disk('public')->put($fotoPath, $data);
             }
 

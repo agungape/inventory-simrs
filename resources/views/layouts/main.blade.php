@@ -1,645 +1,435 @@
+@extends('layouts.master')
+@section('MenuHome', '')
+@section('content')
 
+    <div class="pagetitle">
+        <h1>Dashboard</h1>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
+                <li class="breadcrumb-item active">Dashboard</li>
+            </ol>
+        </nav>
+    </div><!-- End Page Title -->
 
-<div class="pagetitle">
-    <h1>Dashboard</h1>
-    <nav>
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="index.html">Home</a></li>
-            <li class="breadcrumb-item active">Dashboard</li>
-        </ol>
-    </nav>
-</div><!-- End Page Title -->
-
-<section class="section dashboard">
-    <div class="row">
-
-        <!-- Left side columns -->
-        <div class="col-lg-8">
-            <div class="row">
-
-                <!-- Sales Card -->
-                <div class="col-xxl-4 col-md-6">
-                    <div class="card info-card sales-card">
-
-                        <div class="filter">
-                            <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                            <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                                <li class="dropdown-header text-start">
-                                    <h6>Filter</h6>
-                                </li>
-
-                                <li><a class="dropdown-item" href="#">Today</a></li>
-                                <li><a class="dropdown-item" href="#">This Month</a></li>
-                                <li><a class="dropdown-item" href="#">This Year</a></li>
-                            </ul>
-                        </div>
-
-                        <div class="card-body">
-                            <h5 class="card-title">Sales <span>| Today</span></h5>
-
-                            <div class="d-flex align-items-center">
-                                <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                                    <i class="bi bi-cart"></i>
-                                </div>
-                                <div class="ps-3">
-                                    <h6>145</h6>
-                                    <span class="text-success small pt-1 fw-bold">12%</span> <span class="text-muted small pt-2 ps-1">increase</span>
-
+    <section class="section dashboard">
+        <div class="row">
+            <!-- Left side columns -->
+            <div class="col-lg-8">
+                <div class="row">
+                    <!-- Total Pegawai Card -->
+                    <div class="col-xxl-4 col-md-6">
+                        <div class="card info-card sales-card">
+                            <div class="card-body">
+                                <h5 class="card-title">Total Pegawai <span>| Semua</span></h5>
+                                <div class="d-flex align-items-center">
+                                    <div
+                                        class="card-icon rounded-circle d-flex align-items-center justify-content-center bg-primary">
+                                        <i class="bi bi-people"></i>
+                                    </div>
+                                    <div class="ps-3">
+                                        <h6>{{ $totalPegawai }}</h6>
+                                        <span class="text-success small pt-1 fw-bold">{{ $pegawaiLaki }}</span>
+                                        <span class="text-muted small pt-2 ps-1">Laki-laki</span>
+                                        <br>
+                                        <span class="text-info small pt-1 fw-bold">{{ $pegawaiPerempuan }}</span>
+                                        <span class="text-muted small pt-2 ps-1">Perempuan</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
+                    </div><!-- End Total Pegawai Card -->
 
-                    </div>
-                </div><!-- End Sales Card -->
-
-                <!-- Revenue Card -->
-                <div class="col-xxl-4 col-md-6">
-                    <div class="card info-card revenue-card">
-
-                        <div class="filter">
-                            <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                            <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                                <li class="dropdown-header text-start">
-                                    <h6>Filter</h6>
-                                </li>
-
-                                <li><a class="dropdown-item" href="#">Today</a></li>
-                                <li><a class="dropdown-item" href="#">This Month</a></li>
-                                <li><a class="dropdown-item" href="#">This Year</a></li>
-                            </ul>
-                        </div>
-
-                        <div class="card-body">
-                            <h5 class="card-title">Revenue <span>| This Month</span></h5>
-
-                            <div class="d-flex align-items-center">
-                                <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                                    <i class="bi bi-currency-dollar"></i>
-                                </div>
-                                <div class="ps-3">
-                                    <h6>$3,264</h6>
-                                    <span class="text-success small pt-1 fw-bold">8%</span> <span class="text-muted small pt-2 ps-1">increase</span>
-
+                    <!-- MCU Hari Ini Card -->
+                    <div class="col-xxl-4 col-md-6">
+                        <div class="card info-card revenue-card">
+                            <div class="card-body">
+                                <h5 class="card-title">MCU Hari Ini <span>| {{ date('d M Y') }}</span></h5>
+                                <div class="d-flex align-items-center">
+                                    <div
+                                        class="card-icon rounded-circle d-flex align-items-center justify-content-center bg-success">
+                                        <i class="bi bi-calendar-check"></i>
+                                    </div>
+                                    <div class="ps-3">
+                                        <h6>{{ $mcuHariIni }}</h6>
+                                        <span class="text-success small pt-1 fw-bold">{{ $checkinHariIni }}</span>
+                                        <span class="text-muted small pt-2 ps-1">Check-in</span>
+                                        <br>
+                                        <span class="text-warning small pt-1 fw-bold">{{ $belumCheckinHariIni }}</span>
+                                        <span class="text-muted small pt-2 ps-1">Belum</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
+                    </div><!-- End MCU Hari Ini Card -->
 
-                    </div>
-                </div><!-- End Revenue Card -->
-
-                <!-- Customers Card -->
-                <div class="col-xxl-4 col-xl-12">
-
-                    <div class="card info-card customers-card">
-
-                        <div class="filter">
-                            <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                            <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                                <li class="dropdown-header text-start">
-                                    <h6>Filter</h6>
-                                </li>
-
-                                <li><a class="dropdown-item" href="#">Today</a></li>
-                                <li><a class="dropdown-item" href="#">This Month</a></li>
-                                <li><a class="dropdown-item" href="#">This Year</a></li>
-                            </ul>
-                        </div>
-
-                        <div class="card-body">
-                            <h5 class="card-title">Customers <span>| This Year</span></h5>
-
-                            <div class="d-flex align-items-center">
-                                <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                                    <i class="bi bi-people"></i>
-                                </div>
-                                <div class="ps-3">
-                                    <h6>1244</h6>
-                                    <span class="text-danger small pt-1 fw-bold">12%</span> <span class="text-muted small pt-2 ps-1">decrease</span>
-
+                    <!-- MCU Bulan Ini Card -->
+                    <div class="col-xxl-4 col-md-6">
+                        <div class="card info-card customers-card">
+                            <div class="card-body">
+                                <h5 class="card-title">MCU Bulan Ini <span>| {{ date('M Y') }}</span></h5>
+                                <div class="d-flex align-items-center">
+                                    <div
+                                        class="card-icon rounded-circle d-flex align-items-center justify-content-center bg-warning">
+                                        <i class="bi bi-calendar-month"></i>
+                                    </div>
+                                    <div class="ps-3">
+                                        <h6>{{ $mcuBulanIni }}</h6>
+                                        <span class="text-success small pt-1 fw-bold">{{ $checkinBulanIni }}</span>
+                                        <span class="text-muted small pt-2 ps-1">Check-in</span>
+                                        <br>
+                                        <span class="text-warning small pt-1 fw-bold">{{ $belumCheckinBulanIni }}</span>
+                                        <span class="text-muted small pt-2 ps-1">Belum</span>
+                                    </div>
                                 </div>
                             </div>
-
                         </div>
-                    </div>
+                    </div><!-- End MCU Bulan Ini Card -->
 
-                </div><!-- End Customers Card -->
+                    <!-- Grafik MCU 7 Hari Terakhir -->
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">MCU 7 Hari Terakhir</h5>
+                                <!-- Line Chart -->
+                                <div id="mcu7HariChart" style="height: 350px;"></div>
 
-                <!-- Reports -->
-                <div class="col-12">
-                    <div class="card">
+                                <script>
+                                    document.addEventListener("DOMContentLoaded", () => {
+                                        const chartData = @json($mcu7Hari);
 
-                        <div class="filter">
-                            <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                            <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                                <li class="dropdown-header text-start">
-                                    <h6>Filter</h6>
-                                </li>
-
-                                <li><a class="dropdown-item" href="#">Today</a></li>
-                                <li><a class="dropdown-item" href="#">This Month</a></li>
-                                <li><a class="dropdown-item" href="#">This Year</a></li>
-                            </ul>
-                        </div>
-
-                        <div class="card-body">
-                            <h5 class="card-title">Reports <span>/Today</span></h5>
-
-                            <!-- Line Chart -->
-                            <div id="reportsChart"></div>
-
-                            <script>
-                                document.addEventListener("DOMContentLoaded", () => {
-                                    new ApexCharts(document.querySelector("#reportsChart"), {
-                                        series: [{
-                                            name: 'Sales',
-                                            data: [31, 40, 28, 51, 42, 82, 56],
-                                        }, {
-                                            name: 'Revenue',
-                                            data: [11, 32, 45, 32, 34, 52, 41]
-                                        }, {
-                                            name: 'Customers',
-                                            data: [15, 11, 32, 18, 9, 24, 11]
-                                        }],
-                                        chart: {
-                                            height: 350,
-                                            type: 'area',
-                                            toolbar: {
-                                                show: false
+                                        new ApexCharts(document.querySelector("#mcu7HariChart"), {
+                                            series: chartData.datasets.map(dataset => ({
+                                                name: dataset.label,
+                                                data: dataset.data
+                                            })),
+                                            chart: {
+                                                height: 350,
+                                                type: 'line',
+                                                toolbar: {
+                                                    show: true
+                                                },
                                             },
-                                        },
-                                        markers: {
-                                            size: 4
-                                        },
-                                        colors: ['#4154f1', '#2eca6a', '#ff771d'],
-                                        fill: {
-                                            type: "gradient",
-                                            gradient: {
-                                                shadeIntensity: 1,
-                                                opacityFrom: 0.3,
-                                                opacityTo: 0.4,
-                                                stops: [0, 90, 100]
+                                            colors: ['#2eca6a', '#ff771d'],
+                                            stroke: {
+                                                curve: 'smooth',
+                                                width: 3
+                                            },
+                                            markers: {
+                                                size: 5
+                                            },
+                                            xaxis: {
+                                                categories: chartData.labels
+                                            },
+                                            yaxis: {
+                                                title: {
+                                                    text: 'Jumlah MCU'
+                                                },
+                                                min: 0
+                                            },
+                                            tooltip: {
+                                                y: {
+                                                    formatter: function(val) {
+                                                        return val + " MCU"
+                                                    }
+                                                }
+                                            },
+                                            legend: {
+                                                position: 'top'
                                             }
-                                        },
-                                        dataLabels: {
-                                            enabled: false
-                                        },
-                                        stroke: {
-                                            curve: 'smooth',
-                                            width: 2
-                                        },
-                                        xaxis: {
-                                            type: 'datetime',
-                                            categories: ["2018-09-19T00:00:00.000Z", "2018-09-19T01:30:00.000Z", "2018-09-19T02:30:00.000Z", "2018-09-19T03:30:00.000Z", "2018-09-19T04:30:00.000Z", "2018-09-19T05:30:00.000Z", "2018-09-19T06:30:00.000Z"]
-                                        },
-                                        tooltip: {
-                                            x: {
-                                                format: 'dd/MM/yy HH:mm'
-                                            },
+                                        }).render();
+                                    });
+                                </script>
+                            </div>
+                        </div>
+                    </div><!-- End Grafik MCU 7 Hari -->
+
+                    <!-- Daftar MCU Hari Ini -->
+                    <div class="col-12">
+                        <div class="card recent-sales overflow-auto">
+                            <div class="card-body">
+                                <h5 class="card-title">MCU Hari Ini <span>| {{ date('d M Y') }}</span></h5>
+
+                                @if ($mcuTerbaru->count() > 0)
+                                    <table class="table table-borderless datatable">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">No</th>
+                                                <th scope="col">NRP</th>
+                                                <th scope="col">Nama Pegawai</th>
+                                                <th scope="col">Departemen</th>
+                                                <th scope="col">Jabatan</th>
+                                                <th scope="col">Jam</th>
+                                                <th scope="col">Status</th>
+                                                <th scope="col">Aksi</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach ($mcuTerbaru as $mcu)
+                                                <tr>
+                                                    <th scope="row">{{ $loop->iteration }}</th>
+                                                    <td>{{ $mcu->employee->nrp }}</td>
+                                                    <td>{{ $mcu->employee->nama }}</td>
+                                                    <td>{{ $mcu->employee->departement }}</td>
+                                                    <td>{{ $mcu->employee->jabatan }}</td>
+                                                    <td>{{ \Carbon\Carbon::parse($mcu->created_at)->format('H:i') }}</td>
+                                                    <td>
+                                                        @if ($mcu->status == 'check-in')
+                                                            <span class="badge bg-success">Check-in</span>
+                                                        @else
+                                                            <span class="badge bg-warning">Belum Check-in</span>
+                                                        @endif
+                                                    </td>
+                                                    <td>
+                                                        @if ($mcu->status == 'check-in')
+                                                            <a href="{{ route('form.pemeriksaan.index') }}?employee_id={{ $mcu->employee_id }}"
+                                                                class="btn btn-sm btn-primary"
+                                                                title="Lanjutkan Pemeriksaan">
+                                                                <i class="bi bi-arrow-right"></i>
+                                                            </a>
+                                                        @else
+                                                            <button class="btn btn-sm btn-secondary" disabled>
+                                                                <i class="bi bi-clock"></i>
+                                                            </button>
+                                                        @endif
+                                                    </td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                @else
+                                    <div class="alert alert-info">
+                                        <i class="bi bi-info-circle me-2"></i>
+                                        Tidak ada MCU untuk hari ini.
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
+                    </div><!-- End Daftar MCU Hari Ini -->
+
+                    <!-- Pegawai Terbaru -->
+                    <div class="col-12">
+                        <div class="card top-selling overflow-auto">
+                            <div class="card-body pb-0">
+                                <h5 class="card-title">Pegawai Terbaru</h5>
+
+                                @if ($pegawaiTerbaru->count() > 0)
+                                    <table class="table table-borderless">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">NRP</th>
+                                                <th scope="col">Nama</th>
+                                                <th scope="col">Departemen</th>
+                                                <th scope="col">Jabatan</th>
+                                                <th scope="col">Jenis Kelamin</th>
+                                                <th scope="col">Bergabung</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach ($pegawaiTerbaru as $pegawai)
+                                                <tr>
+                                                    <td>{{ $pegawai->nrp }}</td>
+                                                    <td>
+                                                        <a href="#"
+                                                            class="text-primary fw-bold">{{ $pegawai->nama }}</a>
+                                                    </td>
+                                                    <td>{{ $pegawai->departement }}</td>
+                                                    <td>{{ $pegawai->jabatan }}</td>
+                                                    <td>
+                                                        @if ($pegawai->jenis_kelamin == 'L')
+                                                            <span class="badge bg-primary">Laki-laki</span>
+                                                        @else
+                                                            <span class="badge bg-pink">Perempuan</span>
+                                                        @endif
+                                                    </td>
+                                                    <td>{{ $pegawai->created_at->diffForHumans() }}</td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                @else
+                                    <div class="alert alert-info">
+                                        <i class="bi bi-info-circle me-2"></i>
+                                        Belum ada data pegawai.
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
+                    </div><!-- End Pegawai Terbaru -->
+
+                </div>
+            </div><!-- End Left side columns -->
+
+            <!-- Right side columns -->
+            <div class="col-lg-4">
+
+                <!-- Distribusi Pegawai per Departemen -->
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Pegawai per Departemen</h5>
+
+                        <div class="list-group">
+                            @foreach ($pegawaiDepartemen as $dept)
+                                <div class="list-group-item border-0 d-flex align-items-center">
+                                    <div class="flex-grow-1">
+                                        <h6 class="mb-0">{{ $dept->departement }}</h6>
+                                    </div>
+                                    <div class="flex-shrink-0">
+                                        <span class="badge bg-primary rounded-pill">{{ $dept->total }}</span>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                </div><!-- End Departemen Card -->
+
+                <!-- Jenis Pemeriksaan Terpopuler -->
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Jenis Pemeriksaan</h5>
+
+                        @if ($jenisPemeriksaanStat->count() > 0)
+                            <div class="list-group">
+                                @foreach ($jenisPemeriksaanStat as $jenis)
+                                    <div class="list-group-item border-0 d-flex align-items-center">
+                                        <div class="flex-grow-1">
+                                            <h6 class="mb-0">{{ $jenis->nama_pemeriksaan }}</h6>
+                                        </div>
+                                        <div class="flex-shrink-0">
+                                            <span class="badge bg-success rounded-pill">{{ $jenis->total }}</span>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        @else
+                            <div class="alert alert-info">
+                                <i class="bi bi-info-circle me-2"></i>
+                                Belum ada data pemeriksaan.
+                            </div>
+                        @endif
+                    </div>
+                </div><!-- End Jenis Pemeriksaan -->
+
+                <!-- Distribusi Perusahaan -->
+                <div class="card">
+                    <div class="card-body pb-0">
+                        <h5 class="card-title">Distribusi Perusahaan</h5>
+
+                        <div id="perusahaanChart" style="min-height: 300px;"></div>
+
+                        <script>
+                            document.addEventListener("DOMContentLoaded", () => {
+                                const perusahaanData = @json($perusahaanStat);
+                                const chartData = perusahaanData.map(item => ({
+                                    value: item.total,
+                                    name: item.nama_perusahaan
+                                }));
+
+                                echarts.init(document.querySelector("#perusahaanChart")).setOption({
+                                    tooltip: {
+                                        trigger: 'item',
+                                        formatter: '{a} <br/>{b}: {c} ({d}%)'
+                                    },
+                                    legend: {
+                                        orient: 'vertical',
+                                        right: 'right',
+                                        top: 'center'
+                                    },
+                                    series: [{
+                                        name: 'Perusahaan',
+                                        type: 'pie',
+                                        radius: '70%',
+                                        data: chartData,
+                                        emphasis: {
+                                            itemStyle: {
+                                                shadowBlur: 10,
+                                                shadowOffsetX: 0,
+                                                shadowColor: 'rgba(0, 0, 0, 0.5)'
+                                            }
                                         }
-                                    }).render();
+                                    }]
                                 });
-                            </script>
-                            <!-- End Line Chart -->
-
-                        </div>
-
-                    </div>
-                </div><!-- End Reports -->
-
-                <!-- Recent Sales -->
-                <div class="col-12">
-                    <div class="card recent-sales overflow-auto">
-
-                        <div class="filter">
-                            <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                            <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                                <li class="dropdown-header text-start">
-                                    <h6>Filter</h6>
-                                </li>
-
-                                <li><a class="dropdown-item" href="#">Today</a></li>
-                                <li><a class="dropdown-item" href="#">This Month</a></li>
-                                <li><a class="dropdown-item" href="#">This Year</a></li>
-                            </ul>
-                        </div>
-
-                        <div class="card-body">
-                            <h5 class="card-title">Recent Sales <span>| Today</span></h5>
-
-                            <table class="table table-borderless datatable">
-                                <thead>
-                                <tr>
-                                    <th scope="col">#</th>
-                                    <th scope="col">Customer</th>
-                                    <th scope="col">Product</th>
-                                    <th scope="col">Price</th>
-                                    <th scope="col">Status</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr>
-                                    <th scope="row"><a href="#">#2457</a></th>
-                                    <td>Brandon Jacob</td>
-                                    <td><a href="#" class="text-primary">At praesentium minu</a></td>
-                                    <td>$64</td>
-                                    <td><span class="badge bg-success">Approved</span></td>
-                                </tr>
-                                <tr>
-                                    <th scope="row"><a href="#">#2147</a></th>
-                                    <td>Bridie Kessler</td>
-                                    <td><a href="#" class="text-primary">Blanditiis dolor omnis similique</a></td>
-                                    <td>$47</td>
-                                    <td><span class="badge bg-warning">Pending</span></td>
-                                </tr>
-                                <tr>
-                                    <th scope="row"><a href="#">#2049</a></th>
-                                    <td>Ashleigh Langosh</td>
-                                    <td><a href="#" class="text-primary">At recusandae consectetur</a></td>
-                                    <td>$147</td>
-                                    <td><span class="badge bg-success">Approved</span></td>
-                                </tr>
-                                <tr>
-                                    <th scope="row"><a href="#">#2644</a></th>
-                                    <td>Angus Grady</td>
-                                    <td><a href="#" class="text-primar">Ut voluptatem id earum et</a></td>
-                                    <td>$67</td>
-                                    <td><span class="badge bg-danger">Rejected</span></td>
-                                </tr>
-                                <tr>
-                                    <th scope="row"><a href="#">#2644</a></th>
-                                    <td>Raheem Lehner</td>
-                                    <td><a href="#" class="text-primary">Sunt similique distinctio</a></td>
-                                    <td>$165</td>
-                                    <td><span class="badge bg-success">Approved</span></td>
-                                </tr>
-                                </tbody>
-                            </table>
-
-                        </div>
-
-                    </div>
-                </div><!-- End Recent Sales -->
-
-                <!-- Top Selling -->
-                <div class="col-12">
-                    <div class="card top-selling overflow-auto">
-
-                        <div class="filter">
-                            <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                            <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                                <li class="dropdown-header text-start">
-                                    <h6>Filter</h6>
-                                </li>
-
-                                <li><a class="dropdown-item" href="#">Today</a></li>
-                                <li><a class="dropdown-item" href="#">This Month</a></li>
-                                <li><a class="dropdown-item" href="#">This Year</a></li>
-                            </ul>
-                        </div>
-
-                        <div class="card-body pb-0">
-                            <h5 class="card-title">Top Selling <span>| Today</span></h5>
-
-                            <table class="table table-borderless">
-                                <thead>
-                                <tr>
-                                    <th scope="col">Preview</th>
-                                    <th scope="col">Product</th>
-                                    <th scope="col">Price</th>
-                                    <th scope="col">Sold</th>
-                                    <th scope="col">Revenue</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr>
-                                    <th scope="row"><a href="#"><img src="assets/img/product-1.jpg" alt=""></a></th>
-                                    <td><a href="#" class="text-primary fw-bold">Ut inventore ipsa voluptas nulla</a></td>
-                                    <td>$64</td>
-                                    <td class="fw-bold">124</td>
-                                    <td>$5,828</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row"><a href="#"><img src="assets/img/product-2.jpg" alt=""></a></th>
-                                    <td><a href="#" class="text-primary fw-bold">Exercitationem similique doloremque</a></td>
-                                    <td>$46</td>
-                                    <td class="fw-bold">98</td>
-                                    <td>$4,508</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row"><a href="#"><img src="assets/img/product-3.jpg" alt=""></a></th>
-                                    <td><a href="#" class="text-primary fw-bold">Doloribus nisi exercitationem</a></td>
-                                    <td>$59</td>
-                                    <td class="fw-bold">74</td>
-                                    <td>$4,366</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row"><a href="#"><img src="assets/img/product-4.jpg" alt=""></a></th>
-                                    <td><a href="#" class="text-primary fw-bold">Officiis quaerat sint rerum error</a></td>
-                                    <td>$32</td>
-                                    <td class="fw-bold">63</td>
-                                    <td>$2,016</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row"><a href="#"><img src="assets/img/product-5.jpg" alt=""></a></th>
-                                    <td><a href="#" class="text-primary fw-bold">Sit unde debitis delectus repellendus</a></td>
-                                    <td>$79</td>
-                                    <td class="fw-bold">41</td>
-                                    <td>$3,239</td>
-                                </tr>
-                                </tbody>
-                            </table>
-
-                        </div>
-
-                    </div>
-                </div><!-- End Top Selling -->
-
-            </div>
-        </div><!-- End Left side columns -->
-
-        <!-- Right side columns -->
-        <div class="col-lg-4">
-
-            <!-- Recent Activity -->
-            <div class="card">
-                <div class="filter">
-                    <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                        <li class="dropdown-header text-start">
-                            <h6>Filter</h6>
-                        </li>
-
-                        <li><a class="dropdown-item" href="#">Today</a></li>
-                        <li><a class="dropdown-item" href="#">This Month</a></li>
-                        <li><a class="dropdown-item" href="#">This Year</a></li>
-                    </ul>
-                </div>
-
-                <div class="card-body">
-                    <h5 class="card-title">Recent Activity <span>| Today</span></h5>
-
-                    <div class="activity">
-
-                        <div class="activity-item d-flex">
-                            <div class="activite-label">32 min</div>
-                            <i class='bi bi-circle-fill activity-badge text-success align-self-start'></i>
-                            <div class="activity-content">
-                                Quia quae rerum <a href="#" class="fw-bold text-dark">explicabo officiis</a> beatae
-                            </div>
-                        </div><!-- End activity item-->
-
-                        <div class="activity-item d-flex">
-                            <div class="activite-label">56 min</div>
-                            <i class='bi bi-circle-fill activity-badge text-danger align-self-start'></i>
-                            <div class="activity-content">
-                                Voluptatem blanditiis blanditiis eveniet
-                            </div>
-                        </div><!-- End activity item-->
-
-                        <div class="activity-item d-flex">
-                            <div class="activite-label">2 hrs</div>
-                            <i class='bi bi-circle-fill activity-badge text-primary align-self-start'></i>
-                            <div class="activity-content">
-                                Voluptates corrupti molestias voluptatem
-                            </div>
-                        </div><!-- End activity item-->
-
-                        <div class="activity-item d-flex">
-                            <div class="activite-label">1 day</div>
-                            <i class='bi bi-circle-fill activity-badge text-info align-self-start'></i>
-                            <div class="activity-content">
-                                Tempore autem saepe <a href="#" class="fw-bold text-dark">occaecati voluptatem</a> tempore
-                            </div>
-                        </div><!-- End activity item-->
-
-                        <div class="activity-item d-flex">
-                            <div class="activite-label">2 days</div>
-                            <i class='bi bi-circle-fill activity-badge text-warning align-self-start'></i>
-                            <div class="activity-content">
-                                Est sit eum reiciendis exercitationem
-                            </div>
-                        </div><!-- End activity item-->
-
-                        <div class="activity-item d-flex">
-                            <div class="activite-label">4 weeks</div>
-                            <i class='bi bi-circle-fill activity-badge text-muted align-self-start'></i>
-                            <div class="activity-content">
-                                Dicta dolorem harum nulla eius. Ut quidem quidem sit quas
-                            </div>
-                        </div><!-- End activity item-->
-
-                    </div>
-
-                </div>
-            </div><!-- End Recent Activity -->
-
-            <!-- Budget Report -->
-            <div class="card">
-                <div class="filter">
-                    <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                        <li class="dropdown-header text-start">
-                            <h6>Filter</h6>
-                        </li>
-
-                        <li><a class="dropdown-item" href="#">Today</a></li>
-                        <li><a class="dropdown-item" href="#">This Month</a></li>
-                        <li><a class="dropdown-item" href="#">This Year</a></li>
-                    </ul>
-                </div>
-
-                <div class="card-body pb-0">
-                    <h5 class="card-title">Budget Report <span>| This Month</span></h5>
-
-                    <div id="budgetChart" style="min-height: 400px;" class="echart"></div>
-
-                    <script>
-                        document.addEventListener("DOMContentLoaded", () => {
-                            var budgetChart = echarts.init(document.querySelector("#budgetChart")).setOption({
-                                legend: {
-                                    data: ['Allocated Budget', 'Actual Spending']
-                                },
-                                radar: {
-                                    // shape: 'circle',
-                                    indicator: [{
-                                        name: 'Sales',
-                                        max: 6500
-                                    },
-                                        {
-                                            name: 'Administration',
-                                            max: 16000
-                                        },
-                                        {
-                                            name: 'Information Technology',
-                                            max: 30000
-                                        },
-                                        {
-                                            name: 'Customer Support',
-                                            max: 38000
-                                        },
-                                        {
-                                            name: 'Development',
-                                            max: 52000
-                                        },
-                                        {
-                                            name: 'Marketing',
-                                            max: 25000
-                                        }
-                                    ]
-                                },
-                                series: [{
-                                    name: 'Budget vs spending',
-                                    type: 'radar',
-                                    data: [{
-                                        value: [4200, 3000, 20000, 35000, 50000, 18000],
-                                        name: 'Allocated Budget'
-                                    },
-                                        {
-                                            value: [5000, 14000, 28000, 26000, 42000, 21000],
-                                            name: 'Actual Spending'
-                                        }
-                                    ]
-                                }]
                             });
-                        });
-                    </script>
+                        </script>
+                    </div>
+                </div><!-- End Perusahaan Chart -->
 
-                </div>
-            </div><!-- End Budget Report -->
+                <!-- Quick Actions -->
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Aksi Cepat</h5>
 
-            <!-- Website Traffic -->
-            <div class="card">
-                <div class="filter">
-                    <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                        <li class="dropdown-header text-start">
-                            <h6>Filter</h6>
-                        </li>
+                        <div class="d-grid gap-2">
+                            <a href="{{ route('checkin') }}" class="btn btn-primary">
+                                <i class="bi bi-person-plus me-2"></i> Check-in MCU Baru
+                            </a>
+                            <a href="{{ route('form.pemeriksaan.index') }}" class="btn btn-success">
+                                <i class="bi bi-clipboard-plus me-2"></i> Form Pemeriksaan
+                            </a>
+                            <a href="{{ route('employees.index') }}" class="btn btn-info">
+                                <i class="bi bi-people me-2"></i> Data Pegawai
+                            </a>
+                            <a href="#" class="btn btn-warning">
+                                <i class="bi bi-calendar-check me-2"></i> Jadwal MCU
+                            </a>
+                        </div>
+                    </div>
+                </div><!-- End Quick Actions -->
 
-                        <li><a class="dropdown-item" href="#">Today</a></li>
-                        <li><a class="dropdown-item" href="#">This Month</a></li>
-                        <li><a class="dropdown-item" href="#">This Year</a></li>
-                    </ul>
-                </div>
+                <!-- Distribusi Jabatan -->
+                <div class="card">
+                    <div class="card-body pb-0">
+                        <h5 class="card-title">Distribusi Jabatan</h5>
 
-                <div class="card-body pb-0">
-                    <h5 class="card-title">Website Traffic <span>| Today</span></h5>
+                        <div id="jabatanChart" style="min-height: 300px;"></div>
 
-                    <div id="trafficChart" style="min-height: 400px;" class="echart"></div>
+                        <script>
+                            document.addEventListener("DOMContentLoaded", () => {
+                                const jabatanData = @json($jabatanStat);
 
-                    <script>
-                        document.addEventListener("DOMContentLoaded", () => {
-                            echarts.init(document.querySelector("#trafficChart")).setOption({
-                                tooltip: {
-                                    trigger: 'item'
-                                },
-                                legend: {
-                                    top: '5%',
-                                    left: 'center'
-                                },
-                                series: [{
-                                    name: 'Access From',
-                                    type: 'pie',
-                                    radius: ['40%', '70%'],
-                                    avoidLabelOverlap: false,
-                                    label: {
-                                        show: false,
-                                        position: 'center'
-                                    },
-                                    emphasis: {
-                                        label: {
-                                            show: true,
-                                            fontSize: '18',
-                                            fontWeight: 'bold'
+                                echarts.init(document.querySelector("#jabatanChart")).setOption({
+                                    tooltip: {
+                                        trigger: 'axis',
+                                        axisPointer: {
+                                            type: 'shadow'
                                         }
                                     },
-                                    labelLine: {
-                                        show: false
+                                    grid: {
+                                        left: '3%',
+                                        right: '4%',
+                                        bottom: '3%',
+                                        containLabel: true
                                     },
-                                    data: [{
-                                        value: 1048,
-                                        name: 'Search Engine'
-                                    },
-                                        {
-                                            value: 735,
-                                            name: 'Direct'
-                                        },
-                                        {
-                                            value: 580,
-                                            name: 'Email'
-                                        },
-                                        {
-                                            value: 484,
-                                            name: 'Union Ads'
-                                        },
-                                        {
-                                            value: 300,
-                                            name: 'Video Ads'
+                                    xAxis: {
+                                        type: 'category',
+                                        data: jabatanData.labels,
+                                        axisLabel: {
+                                            rotate: 45
                                         }
-                                    ]
-                                }]
+                                    },
+                                    yAxis: {
+                                        type: 'value',
+                                        name: 'Jumlah'
+                                    },
+                                    series: [{
+                                        name: 'Jumlah',
+                                        type: 'bar',
+                                        data: jabatanData.data,
+                                        itemStyle: {
+                                            color: function(params) {
+                                                const colors = jabatanData.colors;
+                                                return colors[params.dataIndex % colors.length];
+                                            }
+                                        }
+                                    }]
+                                });
                             });
-                        });
-                    </script>
+                        </script>
+                    </div>
+                </div><!-- End Jabatan Chart -->
 
-                </div>
-            </div><!-- End Website Traffic -->
+            </div><!-- End Right side columns -->
 
-            <!-- News & Updates Traffic -->
-            <div class="card">
-                <div class="filter">
-                    <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                        <li class="dropdown-header text-start">
-                            <h6>Filter</h6>
-                        </li>
-
-                        <li><a class="dropdown-item" href="#">Today</a></li>
-                        <li><a class="dropdown-item" href="#">This Month</a></li>
-                        <li><a class="dropdown-item" href="#">This Year</a></li>
-                    </ul>
-                </div>
-
-                <div class="card-body pb-0">
-                    <h5 class="card-title">News &amp; Updates <span>| Today</span></h5>
-
-                    <div class="news">
-                        <div class="post-item clearfix">
-                            <img src="assets/img/news-1.jpg" alt="">
-                            <h4><a href="#">Nihil blanditiis at in nihil autem</a></h4>
-                            <p>Sit recusandae non aspernatur laboriosam. Quia enim eligendi sed ut harum...</p>
-                        </div>
-
-                        <div class="post-item clearfix">
-                            <img src="assets/img/news-2.jpg" alt="">
-                            <h4><a href="#">Quidem autem et impedit</a></h4>
-                            <p>Illo nemo neque maiores vitae officiis cum eum turos elan dries werona nande...</p>
-                        </div>
-
-                        <div class="post-item clearfix">
-                            <img src="assets/img/news-3.jpg" alt="">
-                            <h4><a href="#">Id quia et et ut maxime similique occaecati ut</a></h4>
-                            <p>Fugiat voluptas vero eaque accusantium eos. Consequuntur sed ipsam et totam...</p>
-                        </div>
-
-                        <div class="post-item clearfix">
-                            <img src="assets/img/news-4.jpg" alt="">
-                            <h4><a href="#">Laborum corporis quo dara net para</a></h4>
-                            <p>Qui enim quia optio. Eligendi aut asperiores enim repellendusvel rerum cuder...</p>
-                        </div>
-
-                        <div class="post-item clearfix">
-                            <img src="assets/img/news-5.jpg" alt="">
-                            <h4><a href="#">Et dolores corrupti quae illo quod dolor</a></h4>
-                            <p>Odit ut eveniet modi reiciendis. Atque cupiditate libero beatae dignissimos eius...</p>
-                        </div>
-
-                    </div><!-- End sidebar recent posts-->
-
-                </div>
-            </div><!-- End News & Updates -->
-
-        </div><!-- End Right side columns -->
-
-    </div>
-</section>
+        </div>
+    </section>
+@endsection

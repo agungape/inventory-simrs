@@ -4,8 +4,8 @@
     <ul class="sidebar-nav" id="sidebar-nav">
 
         <li class="nav-item">
-            <a class="nav-link collapsed" href="index.html">
-                <i class="bi bi-house"></i>
+            <a class="nav-link @yield('MenuHome', 'collapsed')" href="{{ route('home') }}">
+                <i class="bi bi-house-heart-fill"></i>
                 <span>Dashboard</span>
             </a>
         </li>
@@ -23,7 +23,7 @@
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link @yield('MenuPemeriksaan', 'collapsed')" href="{{ route('pemeriksaan.index') }}">
+            <a class="nav-link @yield('MenuPemeriksaan', 'collapsed')" href="{{ route('form.pemeriksaan.index') }}">
                 <i class="bi bi-clipboard2-pulse-fill"></i>
                 <span>Pemeriksaan MCU</span>
             </a>
