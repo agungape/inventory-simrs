@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('employees', function (Blueprint $table) {
             $table->id();
             $table->string('nrp')->unique();
+            $table->string('no_rm')->unique()->nullable();
             $table->string('nama');
             $table->string('nik', 16)->unique()->comment('Nomor Induk Kependudukan');
             $table->date('tanggal_lahir');
