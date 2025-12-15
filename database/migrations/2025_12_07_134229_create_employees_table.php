@@ -18,11 +18,11 @@ return new class extends Migration
             $table->string('nik', 16)->unique()->comment('Nomor Induk Kependudukan');
             $table->date('tanggal_lahir');
             $table->enum('jenis_kelamin', ['L', 'P']);
-            $table->string('departement');
-            $table->string('jabatan');
-            $table->string('bagian');
-            $table->string('nama_perusahaan');
-            $table->string('no_hp');
+            $table->string('departement')->nullable();
+            $table->string('jabatan')->nullable();
+            $table->string('bagian')->nullable();
+            $table->string('nama_perusahaan')->nullable();
+            $table->string('no_hp')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });
