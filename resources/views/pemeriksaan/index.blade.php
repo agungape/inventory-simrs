@@ -1248,7 +1248,7 @@
                                                         <div class="row g-3">
                                                             <div class="col-12">
                                                                 <h6 class="mb-3">Riwayat Penyakit Pasien</h6>
-    
+
                                                                 <!-- Riwayat Hepatitis -->
                                                                 <div class="card mb-3">
                                                                     <div class="card-body">
@@ -1278,7 +1278,7 @@
                                                                         </div>
                                                                     </div>
                                                                 </div>
-    
+
                                                                 <!-- Riwayat Pengobatan TBC -->
                                                                 <div class="card mb-3">
                                                                     <div class="card-body">
@@ -1308,7 +1308,7 @@
                                                                         </div>
                                                                     </div>
                                                                 </div>
-    
+
                                                                 <div class="row mb-3">
                                                                     <div class="col-md-6">
                                                                         <div class="form-check">
@@ -1331,7 +1331,7 @@
                                                                         </div>
                                                                     </div>
                                                                 </div>
-    
+
                                                                 <!-- Riwayat Operasi -->
                                                                 <div class="card mb-3">
                                                                     <div class="card-body">
@@ -1361,7 +1361,7 @@
                                                                         </div>
                                                                     </div>
                                                                 </div>
-    
+
                                                                 <!-- Riwayat Rawat Inap -->
                                                                 <div class="card mb-3">
                                                                     <div class="card-body">
@@ -1391,7 +1391,7 @@
                                                                         </div>
                                                                     </div>
                                                                 </div>
-    
+
                                                                 <!-- Pengobatan Saat Ini -->
                                                                 <div class="card mb-3">
                                                                     <div class="card-body">
@@ -1421,7 +1421,7 @@
                                                                         </div>
                                                                     </div>
                                                                 </div>
-    
+
                                                                 <!-- Alergi Obat / Makanan -->
                                                                 <div class="card mb-3">
                                                                     <div class="card-body">
@@ -1451,7 +1451,7 @@
                                                                         </div>
                                                                     </div>
                                                                 </div>
-    
+
                                                                 <!-- Konsumsi Obat -->
                                                                 <div class="card mb-3">
                                                                     <div class="card-body">
@@ -1480,7 +1480,7 @@
                                                                         </div>
                                                                     </div>
                                                                 </div>
-    
+
                                                                 <!-- Lain-lain -->
                                                                 <div class="card mb-3">
                                                                     <div class="card-body">
@@ -1530,7 +1530,7 @@
                                                         <div class="row g-3">
                                                             <div class="col-12">
                                                                 <h6 class="mb-3">Tanda Vital & Status Gizi</h6>
-    
+
                                                                 <div class="row">
                                                                     <div class="col-md-4">
                                                                         <label class="form-label">Tinggi Badan (cm)</label>
@@ -1554,7 +1554,7 @@
                                                                             placeholder="cm">
                                                                     </div>
                                                                 </div>
-    
+
                                                                 <div class="row mt-3">
                                                                     <div class="col-md-4">
                                                                         <label class="form-label">Pernafasan (x/menit)</label>
@@ -1597,7 +1597,7 @@
                                                         <div class="row g-3">
                                                             <div class="col-12">
                                                                 <h6 class="mb-3">Pemeriksaan Fisik</h6>
-    
+
                                                                 <div class="row">
                                                                     <div class="col-md-6">
                                                                         <label class="form-label">Kesan Umum</label>
@@ -1619,7 +1619,7 @@
                                                                         </select>
                                                                     </div>
                                                                 </div>
-    
+
                                                                 <div class="row mt-3">
                                                                     <div class="col-md-6">
                                                                         <div class="card">
@@ -1644,7 +1644,7 @@
                                                                             </div>
                                                                         </div>
                                                                     </div>
-    
+
                                                                     <div class="col-md-6">
                                                                         <div class="card">
                                                                             <div class="card-header">
@@ -1725,7 +1725,7 @@
                                                                         </div>
                                                                     </div>
                                                                 </div>
-    
+
                                                                 <div class="row mt-3">
                                                                     <div class="col-md-6">
                                                                         <div class="card">
@@ -1765,7 +1765,7 @@
                                                                             </div>
                                                                         </div>
                                                                     </div>
-    
+
                                                                     <div class="col-md-6">
                                                                         <div class="card">
                                                                             <div class="card-header">
@@ -1806,7 +1806,7 @@
                                                                         </div>
                                                                     </div>
                                                                 </div>
-    
+
                                                                 <div class="row mt-3">
                                                                     <div class="col-md-6">
                                                                         <div class="card">
@@ -1843,7 +1843,7 @@
                                                                             </div>
                                                                         </div>
                                                                     </div>
-    
+
                                                                     <div class="col-md-6">
                                                                         <div class="card">
                                                                             <div class="card-header">
@@ -1880,7 +1880,7 @@
                                                                         </div>
                                                                     </div>
                                                                 </div>
-    
+
                                                                 <div class="row mt-3">
                                                                     <div class="col-md-6">
                                                                         <div class="card">
@@ -1918,7 +1918,7 @@
                                                                             </div>
                                                                         </div>
                                                                     </div>
-    
+
                                                                     <div class="col-md-6">
                                                                         <div class="card">
                                                                             <div class="card-header">
@@ -3126,7 +3126,7 @@
                                                                     </div>
                                                                 </div>
                                                             </div>
-    
+
                                                             <div class="col-12">
                                                                 <label class="form-label">Lain-lain</label>
                                                                 <textarea class="form-control" name="lain_lain_neuro" placeholder="Keterangan lain-lain..." rows="3"></textarea>
@@ -3324,10 +3324,10 @@
     @include('pemeriksaan.scripts1');
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Set employee_id ke semua form saat dipilih
-            const employeeSelect = document.getElementById('employee_id');
-            employeeSelect.addEventListener('change', function() {
-                const employeeId = this.value;
+            $('#employee_id').select2({
+                theme: 'bootstrap-5'
+            }).on('change', function() {
+                const employeeId = $(this).val();
 
                 // Set employee_id ke semua form hidden input
                 document.querySelectorAll('input[name="employee_id"]').forEach(input => {
