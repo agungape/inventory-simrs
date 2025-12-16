@@ -225,11 +225,11 @@
                                                                                                 class="form-check-input kategori-mcu"
                                                                                                 type="radio"
                                                                                                 name="kategori_mcu"
-                                                                                                id="kategori_{{ $kategori->id }}"
+                                                                                                id="kategori_{{ $kategori->id }}{{$employee->id}}"
                                                                                                 value="{{ $kategori->id }}"
                                                                                                 required>
                                                                                             <label class="form-check-label"
-                                                                                                for="kategori_{{ $kategori->id }}">
+                                                                                                for="kategori_{{ $kategori->id }}{{$employee->id}}">
                                                                                                 {{ $kategori->nama }}
                                                                                             </label>
                                                                                         </div>

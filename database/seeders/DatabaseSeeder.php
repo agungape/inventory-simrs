@@ -19,6 +19,7 @@ class DatabaseSeeder extends Seeder
             JenispemeriksaanSeeder::class,
             EmployeeSeeder::class,
             UserSeeder::class,
+            KategoriMcuSeeder::class,
         ]);
     }
 }
