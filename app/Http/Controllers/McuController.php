@@ -21,6 +21,7 @@ class McuController extends Controller
         $validator = Validator::make($request->all(), [
             'employee_id' => 'required|exists:employees,id',
             'tanggal_mcu' => 'required|date_format:Y-m-d\TH:i',
+            'kategori_mcu' => 'required|exists:kategori_mcus,id',
             'jenis_pemeriksaan' => 'required|array|min:1',
             'jenis_pemeriksaan.*' => 'exists:jenispemeriksaans,id',
             'foto_data' => 'nullable|string'
@@ -85,6 +86,7 @@ class McuController extends Controller
             // Buat data Medical Check Up
             $medicalCheckUp = MedicalCheckUp::create([
                 'employee_id' => $validated['employee_id'],
+                'kategori_mcu' => $validated['kategori_mcu'],
                 'status' => 'check-in',
                 'foto' => $fotoPath,
                 'tanggal_mcu' => $validated['tanggal_mcu']

@@ -28,9 +28,6 @@ return new class extends Migration {
             $table->integer('minum_kopi_jumlah')->nullable(); // gelas / hari
 
             $table->timestamps();
-
-            // Optional foreign key
-            // $table->foreign('mcu_id')->references('id')->on('mcus')->onDelete('cascade');
         });
     }
 

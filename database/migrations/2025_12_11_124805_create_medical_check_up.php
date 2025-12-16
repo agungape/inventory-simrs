@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('medical_check_up', function (Blueprint $table) {
             $table->id();
             $table->foreignId('employee_id')->constrained('employees')->onDelete('cascade');
+            $table->foreignId('kategori_mcu')->constrained('kategori_mcus')->onDelete('cascade');
             $table->enum('status', ['check-in', 'belum check-in']);
             $table->string('foto')->nullable();
             $table->datetime('tanggal_mcu');

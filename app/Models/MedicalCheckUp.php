@@ -15,6 +15,7 @@ class MedicalCheckUp extends Model
 
     protected $fillable = [
         'employee_id',
+        'kategori_mcu',
         'status',
         'foto',
         'tanggal_mcu'
@@ -24,17 +25,17 @@ class MedicalCheckUp extends Model
         'tanggal_mcu' => 'datetime'
     ];
 
-    /**
-     * Relasi ke Employee
-     */
+
     public function employee(): BelongsTo
     {
         return $this->belongsTo(Employee::class);
     }
 
-    /**
-     * Relasi ke PemeriksaanPegawai (one-to-many)
-     */
+    public function kategori_mcu(): BelongsTo
+    {
+        return $this->belongsTo(KategoriMcu::class);
+    }
+
     public function pemeriksaanPegawai(): HasMany
     {
         return $this->hasMany(PemeriksaanPegawai::class, 'mcu_id');

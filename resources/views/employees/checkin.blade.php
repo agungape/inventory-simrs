@@ -178,6 +178,14 @@
                                                                     <div class="col-md-6 mb-2">
                                                                         <div class="d-flex">
                                                                             <span class="fw-bold text-dark"
+                                                                                style="min-width: 100px;">NIK</span>
+                                                                            <span class="mx-2">:</span>
+                                                                            <span>{{ $employee->nik }}</span>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-6 mb-2">
+                                                                        <div class="d-flex">
+                                                                            <span class="fw-bold text-dark"
                                                                                 style="min-width: 100px;">Departemen</span>
                                                                             <span class="mx-2">:</span>
                                                                             <span>{{ $employee->departement }}</span>
@@ -191,32 +199,54 @@
                                                                             <span>{{ $employee->jabatan }}</span>
                                                                         </div>
                                                                     </div>
+                                                                    <div class="col-md-6 mb-2">
+                                                                        <div class="d-flex">
+                                                                            <span class="fw-bold text-dark"
+                                                                                style="min-width: 100px;">Status</span>
+                                                                            <span class="mx-2">:</span>
+                                                                            <span>Core</span>
+                                                                        </div>
+                                                                    </div>
                                                                 </div>
-
                                                                 <hr>
-                                                                <h6 class="text-primary mb-3">
-                                                                    <i class="bi bi-clipboard-check me-2"></i>
-                                                                    Form Checkin
-                                                                </h6>
+                                                                <!-- Bagian Kategori MCU -->
+                                                                <div class="row mb-4">
+                                                                    <div class="col-12">
+                                                                        <h6 class="text-primary mb-3">
+                                                                            <i class="bi bi-clipboard-data me-2"></i>
+                                                                            Kategori MCU
+                                                                        </h6>
+                                                                        <div class="row">
+                                                                            <div class="col-md-12">
+                                                                                <div class="d-flex flex-wrap gap-3">
+                                                                                    @foreach ($kategoriMcus as $kategori)
+                                                                                        <div class="form-check">
+                                                                                            <input
+                                                                                                class="form-check-input kategori-mcu"
+                                                                                                type="radio"
+                                                                                                name="kategori_mcu"
+                                                                                                id="kategori_{{ $kategori->id }}"
+                                                                                                value="{{ $kategori->id }}"
+                                                                                                required>
+                                                                                            <label class="form-check-label"
+                                                                                                for="kategori_{{ $kategori->id }}">
+                                                                                                {{ $kategori->nama }}
+                                                                                            </label>
+                                                                                        </div>
+                                                                                    @endforeach
 
-                                                                <div class="mb-3">
-                                                                    <label for="tanggal_mcu_{{ $employee->id }}"
-                                                                        class="form-label fw-bold">
-                                                                        <i class="bi bi-clock me-1"></i> Tanggal & Waktu
-                                                                        MCU
-                                                                    </label>
-                                                                    <input type="datetime-local" class="form-control"
-                                                                        id="tanggal_mcu_{{ $employee->id }}"
-                                                                        name="tanggal_mcu"
-                                                                        value="{{ now()->format('Y-m-d\TH:i') }}"
-                                                                        required>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
                                                                 </div>
+                                                                <hr>
 
                                                                 <!-- Jenis Pemeriksaan dengan Pilih Semua -->
                                                                 <div class="mb-3">
                                                                     <div
                                                                         class="d-flex justify-content-between align-items-center mb-3">
-                                                                        <label class="form-label fw-bold mb-0">
+                                                                        <label class="form-label mb-0 text-primary">
                                                                             <i class="bi bi-clipboard-pulse me-1"></i>
                                                                             Jenis Pemeriksaan
                                                                             <small class="text-muted fw-normal">
@@ -229,13 +259,15 @@
                                                                             <button type="button"
                                                                                 class="btn btn-sm btn-outline-primary select-all-btn"
                                                                                 data-modal-id="{{ $employee->id }}">
-                                                                                <i class="bi bi-check-all me-1"></i> Pilih
+                                                                                <i class="bi bi-check-all me-1"></i>
+                                                                                Pilih
                                                                                 Semua
                                                                             </button>
                                                                             <button type="button"
                                                                                 class="btn btn-sm btn-outline-secondary deselect-all-btn"
                                                                                 data-modal-id="{{ $employee->id }}">
-                                                                                <i class="bi bi-x-circle me-1"></i> Batal
+                                                                                <i class="bi bi-x-circle me-1"></i>
+                                                                                Batal
                                                                                 Semua
                                                                             </button>
                                                                         </div>
@@ -265,19 +297,41 @@
                                                                     @else
                                                                         <div class="alert alert-warning">
                                                                             <i class="bi bi-exclamation-triangle me-2"></i>
-                                                                            Data jenis pemeriksaan belum tersedia.
+                                                                            Data jenis pemeriksaan belum
+                                                                            tersedia.
                                                                         </div>
                                                                     @endif
+                                                                </div>
+                                                                <hr>
+
+                                                                <h6 class="text-primary mb-3">
+                                                                    <i class="bi bi-clipboard-check me-2"></i>
+                                                                    Form Checkin
+                                                                </h6>
+                                                                <div class="mb-3">
+                                                                    <label for="tanggal_mcu_{{ $employee->id }}"
+                                                                        class="form-label fw-bold">
+                                                                        <i class="bi bi-clock me-1"></i>
+                                                                        Tanggal & Waktu
+                                                                        MCU
+                                                                    </label>
+                                                                    <input type="datetime-local" class="form-control"
+                                                                        id="tanggal_mcu_{{ $employee->id }}"
+                                                                        name="tanggal_mcu"
+                                                                        value="{{ now()->format('Y-m-d\TH:i') }}" required
+                                                                        readonly>
                                                                 </div>
 
                                                                 <!-- Bagian Rekam Wajah -->
                                                                 <div class="mb-4 border rounded p-3 bg-light">
                                                                     <h6 class="text-primary mb-3">
-                                                                        <i class="bi bi-camera me-2"></i> Rekam Wajah
+                                                                        <i class="bi bi-camera me-2"></i>
+                                                                        Rekam Wajah
                                                                         Pegawai: {{ $employee->nama }}
                                                                     </h6>
 
-                                                                    <input type="hidden" name="foto_data" id="imageInput{{ $employee->id }}">
+                                                                    <input type="hidden" name="foto_data"
+                                                                        id="imageInput{{ $employee->id }}">
 
                                                                     <!-- Video Preview -->
                                                                     <div
@@ -286,10 +340,10 @@
                                                                             width="300" height="auto" autoplay
                                                                             playsinline class="rounded"></video>
 
-                                                                    <!-- Canvas Preview -->
-                                                                    <canvas id="canvas{{ $employee->id }}" width="300"
-                                                                        height="400"
-                                                                        class="d-none border border-gray-300 rounded-lg mb-3"></canvas>
+                                                                        <!-- Canvas Preview -->
+                                                                        <canvas id="canvas{{ $employee->id }}"
+                                                                            width="300" height="400"
+                                                                            class="d-none border border-gray-300 rounded-lg mb-3"></canvas>
                                                                     </div>
 
                                                                     <!-- Buttons -->
@@ -316,7 +370,8 @@
                                                                     <button type="submit"
                                                                         form="checkinForm{{ $employee->id }}"
                                                                         class="btn btn-primary">
-                                                                        <i class="bi bi-check-circle"></i> Simpan Checkin
+                                                                        <i class="bi bi-check-circle"></i>
+                                                                        Simpan Checkin
                                                                     </button>
                                                                 </div>
                                                         </form>
@@ -381,21 +436,26 @@
                         timeInput.value = formatted;
                     }
 
-                    const video = document.getElementById('video'+employeeId);
-                    const canvas = document.getElementById('canvas'+employeeId);
-                    const captureButton = document.getElementById('capture'+employeeId);
-                    const removeCaptureButton = document.getElementById('removeCapture'+employeeId);
-                    const saveButton = document.getElementById('saveButton'+employeeId);
+                    const video = document.getElementById('video' + employeeId);
+                    const canvas = document.getElementById('canvas' + employeeId);
+                    const captureButton = document.getElementById('capture' + employeeId);
+                    const removeCaptureButton = document.getElementById('removeCapture' +
+                        employeeId);
+                    const saveButton = document.getElementById('saveButton' + employeeId);
 
                     var imageData = '';
                     // Aktifkan Kamera
                     navigator.mediaDevices.getUserMedia({
-                        video: {
-                            width: { ideal: 300 },
-                            height: { ideal: 400 },
-                            facingMode: "user"
-                        }
-                    })
+                            video: {
+                                width: {
+                                    ideal: 300
+                                },
+                                height: {
+                                    ideal: 400
+                                },
+                                facingMode: "user"
+                            }
+                        })
                         .then(stream => {
                             cameraStream = stream;
                             video.srcObject = stream;
@@ -418,7 +478,8 @@
                         context.drawImage(video, 0, 0, canvas.width, canvas.height);
                         imageData = canvas.toDataURL('image/png');
 
-                        document.getElementById('imageInput'+employeeId).value = imageData;
+                        document.getElementById('imageInput' + employeeId).value =
+                            imageData;
                     });
 
                     removeCaptureButton.addEventListener('click', () => {
@@ -431,7 +492,8 @@
                         video.classList.remove('d-none');
 
                         imageData = '';
-                        document.getElementById('imageInput'+employeeId).value = imageData;
+                        document.getElementById('imageInput' + employeeId).value =
+                            imageData;
                     });
 
                 });

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Employee;
 use App\Models\Jenispemeriksaan;
+use App\Models\KategoriMcu;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -208,6 +209,7 @@ class EmployeeController extends Controller
     {
         $employees = collect();
         $jenisPemeriksaans = Jenispemeriksaan::orderBy('nama_pemeriksaan')->get();
+        $kategoriMcus = KategoriMcu::all();
         $today = date('Y-m-d');
 
         // Simpan parameter pencarian ke session
@@ -252,6 +254,6 @@ class EmployeeController extends Controller
             });
         }
 
-        return view('employees.checkin', compact('employees', 'jenisPemeriksaans', 'today'));
+        return view('employees.checkin', compact('employees', 'jenisPemeriksaans', 'today', 'kategoriMcus'));
     }
 }
