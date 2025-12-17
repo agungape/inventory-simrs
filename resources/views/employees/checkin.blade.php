@@ -113,7 +113,7 @@
                                                                 data-employee-name="{{ $employee->nama }}"
                                                                 data-employee-nrp="{{ $employee->nrp }}"
                                                                 data-employee-usia="{{ $employee->usia }}"
-                                                                data-employee-telp="{{ $employee->no_hp
+                                                                data-employee-telp="{{ $employee->no_hp }}"
                                                                 data-employee-perusahaan="{{ $employee->nama_perusahaan }}"
                                                                 data-employee-tgl_lahir="{{ $employee->tanggal_lahir }}"
                                                                 data-checkin-date="{{ optional($employee->checkin_today)->tanggal_mcu }}"
