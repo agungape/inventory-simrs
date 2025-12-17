@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Employee;
 use App\Models\Jenispemeriksaan;
 use App\Models\KategoriMcu;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -208,7 +209,9 @@ class EmployeeController extends Controller
     public function checkin(Request $request)
     {
         $employees = collect();
-        $jenisPemeriksaans = Jenispemeriksaan::orderBy('nama_pemeriksaan')->get();
+        $jenisPemeriksaans = Jenispemeriksaan::whereNull('parent_id')
+            ->with('children')
+            ->get();
         $kategoriMcus = KategoriMcu::all();
         $today = date('Y-m-d');
 
@@ -231,7 +234,7 @@ class EmployeeController extends Controller
             $query->with([
                 'medicalCheckUps' => function ($q) use ($today) {
                     $q->whereDate('tanggal_mcu', $today)
-                        ->with(['jenisPemeriksaans']); // Tambahkan ini
+                        ->with(['jenisPemeriksaans.parent']); // Tambahkan ini
                 }
             ]);
 
@@ -249,6 +252,26 @@ class EmployeeController extends Controller
                     ->where('tanggal_mcu', '>=', $today . ' 00:00:00')
                     ->where('tanggal_mcu', '<=', $today . ' 23:59:59')
                     ->first();
+
+                // ===== GROUP JENIS PEMERIKSAAN =====
+                if ($employee->checkin_today) {
+
+                    $labels = [];
+
+                    foreach ($employee->checkin_today->jenisPemeriksaans as $jenis) {
+                        if ($jenis->parent) {
+                            $labels[$jenis->parent->nama_pemeriksaan][] = $jenis->nama_pemeriksaan;
+                        } else {
+                            // jika parent langsung dipilih (tanpa child)
+                            $labels[$jenis->nama_pemeriksaan] = [];
+                        }
+                    }
+                    $employee->label_pemeriksaan = $labels;
+                } else {
+                    $employee->label_pemeriksaan = [];
+                }
+
+
 
                 return $employee;
             });

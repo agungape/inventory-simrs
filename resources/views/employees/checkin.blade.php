@@ -108,13 +108,16 @@
                                                         <!-- Tombol Cetak Label (langsung tanpa modal) -->
                                                         @if ($jenisLabels->count() > 0)
                                                             <button type="button"
-                                                                class="btn btn-sm btn-info mt-1 btn-cetak-label"
-                                                                data-employee-id="{{ $employee->id }}"
+                                                                class="btn btn-sm btn-info btn-cetak-label"
+                                                                data-employee-no-rm="{{ $employee->no_rm }}"
                                                                 data-employee-name="{{ $employee->nama }}"
                                                                 data-employee-nrp="{{ $employee->nrp }}"
-                                                                data-checkin-id="{{ $checkinData->id ?? '' }}"
-                                                                data-checkin-date="{{ $checkinData->tanggal_mcu ?? '' }}"
-                                                                data-jenis-pemeriksaan='@json($jenisLabels->pluck('nama_pemeriksaan'))'>
+                                                                data-employee-usia="{{ $employee->usia }}"
+                                                                data-employee-telp="{{ $employee->no_hp
+                                                                data-employee-perusahaan="{{ $employee->nama_perusahaan }}"
+                                                                data-employee-tgl_lahir="{{ $employee->tanggal_lahir }}"
+                                                                data-checkin-date="{{ optional($employee->checkin_today)->tanggal_mcu }}"
+                                                                data-labels='@json($employee->label_pemeriksaan)'>
                                                                 <i class="bi bi-printer"></i> Cetak Label
                                                             </button>
                                                         @endif
@@ -186,6 +189,14 @@
                                                                     <div class="col-md-6 mb-2">
                                                                         <div class="d-flex">
                                                                             <span class="fw-bold text-dark"
+                                                                                style="min-width: 100px;">Usia</span>
+                                                                            <span class="mx-2">:</span>
+                                                                            <span>{{ $employee->usia }}</span>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-6 mb-2">
+                                                                        <div class="d-flex">
+                                                                            <span class="fw-bold text-dark"
                                                                                 style="min-width: 100px;">Departemen</span>
                                                                             <span class="mx-2">:</span>
                                                                             <span>{{ $employee->departement }}</span>
@@ -194,17 +205,17 @@
                                                                     <div class="col-md-6 mb-2">
                                                                         <div class="d-flex">
                                                                             <span class="fw-bold text-dark"
-                                                                                style="min-width: 100px;">Jabatan</span>
-                                                                            <span class="mx-2">:</span>
-                                                                            <span>{{ $employee->jabatan }}</span>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-md-6 mb-2">
-                                                                        <div class="d-flex">
-                                                                            <span class="fw-bold text-dark"
                                                                                 style="min-width: 100px;">Status</span>
                                                                             <span class="mx-2">:</span>
-                                                                            <span>Core</span>
+                                                                            <span>
+                                                                                @if ($employee->nama_perusahaan === 'PT Pertamina')
+                                                                                    <span class="badge bg-warning">Non
+                                                                                        Core</span>
+                                                                                @else
+                                                                                    <span class="badge bg-success">
+                                                                                        Core</span>
+                                                                                @endif
+                                                                            </span>
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -225,11 +236,11 @@
                                                                                                 class="form-check-input kategori-mcu"
                                                                                                 type="radio"
                                                                                                 name="kategori_mcu"
-                                                                                                id="kategori_{{ $kategori->id }}{{$employee->id}}"
+                                                                                                id="kategori_{{ $kategori->id }}{{ $employee->id }}"
                                                                                                 value="{{ $kategori->id }}"
                                                                                                 required>
                                                                                             <label class="form-check-label"
-                                                                                                for="kategori_{{ $kategori->id }}{{$employee->id}}">
+                                                                                                for="kategori_{{ $kategori->id }}{{ $employee->id }}">
                                                                                                 {{ $kategori->nama }}
                                                                                             </label>
                                                                                         </div>
@@ -249,59 +260,100 @@
                                                                         <label class="form-label mb-0 text-primary">
                                                                             <i class="bi bi-clipboard-pulse me-1"></i>
                                                                             Jenis Pemeriksaan
-                                                                            <small class="text-muted fw-normal">
-                                                                                (Bisa pilih lebih dari satu)
-                                                                            </small>
+                                                                            <small class="text-muted fw-normal">(Bisa pilih
+                                                                                lebih dari satu)</small>
                                                                         </label>
 
-                                                                        <!-- Tombol Pilih Semua -->
                                                                         <div>
                                                                             <button type="button"
                                                                                 class="btn btn-sm btn-outline-primary select-all-btn"
                                                                                 data-modal-id="{{ $employee->id }}">
-                                                                                <i class="bi bi-check-all me-1"></i>
-                                                                                Pilih
+                                                                                <i class="bi bi-check-all me-1"></i> Pilih
                                                                                 Semua
                                                                             </button>
                                                                             <button type="button"
                                                                                 class="btn btn-sm btn-outline-secondary deselect-all-btn"
                                                                                 data-modal-id="{{ $employee->id }}">
-                                                                                <i class="bi bi-x-circle me-1"></i>
-                                                                                Batal
+                                                                                <i class="bi bi-x-circle me-1"></i> Batal
                                                                                 Semua
                                                                             </button>
                                                                         </div>
                                                                     </div>
 
-                                                                    @if ($jenisPemeriksaans->count() > 0)
-                                                                        <div class="row g-2">
-                                                                            @foreach ($jenisPemeriksaans->chunk(ceil($jenisPemeriksaans->count() / 3)) as $chunkIndex => $chunk)
+                                                                    @if ($jenisPemeriksaans->count())
+                                                                        <div class="row g-3">
+
+                                                                            @foreach ($jenisPemeriksaans->chunk(ceil($jenisPemeriksaans->count() / 3)) as $chunk)
                                                                                 <div class="col-md-4">
-                                                                                    @foreach ($chunk as $jenis)
-                                                                                        <div class="form-check mb-2">
-                                                                                            <input
-                                                                                                class="form-check-input jenis-checkbox-{{ $employee->id }}"
-                                                                                                type="checkbox"
-                                                                                                name="jenis_pemeriksaan[]"
-                                                                                                value="{{ $jenis->id }}"
-                                                                                                id="jenis_{{ $employee->id }}_{{ $jenis->id }}">
-                                                                                            <label class="form-check-label"
-                                                                                                for="jenis_{{ $employee->id }}_{{ $jenis->id }}">
-                                                                                                {{ $jenis->nama_pemeriksaan }}
-                                                                                            </label>
-                                                                                        </div>
+
+                                                                                    @foreach ($chunk as $kategori)
+                                                                                        {{-- PARENT PUNYA CHILD --}}
+                                                                                        @if ($kategori->children->count())
+                                                                                            <div class="mb-2">
+
+                                                                                                <div class="fw-bold text-dark border-bottom pb-1 parent-toggle"
+                                                                                                    style="cursor:pointer"
+                                                                                                    data-parent-id="{{ $kategori->id }}"
+                                                                                                    data-employee-id="{{ $employee->id }}">
+                                                                                                    <i
+                                                                                                        class="bi bi-caret-right-fill me-1 toggle-icon"></i>
+                                                                                                    {{ $kategori->nama_pemeriksaan }}
+                                                                                                </div>
+
+                                                                                                <div class="child-wrapper ms-3 mt-2 d-none"
+                                                                                                    id="child-{{ $employee->id }}-{{ $kategori->id }}">
+
+                                                                                                    @foreach ($kategori->children as $sub)
+                                                                                                        <div
+                                                                                                            class="form-check mb-2">
+                                                                                                            <input
+                                                                                                                class="form-check-input jenis-checkbox-{{ $employee->id }}"
+                                                                                                                type="checkbox"
+                                                                                                                name="jenis_pemeriksaan[]"
+                                                                                                                value="{{ $sub->id }}"
+                                                                                                                id="jenis_{{ $employee->id }}_{{ $sub->id }}">
+                                                                                                            <label
+                                                                                                                class="form-check-label"
+                                                                                                                for="jenis_{{ $employee->id }}_{{ $sub->id }}">
+                                                                                                                {{ $sub->nama_pemeriksaan }}
+                                                                                                            </label>
+                                                                                                        </div>
+                                                                                                    @endforeach
+
+                                                                                                </div>
+                                                                                            </div>
+
+                                                                                            {{-- PARENT TANPA CHILD --}}
+                                                                                        @else
+                                                                                            <div class="form-check mb-2">
+                                                                                                <input
+                                                                                                    class="form-check-input jenis-checkbox-{{ $employee->id }}"
+                                                                                                    type="checkbox"
+                                                                                                    name="jenis_pemeriksaan[]"
+                                                                                                    value="{{ $kategori->id }}"
+                                                                                                    id="jenis_{{ $employee->id }}_{{ $kategori->id }}">
+                                                                                                <label
+                                                                                                    class="form-check-label"
+                                                                                                    for="jenis_{{ $employee->id }}_{{ $kategori->id }}">
+                                                                                                    {{ $kategori->nama_pemeriksaan }}
+                                                                                                </label>
+                                                                                            </div>
+                                                                                        @endif
                                                                                     @endforeach
+
+
                                                                                 </div>
                                                                             @endforeach
+
                                                                         </div>
                                                                     @else
                                                                         <div class="alert alert-warning">
                                                                             <i class="bi bi-exclamation-triangle me-2"></i>
-                                                                            Data jenis pemeriksaan belum
-                                                                            tersedia.
+                                                                            Data jenis pemeriksaan belum tersedia.
                                                                         </div>
                                                                     @endif
                                                                 </div>
+
                                                                 <hr>
 
                                                                 <h6 class="text-primary mb-3">
@@ -513,39 +565,76 @@
 
             // Fungsi untuk Pilih Semua - CARA 1: Menggunakan event delegation
             document.addEventListener('click', function(e) {
-                // Tombol Pilih Semua
-                if (e.target.classList.contains('select-all-btn') ||
-                    e.target.closest('.select-all-btn')) {
-                    var button = e.target.classList.contains('select-all-btn') ?
-                        e.target : e.target.closest('.select-all-btn');
-                    var modalId = button.getAttribute('data-modal-id');
 
-                    // Debug: cek modalId
-                    console.log('Pilih Semua untuk modal:', modalId);
+                /* =========================
+                   TOGGLE PARENT
+                ========================== */
+                const parentToggle = e.target.closest('.parent-toggle');
+                if (parentToggle) {
+                    const parentId = parentToggle.dataset.parentId;
+                    const employeeId = parentToggle.dataset.employeeId;
 
-                    // Pilih semua checkbox untuk modal ini
-                    var checkboxes = document.querySelectorAll('.jenis-checkbox-' + modalId);
-                    console.log('Jumlah checkbox ditemukan:', checkboxes.length);
+                    const modal = parentToggle.closest('.modal');
+                    const childWrapper = modal.querySelector(
+                        '#child-' + employeeId + '-' + parentId
+                    );
 
-                    checkboxes.forEach(function(checkbox) {
-                        checkbox.checked = true;
-                        console.log('Checkbox ID', checkbox.id, 'di-centang');
+                    const icon = parentToggle.querySelector('.toggle-icon');
+
+                    if (childWrapper) {
+                        childWrapper.classList.toggle('d-none');
+
+                        icon.classList.toggle('bi-caret-right-fill');
+                        icon.classList.toggle('bi-caret-down-fill');
+                    }
+                }
+
+                /* =========================
+                   PILIH SEMUA
+                ========================== */
+                const selectAllBtn = e.target.closest('.select-all-btn');
+                if (selectAllBtn) {
+                    const modal = selectAllBtn.closest('.modal');
+                    const modalId = selectAllBtn.dataset.modalId;
+
+                    // Centang semua checkbox
+                    modal.querySelectorAll('.jenis-checkbox-' + modalId)
+                        .forEach(cb => cb.checked = true);
+
+                    // Buka semua child
+                    modal.querySelectorAll('.child-wrapper')
+                        .forEach(wrapper => wrapper.classList.remove('d-none'));
+
+                    // Ubah semua icon parent
+                    modal.querySelectorAll('.toggle-icon').forEach(icon => {
+                        icon.classList.remove('bi-caret-right-fill');
+                        icon.classList.add('bi-caret-down-fill');
                     });
                 }
 
-                // Tombol Batal Semua
-                if (e.target.classList.contains('deselect-all-btn') ||
-                    e.target.closest('.deselect-all-btn')) {
-                    var button = e.target.classList.contains('deselect-all-btn') ?
-                        e.target : e.target.closest('.deselect-all-btn');
-                    var modalId = button.getAttribute('data-modal-id');
+                /* =========================
+                   BATAL SEMUA  ✅ INI YANG ANDA TANYA
+                ========================== */
+                const deselectAllBtn = e.target.closest('.deselect-all-btn');
+                if (deselectAllBtn) {
+                    const modal = deselectAllBtn.closest('.modal');
+                    const modalId = deselectAllBtn.dataset.modalId;
 
-                    // Batal semua checkbox untuk modal ini
-                    var checkboxes = document.querySelectorAll('.jenis-checkbox-' + modalId);
-                    checkboxes.forEach(function(checkbox) {
-                        checkbox.checked = false;
+                    // Uncheck semua checkbox
+                    modal.querySelectorAll('.jenis-checkbox-' + modalId)
+                        .forEach(cb => cb.checked = false);
+
+                    // Tutup semua child
+                    modal.querySelectorAll('.child-wrapper')
+                        .forEach(wrapper => wrapper.classList.add('d-none'));
+
+                    // Reset icon parent
+                    modal.querySelectorAll('.toggle-icon').forEach(icon => {
+                        icon.classList.add('bi-caret-right-fill');
+                        icon.classList.remove('bi-caret-down-fill');
                     });
                 }
+
             });
 
             // Validasi form sebelum submit
@@ -582,245 +671,151 @@
 
             // ========== FUNGSI CETAK LABEL ==========
 
-            function createLabelContent(employeeName, employeeNRP, jenisNama, checkinDate) {
-                var tanggal = new Date(checkinDate).toLocaleDateString('id-ID', {
-                    weekday: 'long',
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric',
+            function createLabelContent(data) {
+
+                const waktu = new Date(data.checkinDate).toLocaleTimeString('id-ID', {
                     hour: '2-digit',
                     minute: '2-digit'
                 });
 
+                const childHTML = (data.children && data.children.length) ?
+                    `<div class="child">
+                ${data.children.map(c => `<div>• ${c}</div>`).join('')}
+                </div>` :
+                    '';
+
                 return `
-                    <!DOCTYPE html>
-                    <html>
-                    <head>
-                        <title>Label ${jenisNama}</title>
-                        <style>
-                            * {
-                                margin: 0;
-                                padding: 0;
-                                box-sizing: border-box;
-                            }
-                            body {
-                                font-family: 'Arial', sans-serif;
-                                font-size: 12px;
-                                background: #fff;
-                            }
-                            .label-page {
-                                width: 80mm;
-                                height: 65mm;
-                                border: 1px solid #000;
-                                padding: 3mm;
-                                margin: 0;
-                                position: relative;
-                            }
-                            .header {
-                                text-align: center;
-                                font-weight: bold;
-                                font-size: 14px;
-                                margin-bottom: 5px;
-                                padding-bottom: 3px;
-                                border-bottom: 2px solid #2c3e50;
-                                color: #2c3e50;
-                            }
-                            .content {
-                                font-size: 11px;
-                                line-height: 1.4;
-                                margin-top: 3mm;
-                            }
-                            .data-row {
-                                display: flex;
-                                margin-bottom: 3px;
-                                align-items: flex-start;
-                            }
-                            .data-label {
-                                min-width: 100px;
-                                font-weight: bold;
-                                color: #2c3e50;
-                                white-space: nowrap;
-                            }
-                            .data-separator {
-                                margin: 0 5px;
-                                font-weight: bold;
-                                color: #2c3e50;
-                            }
-                            .data-value {
-                                flex: 1;
-                            }
-                            .jenis-pemeriksaan-container {
-                                text-align: center;
-                                margin: 6px 0 8px 0;
-                                padding: 5px;
-                                background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-                                border-radius: 4px;
-                                border: 1px solid #dee2e6;
-                            }
-                            .jenis-pemeriksaan {
-                                font-weight: bold;
-                                font-size: 13px;
-                                color: #2c3e50;
-                                text-transform: uppercase;
-                                letter-spacing: 0.5px;
-                            }
-                            .barcode-container {
-                                text-align: center;
-                                margin: 6px 0;
-                                padding: 4px;
-                                border: 1px dashed #95a5a6;
-                                border-radius: 3px;
-                                background: #f8f9fa;
-                            }
-                            .barcode {
-                                font-family: 'Courier New', monospace;
-                                font-weight: bold;
-                                letter-spacing: 1.5px;
-                                font-size: 12px;
-                                color: #2c3e50;
-                            }
-                            .timestamp-container {
-                                margin-top: 6px;
-                                padding-top: 4px;
-                                border-top: 1px dotted #bdc3c7;
-                                text-align: center;
-                            }
-                            .timestamp {
-                                font-size: 10px;
-                                color: #7f8c8d;
-                                font-style: italic;
-                            }
-                            .footer {
-                                text-align: center;
-                                font-size: 9px;
-                                color: #95a5a6;
-                                margin-top: 8px;
-                                padding-top: 4px;
-                                border-top: 1px solid #ecf0f1;
-                            }
-                            .hospital-logo {
-                                font-weight: bold;
-                                color: #2980b9;
-                                margin-top: 2px;
-                            }
-                            @media print {
-                                body { margin: 0; }
-                                .label-page {
-                                    margin: 0;
-                                    page-break-inside: avoid;
-                                    -webkit-print-color-adjust: exact;
-                                    print-color-adjust: exact;
-                                }
-                            }
-                        </style>
-                    </head>
-                    <body>
-                        <div class="label-page">
-                            <div class="header">
-                                <div>UPKK RSUD Konawe</div>
-                            </div>
+                <!DOCTYPE html>
+                <html>
+                <head>
+                <meta charset="UTF-8">
+                <title>Label ${data.parent}</title>
 
-                            <div class="content">
-                                <!-- Data Karyawan dengan struktur tabel inline -->
-                                <div class="data-row">
-                                    <div class="data-label">No.RM</div>
-                                    <div class="data-separator">:</div>
-                                    <div class="data-value">0000000</div>
-                                </div>
-                                   <div class="data-row">
-                                    <div class="data-label">NRP</div>
-                                    <div class="data-separator">:</div>
-                                    <div class="data-value">${employeeNRP}</div>
-                                </div>
-                                <div class="data-row">
-                                    <div class="data-label">Nama</div>
-                                    <div class="data-separator">:</div>
-                                    <div class="data-value">${employeeName}</div>
-                                </div>
-                                <div class="data-row">
-                                    <div class="data-label">Tgl. Lahir/Umur</div>
-                                    <div class="data-separator">:</div>
-                                    <div class="data-value">02-07-2005 / 19 Tahun 2 Bulan</div>
-                                </div>
-                                <div class="data-row">
-                                    <div class="data-label">Telp.</div>
-                                    <div class="data-separator">:</div>
-                                    <div class="data-value">082195611014</div>
-                                </div>
-                                <div class="data-row">
-                                    <div class="data-label">Perusahaan</div>
-                                    <div class="data-separator">:</div>
-                                    <div class="data-value">PT. MINERAL CAHAYA</div>
-                                </div>
+                <style>
+                body {
+                margin: 0;
+                font-family: Arial, sans-serif;
+                font-size: 11px;
+                }
+                .label {
+                width: 80mm;
+                padding: 4mm;
+                border: 1px solid #000;
+                }
+                .header {
+                text-align: center;
+                font-weight: bold;
+                font-size: 14px;
+                border-bottom: 2px solid #000;
+                padding-bottom: 4px;
+                margin-bottom: 6px;
+                }
+                .row {
+                display: flex;
+                margin-bottom: 2px;
+                }
+                .label-col {
+                width: 95px;
+                font-weight: bold;
+                }
+                .value-col {
+                flex: 1;
+                }
+                .parent-box {
+                margin: 6px 0;
+                padding: 6px;
+                text-align: center;
+                font-weight: bold;
+                font-size: 13px;
+                background: #f2f2f2;
+                border-radius: 4px;
+                border: 1px solid #ccc;
+                letter-spacing: 1px;
+                }
+                .child {
+                margin-top: 4px;
+                font-size: 11px;
+                }
+                .barcode {
+                margin-top: 6px;
+                padding: 5px;
+                border: 1px dashed #000;
+                text-align: center;
+                font-family: "Courier New", monospace;
+                font-weight: bold;
+                letter-spacing: 2px;
+                }
+                .time {
+                margin-top: 6px;
+                text-align: center;
+                font-size: 10px;
+                font-style: italic;
+                }
+                </style>
+                </head>
 
-                                <!-- Jenis Pemeriksaan -->
-                                <div class="jenis-pemeriksaan-container">
-                                    <div class="jenis-pemeriksaan">${jenisNama}</div>
-                                </div>
+                <body>
+                <div class="label">
 
-                                <!-- Barcode -->
-                                <div class="barcode-container">
-                                    <div class="barcode">
-                                        ${employeeNRP}-${jenisNama.substring(0,3).toUpperCase()}
-                                    </div>
-                                </div>
+                <div class="header">UPKK RSUD Konawe</div>
 
-                                <!-- Waktu -->
-                                <div class="timestamp-container">
-                                    <div class="timestamp">
-                                        ${new Date(checkinDate).toLocaleTimeString('id-ID', {
-                                            hour: '2-digit',
-                                            minute: '2-digit'
-                                        })}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </body>
-                    </html>`;
+                <div class="row"><div class="label-col">No.RM</div><div class="value-col">: ${data.noRM}</div></div>
+                <div class="row"><div class="label-col">NRP</div><div class="value-col">: ${data.nrp}</div></div>
+                <div class="row"><div class="label-col">Nama</div><div class="value-col">: ${data.nama}</div></div>
+                <div class="row"><div class="label-col">Tgl. Lahir / Umur</div><div class="value-col">: ${data.tglLahir} / ${data.usia}</div></div>
+                <div class="row"><div class="label-col">Telp.</div><div class="value-col">: ${data.telp}</div></div>
+                <div class="row"><div class="label-col">Perusahaan</div><div class="value-col">: ${data.perusahaan}</div></div>
+
+                <div class="parent-box">${data.parent.toUpperCase()}</div>
+
+
+                <div class="barcode">
+                ${data.nrp}-${data.parent.substring(0,3).toUpperCase()}
+                </div>
+
+
+                </div>
+                </body>
+                </html>`;
             }
+
+
+
 
             // Fungsi untuk mencetak label
-            function printLabels(employeeName, employeeNRP, jenisLabels, checkinDate) {
-                if (!jenisLabels || jenisLabels.length === 0) {
-                    alert('Tidak ada jenis pemeriksaan untuk dicetak!');
-                    return;
-                }
+            function printLabels(employee, labels, checkinDate) {
 
-                // Tampilkan konfirmasi
-                if (!confirm(`Akan mencetak ${jenisLabels.length} label untuk ${employeeName}?`)) {
-                    return;
-                }
+                const win = window.open('', '_blank');
+                let html = '';
 
-                // Buka window baru untuk print
-                var printWindow = window.open('', '_blank');
-                var combinedContent = '';
+                Object.keys(labels).forEach(parent => {
+                    html += createLabelContent({
+                        noRM: employee.noRM ?? '0000000',
+                        nrp: employee.nrp,
+                        nama: employee.nama,
+                        usia: employee.usia,
+                        tglLahir: employee.tglLahir,
+                        telp: employee.telp,
+                        perusahaan: employee.perusahaan,
+                        parent: parent,
+                        children: labels[parent],
+                        checkinDate: checkinDate
+                    });
 
-                // Buat satu label per halaman
-                jenisLabels.forEach(function(jenisNama, index) {
-                    combinedContent += createLabelContent(employeeName, employeeNRP, jenisNama,
-                        checkinDate);
-
-                    // Tambahkan page break kecuali untuk label terakhir
-                    if (index < jenisLabels.length - 1) {
-                        combinedContent += '<div style="page-break-after: always;"></div>';
-                    }
+                    html += `<div style="page-break-after:always"></div>`;
                 });
 
-                printWindow.document.open();
-                printWindow.document.write(combinedContent);
-                printWindow.document.close();
+                win.document.write(html);
+                win.document.close();
 
-                // Tunggu sebentar lalu print
-                setTimeout(function() {
-                    printWindow.focus();
-                    printWindow.print();
-
-                    // Tampilkan notifikasi
-                    showNotification(`Sedang mencetak ${jenisLabels.length} label untuk ${employeeName}`,
-                        'success');
+                setTimeout(() => {
+                    win.print();
                 }, 500);
             }
+
+
+
+
 
             // Fungsi untuk menampilkan notifikasi
             function showNotification(message, type = 'info') {
@@ -860,17 +855,36 @@
             }
 
             // Event listener untuk tombol cetak label
-            document.querySelectorAll('.btn-cetak-label').forEach(function(btn) {
+            document.querySelectorAll('.btn-cetak-label').forEach(btn => {
                 btn.addEventListener('click', function() {
-                    var employeeName = this.getAttribute('data-employee-name');
-                    var employeeNRP = this.getAttribute('data-employee-nrp');
-                    var checkinDate = this.getAttribute('data-checkin-date');
-                    var jenisPemeriksaan = JSON.parse(this.getAttribute('data-jenis-pemeriksaan'));
 
-                    // Cetak semua label sekaligus
-                    printLabels(employeeName, employeeNRP, jenisPemeriksaan, checkinDate);
+                    let labels;
+                    try {
+                        labels = JSON.parse(this.dataset.labels);
+                    } catch (e) {
+                        alert('Data label rusak / tidak valid');
+                        return;
+                    }
+
+                    const employee = {
+                        noRM: this.dataset.employeeNoRm || '0000000',
+                        nrp: this.dataset.employeeNrp,
+                        nama: this.dataset.employeeName,
+                        usia: this.dataset.employeeUsia,
+                        tglLahir: this.dataset.employeeTgl_lahir,
+                        telp: this.dataset.employeeTelp,
+                        perusahaan: this.dataset.employeePerusahaan
+                    };
+
+                    const checkinDate = this.dataset.checkinDate;
+
+                    printLabels(employee, labels, checkinDate);
                 });
             });
+
+
+
+
 
             // Tambahkan style untuk notifikasi
             var style = document.createElement('style');

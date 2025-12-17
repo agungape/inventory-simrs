@@ -52,7 +52,7 @@
                                             <td>{{ $employee->nrp }}</td>
                                             <td>{{ $employee->nama }}</td>
                                             <td>{{ $employee->nik }}</td>
-                                            <td>{{ \Carbon\Carbon::parse($employee->tanggal_lahir)->format('d/m/Y') }}</td>
+                                            <td>{{ $employee->tanggal_lahir }}</td>
                                             <td>
                                                 @if ($employee->jenis_kelamin == 'L')
                                                     Laki-laki

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -28,6 +29,28 @@ class Employee extends Model
         'tanggal_lahir' => 'date'
     ];
 
+    public function getTanggalLahirAttribute($value)
+    {
+        if (!$value) {
+            return null;
+        }
+
+        return Carbon::parse($value)->format('d/m/Y');
+    }
+
+    public function getUsiaAttribute()
+    {
+        if (!$this->attributes['tanggal_lahir']) {
+            return '-';
+        }
+
+        // Ambil RAW value dari database (Y-m-d)
+        $lahir = Carbon::parse($this->attributes['tanggal_lahir']);
+        $sekarang = Carbon::now();
+        $diff = $lahir->diff($sekarang);
+
+        return $diff->y . ' tahun ' . $diff->m . ' bulan ' . $diff->d . ' hari';
+    }
     /**
      * Relasi ke MedicalCheckUp
      */

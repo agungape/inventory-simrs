@@ -14,6 +14,10 @@ return new class extends Migration
         Schema::create('jenispemeriksaans', function (Blueprint $table) {
             $table->id();
             $table->string('nama_pemeriksaan');
+            $table->foreignId('parent_id')
+                ->nullable()
+                ->constrained('jenispemeriksaans')
+                ->onDelete('cascade');
             $table->timestamps();
         });
     }

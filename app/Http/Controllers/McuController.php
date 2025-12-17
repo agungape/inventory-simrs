@@ -130,17 +130,17 @@ class McuController extends Controller
         }
     }
 
-    public function printLabel($checkinId, $jenisId)
-    {
-        $checkin = MedicalCheckUp::with(['employee', 'jenisPemeriksaans'])
-            ->findOrFail($checkinId);
+    // public function printLabel($checkinId, $jenisId)
+    // {
+    //     $checkin = MedicalCheckUp::with(['employee', 'jenisPemeriksaans'])
+    //         ->findOrFail($checkinId);
 
-        $jenis = $checkin->jenisPemeriksaans->where('id', $jenisId)->first();
+    //     $jenis = $checkin->jenisPemeriksaans->where('id', $jenisId)->first();
 
-        if (!$jenis) {
-            abort(404);
-        }
+    //     if (!$jenis) {
+    //         abort(404);
+    //     }
 
-        return view('print.label', compact('checkin', 'jenis'));
-    }
+    //     return view('print.label', compact('checkin', 'jenis'));
+    // }
 }
