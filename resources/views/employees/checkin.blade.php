@@ -120,6 +120,19 @@
                                                                 data-labels='@json($employee->label_pemeriksaan)'>
                                                                 <i class="bi bi-printer"></i> Cetak Label
                                                             </button>
+                                                            <button type="button"
+                                                                    class="btn btn-sm btn-info btn-cetak-label-data"
+                                                                    data-employee-no-rm="{{ $employee->no_rm }}"
+                                                                    data-employee-name="{{ $employee->nama }}"
+                                                                    data-employee-nrp="{{ $employee->nrp }}"
+                                                                    data-employee-usia="{{ $employee->usia }}"
+                                                                    data-employee-telp="{{ $employee->no_hp }}"
+                                                                    data-employee-perusahaan="{{ $employee->nama_perusahaan }}"
+                                                                    data-employee-tgl_lahir="{{ $employee->tanggal_lahir }}"
+                                                                    data-checkin-date="{{ optional($employee->checkin_today)->tanggal_mcu }}"
+                                                                    data-labels='@json($employee->label_pemeriksaan)'>
+                                                                <i class="bi bi-printer"></i> Cetak Data Pegawai
+                                                            </button>
                                                         @endif
                                                     @else
                                                         <!-- Tombol Checkin Baru -->
@@ -732,6 +745,114 @@
                 </html>`;
             }
 
+            function createLabelDataContent(data) {
+
+                const waktu = new Date(data.checkinDate).toLocaleTimeString('id-ID', {
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+
+                const childHTML = (data.children && data.children.length) ?
+                    `<div class="child">
+                ${data.children.map(c => `<div>• ${c}</div>`).join('')}
+                </div>` :
+                    '';
+
+                return `
+                <!DOCTYPE html>
+                <html>
+                <head>
+                <meta charset="UTF-8">
+                <title>Label ${data.parent}</title>
+
+                <style>
+                body {
+                margin: 0;
+                font-family: Arial, sans-serif;
+                font-size: 11px;
+                }
+                .label {
+                width: 80mm;
+                padding: 4mm;
+                border: 1px solid #000;
+                }
+                .header {
+                text-align: center;
+                font-weight: bold;
+                font-size: 14px;
+                border-bottom: 2px solid #000;
+                padding-bottom: 4px;
+                margin-bottom: 6px;
+                }
+                .row {
+                display: flex;
+                margin-bottom: 2px;
+                }
+                .label-col {
+                width: 95px;
+                font-weight: bold;
+                }
+                .value-col {
+                flex: 1;
+                }
+                .parent-box {
+                margin: 6px 0;
+                padding: 6px;
+                text-align: center;
+                font-weight: bold;
+                font-size: 13px;
+                background: #f2f2f2;
+                border-radius: 4px;
+                border: 1px solid #ccc;
+                letter-spacing: 1px;
+                }
+                .child {
+                margin-top: 4px;
+                font-size: 11px;
+                }
+                .barcode {
+                margin-top: 6px;
+                padding: 5px;
+                border: 1px dashed #000;
+                text-align: center;
+                font-family: "Courier New", monospace;
+                font-weight: bold;
+                letter-spacing: 2px;
+                }
+                .time {
+                margin-top: 6px;
+                text-align: center;
+                font-size: 10px;
+                font-style: italic;
+                }
+                </style>
+                </head>
+
+                <body>
+                <div class="label">
+
+                <div class="header">UPKK RSUD Konawe</div>
+
+                <div class="row"><div class="label-col">No.RM</div><div class="value-col">: ${data.noRM}</div></div>
+                <div class="row"><div class="label-col">NRP</div><div class="value-col">: ${data.nrp}</div></div>
+                <div class="row"><div class="label-col">Nama</div><div class="value-col">: ${data.nama}</div></div>
+                <div class="row"><div class="label-col">Tgl. Lahir / Umur</div><div class="value-col">: ${data.tglLahir} / ${data.usia}</div></div>
+                <div class="row"><div class="label-col">Telp.</div><div class="value-col">: ${data.telp}</div></div>
+                <div class="row"><div class="label-col">Perusahaan</div><div class="value-col">: ${data.perusahaan}</div></div>
+
+                <div class="parent-box">${data.parent.toUpperCase()}</div>
+
+
+                <div class="barcode">
+                ${data.nrp}-${data.parent.substring(0,3).toUpperCase()}
+                </div>
+
+
+                </div>
+                </body>
+                </html>`;
+            }
+
 
 
 
@@ -743,6 +864,37 @@
 
                 Object.keys(labels).forEach(parent => {
                     html += createLabelContent({
+                        noRM: employee.noRM ?? '0000000',
+                        nrp: employee.nrp,
+                        nama: employee.nama,
+                        usia: employee.usia,
+                        tglLahir: employee.tglLahir,
+                        telp: employee.telp,
+                        perusahaan: employee.perusahaan,
+                        parent: parent,
+                        children: labels[parent],
+                        checkinDate: checkinDate
+                    });
+
+                    html += `<div style="page-break-after:always"></div>`;
+                });
+
+                win.document.write(html);
+                win.document.close();
+
+                setTimeout(() => {
+                    win.print();
+                }, 500);
+            }
+
+            // Fungsi untuk mencetak label
+            function printLabelsData(employee, labels, checkinDate) {
+
+                const win = window.open('', '_blank');
+                let html = '';
+
+                Object.keys(labels).forEach(parent => {
+                    html += createLabelDataContent({
                         noRM: employee.noRM ?? '0000000',
                         nrp: employee.nrp,
                         nama: employee.nama,
@@ -806,6 +958,35 @@
                     bsAlert.close();
                 }, 3000);
             }
+
+            // Event listener untuk tombol cetak label
+            document.querySelectorAll('.btn-cetak-label-data').forEach(btn => {
+                btn.addEventListener('click', function() {
+
+                    let labels;
+                    try {
+                        labels = JSON.parse(this.dataset.labels);
+                    } catch (e) {
+                        alert('Data label rusak / tidak valid');
+                        return;
+                    }
+
+                    const employee = {
+                        noRM: this.dataset.employeeNoRm || '0000000',
+                        nrp: this.dataset.employeeNrp,
+                        nama: this.dataset.employeeName,
+                        usia: this.dataset.employeeUsia,
+                        tglLahir: this.dataset.employeeTgl_lahir,
+                        telp: this.dataset.employeeTelp,
+                        perusahaan: this.dataset.employeePerusahaan
+                    };
+
+                    const checkinDate = this.dataset.checkinDate;
+
+                    printLabelsData(employee, labels, checkinDate);
+                });
+            });
+
 
             // Event listener untuk tombol cetak label
             document.querySelectorAll('.btn-cetak-label').forEach(btn => {
