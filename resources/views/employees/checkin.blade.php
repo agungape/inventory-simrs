@@ -840,13 +840,6 @@
                 <div class="row"><div class="label-col">Telp.</div><div class="value-col">: ${data.telp}</div></div>
                 <div class="row"><div class="label-col">Perusahaan</div><div class="value-col">: ${data.perusahaan}</div></div>
 
-                <div class="parent-box">${data.parent.toUpperCase()}</div>
-
-
-                <div class="barcode">
-                ${data.nrp}-${data.parent.substring(0,3).toUpperCase()}
-                </div>
-
 
                 </div>
                 </body>
@@ -893,7 +886,6 @@
                 const win = window.open('', '_blank');
                 let html = '';
 
-                Object.keys(labels).forEach(parent => {
                     html += createLabelDataContent({
                         noRM: employee.noRM ?? '0000000',
                         nrp: employee.nrp,
@@ -903,12 +895,11 @@
                         telp: employee.telp,
                         perusahaan: employee.perusahaan,
                         parent: parent,
-                        children: labels[parent],
+
                         checkinDate: checkinDate
                     });
 
                     html += `<div style="page-break-after:always"></div>`;
-                });
 
                 win.document.write(html);
                 win.document.close();
