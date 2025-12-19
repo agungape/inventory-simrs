@@ -121,7 +121,7 @@
                                                                 <i class="bi bi-printer"></i> Cetak Label
                                                             </button>
                                                             <button type="button"
-                                                                    class="btn btn-sm btn-outline-info btn-cetak-label-data"
+                                                                    class="btn btn-sm btn-outline-danger btn-cetak-label-data"
                                                                     data-employee-no-rm="{{ $employee->no_rm }}"
                                                                     data-employee-name="{{ $employee->nama }}"
                                                                     data-employee-nrp="{{ $employee->nrp }}"
@@ -774,7 +774,6 @@
                 .label {
                 width: 80mm;
                 padding: 4mm;
-                border: 1px solid #000;
                 }
                 .header {
                 text-align: center;
@@ -925,9 +924,6 @@
                     win.print();
                 }, 500);
             }
-
-
-
 
 
             // Fungsi untuk menampilkan notifikasi
