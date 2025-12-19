@@ -121,7 +121,7 @@
                                                                 <i class="bi bi-printer"></i> Cetak Label
                                                             </button>
                                                             <button type="button"
-                                                                    class="btn btn-sm btn-info btn-cetak-label-data"
+                                                                    class="btn btn-sm btn-outline-info btn-cetak-label-data"
                                                                     data-employee-no-rm="{{ $employee->no_rm }}"
                                                                     data-employee-name="{{ $employee->nama }}"
                                                                     data-employee-nrp="{{ $employee->nrp }}"
