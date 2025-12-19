@@ -767,7 +767,7 @@
 
                 <style>
                 body {
-                margin: 0;
+                margin-top: 50px;
                 font-family: Arial, sans-serif;
                 font-size: 11px;
                 }
@@ -779,14 +779,14 @@
                 .header {
                 text-align: center;
                 font-weight: bold;
-                font-size: 14px;
+                font-size: 18px;
                 border-bottom: 2px solid #000;
                 padding-bottom: 4px;
                 margin-bottom: 6px;
                 }
                 .row {
                 display: flex;
-                margin-bottom: 2px;
+                margin-bottom: 10px;
                 }
                 .label-col {
                 width: 95px;
@@ -833,13 +833,30 @@
 
                 <div class="header">UPKK RSUD Konawe</div>
 
-                <div class="row"><div class="label-col">No.RM</div><div class="value-col">: ${data.noRM}</div></div>
-                <div class="row"><div class="label-col">NRP</div><div class="value-col">: ${data.nrp}</div></div>
-                <div class="row"><div class="label-col">Nama</div><div class="value-col">: ${data.nama}</div></div>
-                <div class="row"><div class="label-col">Tgl. Lahir / Umur</div><div class="value-col">: ${data.tglLahir} / ${data.usia}</div></div>
-                <div class="row"><div class="label-col">Telp.</div><div class="value-col">: ${data.telp}</div></div>
-                <div class="row"><div class="label-col">Perusahaan</div><div class="value-col">: ${data.perusahaan}</div></div>
-
+                <div class="row">
+                    <div class="label-col" style="font-size: 15px">No.RM</div>
+                    <div class="value-col" style="font-size: 15px">: ${data.noRM}</div>
+                </div>
+                <div class="row">
+                    <div class="label-col" style="font-size: 15px">NRP</div>
+                    <div class="value-col" style="font-size: 15px">: ${data.nrp}</div>
+                </div>
+                <div class="row">
+                    <div class="label-col" style="font-size: 15px">Nama</div>
+                    <div class="value-col" style="font-size: 15px">: ${data.nama}</div>
+                </div>
+                <div class="row">
+                    <div class="label-col" style="font-size: 15px">Tgl. Lahir / Umur</div>
+                    <div class="value-col" style="font-size: 15px">: ${data.tglLahir} / ${data.usia}</div>
+                </div>
+                <div class="row">
+                    <div class="label-col" style="font-size: 15px">Telp.</div>
+                    <div class="value-col" style="font-size: 15px">: ${data.telp}</div>
+                </div>
+                <div class="row">
+                    <div class="label-col" style="font-size: 15px">Perusahaan</div>
+                    <div class="value-col" style="font-size: 15px">: ${data.perusahaan}</div>
+                </div>
 
                 </div>
                 </body>
