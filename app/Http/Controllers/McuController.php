@@ -143,4 +143,32 @@ class McuController extends Controller
 
     //     return view('print.label', compact('checkin', 'jenis'));
     // }
+
+    public function destroy($id, Request $request)
+    {
+        $mcuData = MedicalCheckUp::findOrFail($id);
+        $employee = Employee::find($mcuData->employee_id);
+
+        try {
+            $mcuData->delete();
+
+            // Simpan parameter pencarian di session
+            if ($request->session()->has('last_search')) {
+                // Gunakan pencarian terakhir dari session
+                $search = $request->session()->get('last_search');
+            } else {
+                // Default: cari berdasarkan NRP karyawan yang baru checkin
+                $search = $employee->nrp;
+            }
+
+            // Redirect dengan parameter pencarian
+            return redirect()->route('checkin', ['search' => $search])
+                ->with('success', 'Check-in MCU berhasil dihapus!')
+                ->with('highlight_employee', $employee->id);
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Gagal menghapus checkin data: ' . $e->getMessage());
+        }
+    }
 }

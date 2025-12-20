@@ -15,6 +15,7 @@ Route::middleware(['auth'])->group(function () {
     // Check-in
     Route::get('check-in', [EmployeeController::class, 'checkin'])->name('checkin');
     Route::post('mcu/checkin', [McuController::class, 'store'])->name('mcu.checkin.store');
+    Route::delete('mcu/checkin/{id}', [McuController::class, 'destroy'])->name('mcu.checkin.destroy');
     Route::get('checkin/print-label/{checkinId}/{jenisId}', [McuController::class, 'printLabel'])
         ->name('checkin.print-label');
 
@@ -49,6 +50,9 @@ Route::middleware(['auth'])->group(function () {
         Route::post('muskuloskeletal', [FormController::class, 'storeMuskuloskeletal'])->name('muskuloskeletal.store');
         Route::post('neurologis', [FormController::class, 'storeNeurologis'])->name('neurologis.store');
         Route::post('neurologis-khusus', [FormController::class, 'storeNeurologisKhusus'])->name('neurologis-khusus.store');
+        Route::post('dokumen-pemeriksaan', [FormController::class, 'storeDokumenPemeriksaan'])->name('dokumen-pemeriksaan.store');
+        Route::get('dokumen-pemeriksaan/{employee_id}', [FormController::class, 'getDokumenPemeriksaan'])->name('dokumen-pemeriksaan.get');
+//        Route::d('dokumen-pemeriksaan/{employee_id}', [FormController::class, 'getDokumenPemeriksaan'])->name('dokumen-pemeriksaan.get');
     });
 
     // Route::post('form', [FormController::class, 'store'])->name('form.store');

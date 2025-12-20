@@ -89,6 +89,15 @@
                                                                 {{ \Carbon\Carbon::parse($checkinData->tanggal_mcu)->format('H:i') }}
                                                             </small>
                                                         </div>
+                                                        <form action="{{ route('mcu.checkin.destroy', optional($employee->checkin_today)->id) }}"
+                                                              method="POST" class="d-inline"
+                                                              onsubmit="return confirm('Apakah Anda yakin ingin menghapus data checkin ini?')">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            <button type="submit" class="btn btn-sm btn-danger" title="Hapus Check-In">
+                                                                <i class="bi bi-trash"></i>
+                                                            </button>
+                                                        </form>
                                                     @else
                                                         <span class="badge bg-warning">
                                                             <i class="bi bi-clock me-1"></i> Belum Check-in
@@ -108,7 +117,7 @@
                                                         <!-- Tombol Cetak Label (langsung tanpa modal) -->
                                                         @if ($jenisLabels->count() > 0)
                                                             <button type="button"
-                                                                class="btn btn-sm btn-info btn-cetak-label"
+                                                                class="btn btn-sm btn-info btn-cetak-label mr-1"
                                                                 data-employee-no-rm="{{ $employee->no_rm }}"
                                                                 data-employee-name="{{ $employee->nama }}"
                                                                 data-employee-nrp="{{ $employee->nrp }}"
