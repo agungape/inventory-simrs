@@ -47,7 +47,7 @@
                                             <th scope="col">NIK</th>
                                             <th scope="col">Departemen</th>
                                             <th scope="col">Jabatan</th>
-                                            <th scope="col">Bagian</th>
+                                            <th scope="col">Perusahaan</th>
                                             <th scope="col" width="15%">Status Check-in</th>
                                             <th scope="col" width="12%">Aksi</th>
                                         </tr>
