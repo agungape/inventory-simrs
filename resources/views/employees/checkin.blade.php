@@ -77,7 +77,7 @@
                                                 <td>{{ $employee->nik }}</td>
                                                 <td>{{ $employee->departement }}</td>
                                                 <td>{{ $employee->jabatan }}</td>
-                                                <td>{{ $employee->bagian }}</td>
+                                                <td>{{ $employee->nama_perusahaan }}</td>
                                                 <td>
                                                     @if ($sudahCheckin && $checkinData)
                                                         <div class="d-flex flex-column">
