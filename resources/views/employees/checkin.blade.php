@@ -834,11 +834,11 @@
 
                 <div class="row">
                     <div class="label-col" style="font-size: 15px">No.RM</div>
-                    <div class="value-col" style="font-size: 15px">: ${data.noRM}</div>
+                    <div class="value-col" style="font-size: 15px;font-weight: bold">: ${data.noRM}</div>
                 </div>
                 <div class="row">
                     <div class="label-col" style="font-size: 15px">NRP</div>
-                    <div class="value-col" style="font-size: 15px">: ${data.nrp}</div>
+                    <div class="value-col" style="font-size: 15px;font-weight: bold">: ${data.nrp}</div>
                 </div>
                 <div class="row">
                     <div class="label-col" style="font-size: 15px">Nama</div>
