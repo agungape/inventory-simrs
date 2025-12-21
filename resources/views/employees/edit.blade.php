@@ -29,7 +29,7 @@
                                     </div>
 
                                     <div class="mb-3">
-                                        <label class="form-label">NO. RM <span class="text-danger">*</span></label>
+                                        <label class="form-label">NO. RM</label>
                                         <input type="text" name="no_rm"
                                                class="form-control @error('no_rm') is-invalid @enderror"
                                                value="{{ old('no_rm', $employee->no_rm) }}" required>

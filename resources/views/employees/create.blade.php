@@ -32,8 +32,7 @@
                                     </div>
 
                                     <div class="mb-3">
-                                        <label for="no_rm" class="form-label">NO. RM <span
-                                                class="text-danger">*</span></label>
+                                        <label for="no_rm" class="form-label">NO. RM</label>
                                         <input type="text" class="form-control @error('no_rm') is-invalid @enderror"
                                                id="no_rm" name="no_rm" value="{{ old('no_rm') }}"
                                                placeholder="Masukkan No Rekam Medik">
