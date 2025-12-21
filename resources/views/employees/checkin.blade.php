@@ -230,7 +230,7 @@
                                                                                 style="min-width: 100px;">Status</span>
                                                                             <span class="mx-2">:</span>
                                                                             <span>
-                                                                                @if ($employee->nama_perusahaan === 'PT Pertamina')
+                                                                                @if ($employee->nama_perusahaan === 'PT GARDA UTAMA NASIONAL')
                                                                                     <span class="badge bg-warning">Non
                                                                                         Core</span>
                                                                                 @else
