@@ -44,9 +44,9 @@
                                             <th scope="col" width="5%">#</th>
                                             <th scope="col">NRP</th>
                                             <th scope="col">Nama</th>
+                                            <th scope="col">Tgl Lahir</th>
                                             <th scope="col">NIK</th>
                                             <th scope="col">Departemen</th>
-                                            <th scope="col">Jabatan</th>
                                             <th scope="col">Perusahaan</th>
                                             <th scope="col" width="15%">Status Check-in</th>
                                             <th scope="col" width="12%">Aksi</th>
@@ -74,9 +74,9 @@
                                                             data-bs-toggle="tooltip" title="Sudah check-in hari ini"></i>
                                                     @endif
                                                 </td>
+                                                <td>{{ $employee->tangal_lahir }}</td>
                                                 <td>{{ $employee->nik }}</td>
                                                 <td>{{ $employee->departement }}</td>
-                                                <td>{{ $employee->jabatan }}</td>
                                                 <td>{{ $employee->nama_perusahaan }}</td>
                                                 <td>
                                                     @if ($sudahCheckin && $checkinData)
