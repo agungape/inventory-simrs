@@ -74,7 +74,7 @@
                                                             data-bs-toggle="tooltip" title="Sudah check-in hari ini"></i>
                                                     @endif
                                                 </td>
-                                                <td>{{ $employee->tangal_lahir }}</td>
+                                                <td>{{ $employee->tanggal_lahir }}</td>
                                                 <td>{{ $employee->nik }}</td>
                                                 <td>{{ $employee->departement }}</td>
                                                 <td>{{ $employee->nama_perusahaan }}</td>
