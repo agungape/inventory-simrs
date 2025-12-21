@@ -65,7 +65,7 @@
                                         <label class="form-label">Tanggal Lahir <span class="text-danger">*</span></label>
                                         <input type="date" name="tanggal_lahir"
                                             class="form-control @error('tanggal_lahir') is-invalid @enderror"
-                                            value="{{ old('tanggal_lahir', \Carbon\Carbon::parse($employee->tanggal_lahir)->format('Y-m-d')) }}"
+                                            value="{{ old('tanggal_lahir', \Carbon\Carbon::parse($employee->getRawOriginal('tanggal_lahir'))->format('Y-m-d')) }}"
                                             required>
                                         @error('tanggal_lahir')
                                             <div class="invalid-feedback">{{ $message }}</div>
