@@ -43,6 +43,7 @@
                                         <tr>
                                             <th scope="col" width="5%">#</th>
                                             <th scope="col">NRP</th>
+                                            <th scope="col">No. RM</th>
                                             <th scope="col">Nama</th>
                                             <th scope="col">Tgl Lahir</th>
                                             <th scope="col">NIK</th>
@@ -67,6 +68,7 @@
                                                     {{ ($employees->currentPage() - 1) * $employees->perPage() + $loop->iteration }}
                                                 </td>
                                                 <td>{{ $employee->nrp }}</td>
+                                                <td>{{ $employee->no_rm }}</td>
                                                 <td>
                                                     {{ $employee->nama }}
                                                     @if ($sudahCheckin)
