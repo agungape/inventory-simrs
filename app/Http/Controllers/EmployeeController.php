@@ -49,6 +49,7 @@ class EmployeeController extends Controller
         // Validasi data
         $validator = Validator::make($request->all(), [
             'nrp' => 'required|string|max:50|unique:employees,nrp',
+            'no_rm' => 'nullable|string|max:255',
             'nama' => 'required|string|max:255',
             'nik' => 'required|string|size:16|unique:employees,nik|regex:/^[0-9]+$/',
             'tanggal_lahir' => 'required|date|before:-17 years',
@@ -86,6 +87,7 @@ class EmployeeController extends Controller
             // Simpan data karyawan
             $employee = Employee::create([
                 'nrp' => $request->nrp,
+                'no_rm' => $request->no_rm,
                 'nama' => $request->nama,
                 'nik' => $request->nik,
                 'tanggal_lahir' => $request->tanggal_lahir,
@@ -131,6 +133,7 @@ class EmployeeController extends Controller
         // Validasi data
         $validator = Validator::make($request->all(), [
             'nrp' => 'required|string|max:50|unique:employees,nrp,' . $id,
+            'no_rm' => 'nullable|string|max:255',
             'nama' => 'required|string|max:255',
             'nik' => 'required|string|size:16|unique:employees,nik,' . $id . '|regex:/^[0-9]+$/',
             'tanggal_lahir' => 'required|date|before:-17 years',
@@ -168,6 +171,7 @@ class EmployeeController extends Controller
             // Update data karyawan
             $employee->update([
                 'nrp' => $request->nrp,
+                'no_rm' => $request->no_rm,
                 'nama' => $request->nama,
                 'nik' => $request->nik,
                 'tanggal_lahir' => $request->tanggal_lahir,
@@ -227,6 +231,7 @@ class EmployeeController extends Controller
             $query->where(function ($q) use ($search) {
                 $q->where('nama', 'LIKE', "%{$search}%")
                     ->orWhere('nik', 'LIKE', "%{$search}%")
+                    ->orWhere('tanggal_lahir', 'LIKE', "%{$search}%")
                     ->orWhere('nrp', 'LIKE', "%{$search}%");
             });
 

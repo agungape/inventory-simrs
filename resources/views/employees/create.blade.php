@@ -31,6 +31,17 @@
                                         @enderror
                                     </div>
 
+                                    <div class="mb-3">
+                                        <label for="no_rm" class="form-label">NO. RM <span
+                                                class="text-danger">*</span></label>
+                                        <input type="text" class="form-control @error('no_rm') is-invalid @enderror"
+                                               id="no_rm" name="no_rm" value="{{ old('no_rm') }}"
+                                               placeholder="Masukkan No Rekam Medik">
+                                        @error('no_rm')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+
                                     <!-- Nama -->
                                     <div class="mb-3">
                                         <label for="nama" class="form-label">Nama <span

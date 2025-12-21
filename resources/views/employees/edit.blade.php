@@ -28,6 +28,16 @@
                                         @enderror
                                     </div>
 
+                                    <div class="mb-3">
+                                        <label class="form-label">NO. RM <span class="text-danger">*</span></label>
+                                        <input type="text" name="no_rm"
+                                               class="form-control @error('no_rm') is-invalid @enderror"
+                                               value="{{ old('no_rm', $employee->no_rm) }}" required>
+                                        @error('no_rm')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+
                                     <!-- Nama -->
                                     <div class="mb-3">
                                         <label class="form-label">Nama <span class="text-danger">*</span></label>
@@ -94,44 +104,14 @@
                                 </div>
 
                                 <div class="col-md-6">
-                                    <!-- Departemen -->
+                                    <!-- DEPARTEMEN -->
                                     <div class="mb-3">
                                         <label class="form-label">Departemen <span class="text-danger">*</span></label>
-                                        <select name="departement"
-                                            class="form-select @error('departement') is-invalid @enderror" required>
-                                            <option value="">Pilih Departemen</option>
-                                            <option value="IT"
-                                                {{ old('departement', $employee->departement) == 'IT' ? 'selected' : '' }}>
-                                                IT
-                                            </option>
-                                            <option value="HR"
-                                                {{ old('departement', $employee->departement) == 'HR' ? 'selected' : '' }}>
-                                                HR
-                                            </option>
-                                            <option value="Finance"
-                                                {{ old('departement', $employee->departement) == 'Finance' ? 'selected' : '' }}>
-                                                Finance</option>
-                                            <option value="Marketing"
-                                                {{ old('departement', $employee->departement) == 'Marketing' ? 'selected' : '' }}>
-                                                Marketing</option>
-                                            <option value="Operations"
-                                                {{ old('departement', $employee->departement) == 'Operations' ? 'selected' : '' }}>
-                                                Operations</option>
-                                            <option value="Sales"
-                                                {{ old('departement', $employee->departement) == 'Sales' ? 'selected' : '' }}>
-                                                Sales</option>
-                                            <option value="Production"
-                                                {{ old('departement', $employee->departement) == 'Production' ? 'selected' : '' }}>
-                                                Production</option>
-                                            <option value="Maintenance"
-                                                {{ old('departement', $employee->departement) == 'Maintenance' ? 'selected' : '' }}>
-                                                Maintenance</option>
-                                            <option value="Quality Control"
-                                                {{ old('departement', $employee->departement) == 'Quality Control' ? 'selected' : '' }}>
-                                                Quality Control</option>
-                                        </select>
+                                        <input type="text" name="departement"
+                                               class="form-control @error('departement') is-invalid @enderror"
+                                               value="{{ old('departement', $employee->departement) }}" required>
                                         @error('departement')
-                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror
                                     </div>
 
