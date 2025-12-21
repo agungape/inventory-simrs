@@ -97,34 +97,9 @@
                                     <div class="mb-3">
                                         <label for="departement" class="form-label">Departemen <span
                                                 class="text-danger">*</span></label>
-                                        <select class="form-select @error('departement') is-invalid @enderror"
-                                            id="departement" name="departement" required>
-                                            <option value="">Pilih Departemen</option>
-                                            <option value="IT" {{ old('departement') == 'IT' ? 'selected' : '' }}>IT
-                                            </option>
-                                            <option value="HR" {{ old('departement') == 'HR' ? 'selected' : '' }}>HR
-                                            </option>
-                                            <option value="Finance"
-                                                {{ old('departement') == 'Finance' ? 'selected' : '' }}>Finance</option>
-                                            <option value="Marketing"
-                                                {{ old('departement') == 'Marketing' ? 'selected' : '' }}>Marketing
-                                            </option>
-                                            <option value="Operations"
-                                                {{ old('departement') == 'Operations' ? 'selected' : '' }}>Operations
-                                            </option>
-                                            <option value="Sales" {{ old('departement') == 'Sales' ? 'selected' : '' }}>
-                                                Sales</option>
-                                            <option value="Production"
-                                                {{ old('departement') == 'Production' ? 'selected' : '' }}>Production
-                                            </option>
-                                            <option value="Maintenance"
-                                                {{ old('departement') == 'Maintenance' ? 'selected' : '' }}>Maintenance
-                                            </option>
-                                            <option value="Quality Control"
-                                                {{ old('departement') == 'Quality Control' ? 'selected' : '' }}>Quality
-                                                Control</option>
-                                            <!-- Tambahkan departemen lain sesuai kebutuhan -->
-                                        </select>
+                                        <input type="text" class="form-control @error('departement') is-invalid @enderror"
+                                               id="departement" name="departement" value="{{ old('departement') }}"
+                                               placeholder="Contoh: Operations, Safety" required>
                                         @error('departement')
                                             <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror
