@@ -206,9 +206,9 @@
         });
 
         // Validasi NRP hanya angka
-        document.getElementById('nrp').addEventListener('input', function(e) {
-            this.value = this.value.replace(/[^0-9]/g, '');
-        });
+        // document.getElementById('nrp').addEventListener('input', function(e) {
+        //     this.value = this.value.replace(/[^0-9]/g, '');
+        // });
 
         // Validasi No HP hanya angka
         document.getElementById('no_hp').addEventListener('input', function(e) {
