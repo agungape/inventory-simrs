@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\DokumenMcu;
 use App\Models\Employee;
 use App\Models\MedicalCheckUp;
 use App\Models\Dataawal;
@@ -24,6 +25,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Barryvdh\DomPDF\Facade\Pdf as PDF;
+use Illuminate\Support\Facades\Storage;
 
 class FormController extends Controller
 {
@@ -690,6 +692,83 @@ class FormController extends Controller
             DB::rollBack();
             return response()->json(['success' => false, 'message' => 'Terjadi kesalahan: ' . $e->getMessage()], 500);
         }
+    }
+
+    public function storeDokumenPemeriksaan(Request $request)
+    {
+        try {
+            $request->validate([
+                'employee_id' => 'required|exists:employees,id',
+                'jenis_dokumen' => 'required|string|max:100',
+                'file' => 'required|file|mimes:pdf,jpg,jpeg,png|max:5120',
+            ]);
+
+            $mcu = $this->getOrCreateMCU($request->employee_id);
+
+            $file = $request->file('file');
+            $fileName = time().'_'.$file->getClientOriginalName();
+            $file->storeAs('dokumen-mcu', $fileName, 'public');
+
+            DokumenMcu::create([
+                'mcu_id' => $mcu->id,
+                'jenis_dokumen' => $request->jenis_dokumen,
+                'nama_file' => $fileName,
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Dokumen pemeriksaan berhasil diupload'
+            ], 200);
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validasi gagal',
+                'errors' => $e->errors()
+            ], 422);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan server',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function getDokumenPemeriksaan($employeeId)
+    {
+        $mcu = MedicalCheckUp::where('employee_id', $employeeId)->first();
+
+        if (!$mcu) {
+            return response()->json(['data' => []]);
+        }
+
+        $dokumen = DokumenMcu::where('mcu_id', $mcu->id)
+            ->latest()
+            ->get()
+            ->map(function ($item) {
+                return [
+                    'id' => $item->id,
+                    'jenis_dokumen' => $item->jenis_dokumen,
+                    'nama_file' => $item->nama_file,
+                    'url' => asset('storage/dokumen-mcu/'.$item->nama_file),
+                    'created_at' => $item->created_at->format('d-m-Y H:i'),
+                ];
+            });
+
+        return response()->json(['data' => $dokumen]);
+    }
+
+    public function hapusDokumenPemeriksaan(DokumenMcu $dokumen)
+    {
+        Storage::disk('public')->delete('dokumen-mcu/'.$dokumen->nama_file);
+        $dokumen->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Dokumen berhasil dihapus'
+        ]);
     }
 
     /**
