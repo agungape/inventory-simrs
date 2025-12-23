@@ -86,4 +86,8 @@ class MedicalCheckUp extends Model
     {
         return $this->hasOne(Pemeriksaanfisik::class, 'mcu_id');
     }
+    public function dokumenMcu()
+    {
+        return $this->hasOne(DokumenMcu::class, 'mcu_id');
+    }
 }

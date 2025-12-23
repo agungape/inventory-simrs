@@ -17,6 +17,12 @@
             </a>
         </li>
         <li class="nav-item">
+            <a class="nav-link @yield('MenuDokters', 'collapsed')" href="{{ route('dokter.index') }}">
+                <i class="bi bi-person-bounding-box"></i>
+                <span>Data Dokter</span>
+            </a>
+        </li>
+        <li class="nav-item">
             <a class="nav-link @yield('MenuCheckin', 'collapsed')" href="{{ route('checkin') }}">
                 <i class="bi bi-calendar-check-fill"></i>
                 <span>Check-in</span>

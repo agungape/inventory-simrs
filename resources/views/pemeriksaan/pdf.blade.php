@@ -18,13 +18,13 @@
         }
 
         .page {
-            width: 210mm;
-            min-height: 297mm;
-            padding: 15mm;
-            margin: 0 auto;
-            background: white;
-            page-break-after: always;
-        }
+    width: 100%;
+    max-width: 210mm;
+    min-height: auto;
+    padding: 16px;
+    margin: 0 auto 20px auto;
+    background: white;
+}
 
         .header {
             display: flex;
@@ -259,12 +259,19 @@
         }
 
         @media print {
-            .page {
-                margin: 0;
-                border: none;
-                box-shadow: none;
-            }
-        }
+    body {
+        font-size: 11px;
+    }
+
+    .page {
+        width: 210mm;
+        min-height: 297mm;
+        padding: 15mm;
+        margin: 0;
+        page-break-after: always;
+    }
+}
+
     </style>
 </head>
 <body>
@@ -359,6 +366,265 @@
     </div>
 
     <!-- Page 2: Physical Examination -->
+    <div class="page">
+        <div class="header">
+            <div class="header-left">
+                <h3>Jl. Trans Sulawesi No.3, Bente, Bungku Tengah, KAB. MOROWALI</h3>
+                <h3>- SULAWESI TENGAH</h3>
+                <p>Telepon 628525985744 / Email : tmcmorowali@tirta.co.id</p>
+            </div>
+            <div class="header-right">
+                <div class="logo">RSUD</div>
+                <div class="logo-sub">Konawe</div>
+            </div>
+        </div>
+
+        <div class="info-section">
+            <p><strong>MC241218430023</strong></p>
+            <p><strong>MUH. AIKAL IBRAHIM</strong></p>
+            <div class="info-row">
+                <div class="info-label">No. MR</div>
+                <div class="info-value">: 173451465971781</div>
+                <div class="info-label">Jenis Kelamin</div>
+                <div class="info-value">: Pria</div>
+            </div>
+            <div class="info-row">
+                <div class="info-label">Tanggal Kunjungan</div>
+                <div class="info-value">: 18 Desember 2024</div>
+                <div class="info-label">Tanggal Lahir</div>
+                <div class="info-value">: 26 Februari 2006</div>
+            </div>
+            <div class="info-row">
+                <div style="width: 400px;"></div>
+                <div class="info-value">18 Tahun 9 Bulan 22 Hari</div>
+            </div>
+        </div>
+
+        <div class="section-title">PT ANDALAN NUSA PRAKARSA - MOROWALI</div>
+
+        <div class="xray-image">
+            <div style="text-align: center; color: #999;">
+                <p style="font-size: 14px; margin-bottom: 10px;">241218430023</p>
+                <p style="font-size: 12px; margin-bottom: 5px;">MUH. AIKAL IBRAHIM, ANP</p>
+                <p style="font-size: 11px; margin-bottom: 5px;">18Y</p>
+                <p style="font-size: 11px; margin-bottom: 5px;">18.12.2024</p>
+                <p style="font-size: 11px;">M</p>
+                <br><br>
+                <p style="font-size: 24px; font-weight: bold; letter-spacing: 3px;">L</p>
+                <br><br>
+                <p style="font-size: 10px;">[X-Ray Thorax Image]</p>
+                <p style="font-size: 9px; margin-top: 5px;">Gambar Rontgen Thorax PA</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Page 3: Physical Examination (continued) -->
+    <div class="page">
+        <div class="header">
+            <div class="header-left">
+                <h3>Jl. Trans Sulawesi No.3, Bente, Bungku Tengah, KAB. MOROWALI</h3>
+                <h3>- SULAWESI TENGAH</h3>
+                <p>Telepon 628525985744 / Email : tmcmorowali@tirta.co.id</p>
+            </div>
+            <div class="header-right">
+                <div class="logo">RSUD</div>
+                <div class="logo-sub">Konawe</div>
+            </div>
+        </div>
+
+        <div class="info-section">
+            <p><strong>MC241218430023</strong></p>
+            <p><strong>MUH. AIKAL IBRAHIM</strong></p>
+            <div class="info-row">
+                <div class="info-label">No. MR</div>
+                <div class="info-value">: 173451465971781</div>
+                <div class="info-label">Jenis Kelamin</div>
+                <div class="info-value">: Pria</div>
+            </div>
+            <div class="info-row">
+                <div class="info-label">Tanggal Kunjungan</div>
+                <div class="info-value">: 18 Desember 2024</div>
+                <div class="info-label">Tanggal Lahir</div>
+                <div class="info-value">: 26 Februari 2006</div>
+            </div>
+            <div class="info-row">
+                <div style="width: 400px;"></div>
+                <div class="info-value">18 Tahun 9 Bulan 22 Hari</div>
+            </div>
+        </div>
+
+        <div class="section-title">PT ANDALAN NUSA PRAKARSA - MOROWALI</div>
+        <div style="text-align: right; margin-top: -35px; margin-bottom: 10px; font-size: 10px;">MCU ANP & NPM (ONSITE)</div>
+
+        <div class="section-title">Pemeriksaan Fisik</div>
+
+        <table>
+            <tr>
+                <th>Item Pemeriksaan</th>
+                <th>Hasil</th>
+            </tr>
+            <tr>
+                <td class="indent"><strong>Melihat Dekat</strong></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td class="indent" style="padding-left: 40px;">Kedua Mata</td>
+                <td>J1</td>
+            </tr>
+            <tr>
+                <td class="indent">Buta Warna</td>
+                <td>Tidak</td>
+            </tr>
+            <tr>
+                <td class="indent">Lain-lain</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>Keluhan Sekarang</td>
+                <td>Tidak Ada</td>
+            </tr>
+            <tr>
+                <td colspan="2"><strong>Riwayat Penyakit</strong></td>
+            </tr>
+            <tr>
+                <td class="indent">Hepatitis</td>
+                <td>Tidak</td>
+            </tr>
+            <tr>
+                <td class="indent">Riwayat Penyakit Jantung</td>
+                <td>Tidak</td>
+            </tr>
+            <tr>
+                <td class="indent">Pengobatan TBC</td>
+                <td>Tidak</td>
+            </tr>
+            <tr>
+                <td class="indent">Hipertensi</td>
+                <td>Tidak</td>
+            </tr>
+            <tr>
+                <td class="indent">Diabetes Meltus</td>
+                <td>Tidak</td>
+            </tr>
+            <tr>
+                <td class="indent">Riwayat Alergi</td>
+                <td>Ikan</td>
+            </tr>
+            <tr>
+                <td class="indent">Riwayat Kejang/Epilepsi</td>
+                <td>Tidak</td>
+            </tr>
+            <tr>
+                <td class="indent">Rawat Operasi</td>
+                <td>Tidak</td>
+            </tr>
+            <tr>
+                <td class="indent">Rawat Inap</td>
+                <td>Tidak</td>
+            </tr>
+            <tr>
+                <td class="indent">Lain-lain</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td colspan="2"><strong>Keadaan Umum</strong></td>
+            </tr>
+            <tr>
+                <td class="indent">Kesan Umum</td>
+                <td>Baik</td>
+            </tr>
+            <tr>
+                <td class="indent">Status Gizi</td>
+                <td>Overweight</td>
+            </tr>
+            <tr>
+                <td class="indent">Kulit</td>
+                <td>Normal</td>
+            </tr>
+            <tr>
+                <td colspan="2"><strong>THT</strong></td>
+            </tr>
+            <tr>
+                <td class="indent">Telinga</td>
+                <td>Serumen ADS</td>
+            </tr>
+            <tr>
+                <td class="indent">Hidung</td>
+                <td>Normal</td>
+            </tr>
+            <tr>
+                <td class="indent">Faring</td>
+                <td>Normal</td>
+            </tr>
+            <tr>
+                <td class="indent">Tonsil</td>
+                <td>Normal</td>
+            </tr>
+            <tr>
+                <td class="indent">Lain-lain</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td colspan="2"><strong>Mulut</strong></td>
+            </tr>
+            <tr>
+                <td class="indent">Bibir</td>
+                <td>Normal</td>
+            </tr>
+            <tr>
+                <td class="indent">Lidah</td>
+                <td>Normal</td>
+            </tr>
+            <tr>
+                <td class="indent">Gusi</td>
+                <td>Normal</td>
+            </tr>
+            <tr>
+                <td class="indent">Gigi</td>
+                <td class="abnormal">Plaque</td>
+            </tr>
+            <tr>
+                <td>Leher</td>
+                <td>Normal</td>
+            </tr>
+            <tr>
+                <td colspan="2"><strong>Thorax</strong></td>
+            </tr>
+            <tr>
+                <td class="indent">Bentuk</td>
+                <td>Normal</td>
+            </tr>
+            <tr>
+                <td class="indent">Paru-paru</td>
+                <td>Normal</td>
+            </tr>
+            <tr>
+                <td class="indent">Jantung</td>
+                <td>Normal</td>
+            </tr>
+            <tr>
+                <td class="indent">Lain-lain</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td colspan="2"><strong>Abdomen</strong></td>
+            </tr>
+            <tr>
+                <td class="indent">Bentuk</td>
+                <td>Normal</td>
+            </tr>
+            <tr>
+                <td class="indent">Palpasi/Perkusi</td>
+                <td>Normal</td>
+            </tr>
+        </table>
+
+        <div class="footer-note">
+            Hal 2/3
+        </div>
+    </div>
+
+    <!-- Page 4: Physical Examination (final) & Lab -->
     <div class="page">
         <div class="header">
             <div class="header-left">
@@ -1202,7 +1468,7 @@
         </div>
     </div>
 
-    <!-- Page 3: Physical Examination (continued) -->
+     <!-- Page 9: ECG Report -->
     <div class="page">
         <div class="header">
             <div class="header-left">
@@ -1240,175 +1506,41 @@
         <div class="section-title">PT ANDALAN NUSA PRAKARSA - MOROWALI</div>
         <div style="text-align: right; margin-top: -35px; margin-bottom: 10px; font-size: 10px;">MCU ANP & NPM (ONSITE)</div>
 
-        <div class="section-title">Pemeriksaan Fisik</div>
+        <div class="section-title">Pemeriksaan Jantung - Elektrokardiografi</div>
 
-        <table>
+        <table style="margin-top: 15px;">
             <tr>
-                <th>Item Pemeriksaan</th>
-                <th>Hasil</th>
+                <th style="width: 20%;">Hasil</th>
+                <th>Keterangan</th>
             </tr>
             <tr>
-                <td class="indent"><strong>Melihat Dekat</strong></td>
-                <td></td>
+                <td style="vertical-align: top; padding: 10px;"></td>
+                <td style="padding: 10px;">
+                    Sinus Rhythm, axis (N), P wave (N), PR int 0.16<br>
+                    ST - T segment (N), arrhytmia (-)
+                </td>
             </tr>
             <tr>
-                <td class="indent" style="padding-left: 40px;">Kedua Mata</td>
-                <td>J1</td>
+                <th style="width: 20%;">Kesimpulan</th>
+                <th>Keterangan</th>
             </tr>
             <tr>
-                <td class="indent">Buta Warna</td>
-                <td>Tidak</td>
-            </tr>
-            <tr>
-                <td class="indent">Lain-lain</td>
-                <td></td>
-            </tr>
-            <tr>
-                <td>Keluhan Sekarang</td>
-                <td>Tidak Ada</td>
-            </tr>
-            <tr>
-                <td colspan="2"><strong>Riwayat Penyakit</strong></td>
-            </tr>
-            <tr>
-                <td class="indent">Hepatitis</td>
-                <td>Tidak</td>
-            </tr>
-            <tr>
-                <td class="indent">Riwayat Penyakit Jantung</td>
-                <td>Tidak</td>
-            </tr>
-            <tr>
-                <td class="indent">Pengobatan TBC</td>
-                <td>Tidak</td>
-            </tr>
-            <tr>
-                <td class="indent">Hipertensi</td>
-                <td>Tidak</td>
-            </tr>
-            <tr>
-                <td class="indent">Diabetes Meltus</td>
-                <td>Tidak</td>
-            </tr>
-            <tr>
-                <td class="indent">Riwayat Alergi</td>
-                <td>Ikan</td>
-            </tr>
-            <tr>
-                <td class="indent">Riwayat Kejang/Epilepsi</td>
-                <td>Tidak</td>
-            </tr>
-            <tr>
-                <td class="indent">Rawat Operasi</td>
-                <td>Tidak</td>
-            </tr>
-            <tr>
-                <td class="indent">Rawat Inap</td>
-                <td>Tidak</td>
-            </tr>
-            <tr>
-                <td class="indent">Lain-lain</td>
-                <td></td>
-            </tr>
-            <tr>
-                <td colspan="2"><strong>Keadaan Umum</strong></td>
-            </tr>
-            <tr>
-                <td class="indent">Kesan Umum</td>
-                <td>Baik</td>
-            </tr>
-            <tr>
-                <td class="indent">Status Gizi</td>
-                <td>Overweight</td>
-            </tr>
-            <tr>
-                <td class="indent">Kulit</td>
-                <td>Normal</td>
-            </tr>
-            <tr>
-                <td colspan="2"><strong>THT</strong></td>
-            </tr>
-            <tr>
-                <td class="indent">Telinga</td>
-                <td>Serumen ADS</td>
-            </tr>
-            <tr>
-                <td class="indent">Hidung</td>
-                <td>Normal</td>
-            </tr>
-            <tr>
-                <td class="indent">Faring</td>
-                <td>Normal</td>
-            </tr>
-            <tr>
-                <td class="indent">Tonsil</td>
-                <td>Normal</td>
-            </tr>
-            <tr>
-                <td class="indent">Lain-lain</td>
-                <td></td>
-            </tr>
-            <tr>
-                <td colspan="2"><strong>Mulut</strong></td>
-            </tr>
-            <tr>
-                <td class="indent">Bibir</td>
-                <td>Normal</td>
-            </tr>
-            <tr>
-                <td class="indent">Lidah</td>
-                <td>Normal</td>
-            </tr>
-            <tr>
-                <td class="indent">Gusi</td>
-                <td>Normal</td>
-            </tr>
-            <tr>
-                <td class="indent">Gigi</td>
-                <td class="abnormal">Plaque</td>
-            </tr>
-            <tr>
-                <td>Leher</td>
-                <td>Normal</td>
-            </tr>
-            <tr>
-                <td colspan="2"><strong>Thorax</strong></td>
-            </tr>
-            <tr>
-                <td class="indent">Bentuk</td>
-                <td>Normal</td>
-            </tr>
-            <tr>
-                <td class="indent">Paru-paru</td>
-                <td>Normal</td>
-            </tr>
-            <tr>
-                <td class="indent">Jantung</td>
-                <td>Normal</td>
-            </tr>
-            <tr>
-                <td class="indent">Lain-lain</td>
-                <td></td>
-            </tr>
-            <tr>
-                <td colspan="2"><strong>Abdomen</strong></td>
-            </tr>
-            <tr>
-                <td class="indent">Bentuk</td>
-                <td>Normal</td>
-            </tr>
-            <tr>
-                <td class="indent">Palpasi/Perkusi</td>
-                <td>Normal</td>
+                <td style="vertical-align: top; padding: 10px;"></td>
+                <td style="padding: 10px;">
+                    Normal resting ECG
+                </td>
             </tr>
         </table>
 
+        <p style="margin-top: 30px; font-size: 10px;"><strong>Dokter Penanggung Jawab:</strong><br>dr. Dwi Widya Puji Astuti, Sp.JP</p>
+
         <div class="footer-note">
-            Hal 2/3
+            Pindai untuk periksa keaslian dokumen<br>
+            Dokumen ini telah divalidasi dan dicetak otomatis oleh sistem serta tidak digunakan tanda tangan otentik
         </div>
     </div>
 
-    <!-- Page 4: Physical Examination (final) & Lab -->
+    <!-- Page 10: ECG Strip -->
     <div class="page">
         <div class="header">
             <div class="header-left">
@@ -1422,84 +1554,72 @@
             </div>
         </div>
 
-        <div class="info-section">
-            <p><strong>MC241218430023</strong></p>
-            <p><strong>MUH. AIKAL IBRAHIM</strong></p>
-            <div class="info-row">
-                <div class="info-label">No. MR</div>
-                <div class="info-value">: 173451465971781</div>
-                <div class="info-label">Jenis Kelamin</div>
-                <div class="info-value">: Pria</div>
-            </div>
-            <div class="info-row">
-                <div class="info-label">Tanggal Kunjungan</div>
-                <div class="info-value">: 18 Desember 2024</div>
-                <div class="info-label">Tanggal Lahir</div>
-                <div class="info-value">: 26 Februari 2006</div>
-            </div>
-            <div class="info-row">
-                <div style="width: 400px;"></div>
-                <div class="info-value">18 Tahun 9 Bulan 22 Hari</div>
-            </div>
+        <div style="margin: 20px 0; padding: 10px; background: #f5f5f5; border-left: 4px solid #1e5a9e;">
+            <p style="font-size: 10px;"><strong>MUH. AIKAL IBRAHIM PT ANP</strong></p>
+            <p style="font-size: 9px;">ID: 241218430023, Born: 26/02/2006 (Male 18)</p>
+            <p style="font-size: 9px;">Test Date: 18/12/2024 07:44:54</p>
+            <p style="font-size: 9px;"><strong>Test type: Resting ECG</strong></p>
         </div>
 
-        <div class="section-title">PT ANDALAN NUSA PRAKARSA - MOROWALI</div>
-        <div style="text-align: right; margin-top: -35px; margin-bottom: 10px; font-size: 10px;">
-            MCU ANP & NPM (ONSITE)
-        </div>
-
-        <div class="section-title">Pemeriksaan Fisik (Lanjutan)</div>
-
-        <table>
+        <table style="font-size: 9px; margin-bottom: 15px;">
             <tr>
-                <th>Item Pemeriksaan</th>
-                <th>Hasil</th>
+                <td style="padding: 5px;"><strong>HR</strong> 64bpm</td>
+                <td style="padding: 5px;"><strong>P</strong> 106ms</td>
+                <td style="padding: 5px;"><strong>P axis</strong> 3°</td>
+                <td style="padding: 5px;">(* not confirmed by physician)</td>
             </tr>
             <tr>
-                <td class="indent">Perkusi</td>
-                <td>Normal</td>
+                <td style="padding: 5px;"><strong>RR</strong> 938ms</td>
+                <td style="padding: 5px;"><strong>PQ (PR)</strong> 158ms</td>
+                <td style="padding: 5px;"><strong>QRS axis</strong> 66°</td>
+                <td style="padding: 5px;">*Sinus rhythm</td>
             </tr>
             <tr>
-                <td class="indent">Auskultasi</td>
-                <td>Normal</td>
+                <td style="padding: 5px;"><strong>SpO2</strong></td>
+                <td style="padding: 5px;"><strong>QRS</strong> 90ms</td>
+                <td style="padding: 5px;"><strong>T axis</strong> -6°</td>
+                <td style="padding: 5px;">ECG within normal limits</td>
             </tr>
             <tr>
-                <td colspan="2"><strong>Extremitas</strong></td>
-            </tr>
-            <tr>
-                <td class="indent">Atas</td>
-                <td>Normal</td>
-            </tr>
-            <tr>
-                <td class="indent">Bawah</td>
-                <td>Normal</td>
-            </tr>
-            <tr>
-                <td colspan="2"><strong>Neurologis</strong></td>
-            </tr>
-            <tr>
-                <td class="indent">Refleks</td>
-                <td>Normal</td>
-            </tr>
-            <tr>
-                <td class="indent">Sensorik</td>
-                <td>Normal</td>
-            </tr>
-            <tr>
-                <td class="indent">Motorik</td>
-                <td>Normal</td>
+                <td style="padding: 5px;"><strong>BP</strong></td>
+                <td style="padding: 5px;"><strong>QT</strong> 361ms</td>
+                <td style="padding: 5px;"><strong>QTc(Baz)</strong> 373ms</td>
+                <td style="padding: 5px;">Physician: RSUD Konawe</td>
             </tr>
         </table>
 
-        <p style="margin-top: 20px; font-size: 10px;">
-            <strong>Dokter Penanggung Jawab:</strong><br>
-            dr. Dewi Syarah Muhsin
-        </p>
+        <div style="width: 100%; background: #fff; border: 2px solid #333; padding: 15px; min-height: 500px;">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+                <div style="border: 1px solid #ddd; background: #fafafa; height: 150px; display: flex; align-items: center; justify-content: center; font-size: 9px; color: #999;">
+                    [ECG Lead I & V1 Strip]
+                </div>
+                <div style="border: 1px solid #ddd; background: #fafafa; height: 150px; display: flex; align-items: center; justify-content: center; font-size: 9px; color: #999;">
+                    [ECG Lead V2 Strip]
+                </div>
+                <div style="border: 1px solid #ddd; background: #fafafa; height: 150px; display: flex; align-items: center; justify-content: center; font-size: 9px; color: #999;">
+                    [ECG Lead II & V3 Strip]
+                </div>
+                <div style="border: 1px solid #ddd; background: #fafafa; height: 150px; display: flex; align-items: center; justify-content: center; font-size: 9px; color: #999;">
+                    [ECG Lead V4 Strip]
+                </div>
+                <div style="border: 1px solid #ddd; background: #fafafa; height: 150px; display: flex; align-items: center; justify-content: center; font-size: 9px; color: #999;">
+                    [ECG Lead III, aVR, aVL, aVF & V5 Strips]
+                </div>
+                <div style="border: 1px solid #ddd; background: #fafafa; height: 150px; display: flex; align-items: center; justify-content: center; font-size: 9px; color: #999;">
+                    [ECG Lead V6 Strip]
+                </div>
+            </div>
 
-        <div class="footer-note">
-            Hal 3/3<br>
-            Dokumen ini telah divalidasi dan dicetak otomatis oleh sistem serta tidak digunakan tanda tangan otentik
+            <div style="border: 1px solid #ddd; background: #fafafa; height: 100px; display: flex; align-items: center; justify-content: center; font-size: 9px; color: #999;">
+                [ECG Rhythm Strip Lead II - Full Width]
+            </div>
         </div>
-    </div> <!-- END PAGE -->
+
+        <p style="font-size: 8px; margin-top: 10px; text-align: center;">
+            Filter: 0.07 Spline - 90 Adapt, -50 [Hz] | 25.00 mm/sec<br>
+            RSUD Konawe | BTL CardioPoint 2.33.215.1, DIAG: 3.1.1.0; ECG: BTL-08 ECG, SN: 071D0B011285 | ECG 10s Page: 1/1
+        </p>
+    </div>
+
 </body>
 </html>

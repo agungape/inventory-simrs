@@ -140,6 +140,12 @@
                                                     <i class="bi bi-file-check me-1"></i> Upload Dokumen Hasil Pemeriksaan
                                                 </button>
                                             </li>
+                                            <li class="nav-item" role="presentation">
+                                                <button class="nav-link" id="hasil-pemeriksaan-tab" data-bs-toggle="tab"
+                                                        data-bs-target="#hasil-pemeriksaan" type="button" role="tab">
+                                                    <i class="bi bi-clipboard-check me-1"></i> Hasil Pemeriksaan
+                                                </button>
+                                            </li>
                                         </ul>
 
                                         <div class="tab-content pt-3" id="mcuTabContent">
@@ -2966,12 +2972,12 @@
                                                 </form>
                                             </div>
 
-                                            <!-- Tab Dokumen Pemeriksaan -->
+                                           <!-- Tab Dokumen Pemeriksaan -->
                                             <div class="tab-pane fade" id="dokumen-pemeriksaan" role="tabpanel">
                                                 <form method="POST"
-                                                      action="{{ route('form.dokumen-pemeriksaan.store') }}"
-                                                      id="formDokumenPemeriksaan"
-                                                      enctype="multipart/form-data">
+                                                    action="{{ route('form.dokumen-pemeriksaan.store') }}"
+                                                    id="formDokumenPemeriksaan"
+                                                    enctype="multipart/form-data">
                                                     @csrf
                                                     {{-- relasi ke MCU / employee --}}
                                                     <input type="hidden" name="employee_id" id="employee_id_dokumen_pemeriksaan">
@@ -2992,6 +2998,7 @@
                                                                             <label class="form-label">Jenis Dokumen</label>
                                                                             <select name="jenis_dokumen"
                                                                                     class="form-select"
+                                                                                    id="jenisDokumenSelect"
                                                                                     required>
                                                                                 <option value="">-- Pilih Jenis Dokumen --</option>
                                                                                 <option value="Laboratorium">Laboratorium</option>
@@ -3007,18 +3014,53 @@
                                                                         <div class="col-12 col-md-6 col-lg-8">
                                                                             <label class="form-label">File Dokumen</label>
                                                                             <input type="file"
-                                                                                   name="file"
-                                                                                   class="form-control"
-                                                                                   required>
+                                                                                name="file"
+                                                                                class="form-control"
+                                                                                required>
                                                                             <small class="text-muted">
                                                                                 PDF / JPG / PNG (Maks 5MB)
                                                                             </small>
+                                                                        </div>
+
+                                                                        {{-- Form Hasil dan Kesimpulan (Hanya untuk Radiologi dan EKG) --}}
+                                                                        <div class="col-12" id="hasilKesimpulanContainer" style="display: none;">
+                                                                            <div class="row mt-3">
+                                                                                <div class="col-12">
+                                                                                    <div class="card border-info">
+
+                                                                                        <div class="card-body mt-3">
+                                                                                            <div class="row g-3">
+                                                                                                {{-- Hasil Pemeriksaan --}}
+                                                                                                <div class="col-12">
+                                                                                                    <label class="form-label">Hasil Pemeriksaan</label>
+                                                                                                    <textarea name="hasil"
+                                                                                                            class="form-control"
+                                                                                                            rows="3"
+                                                                                                            placeholder="Masukkan hasil pemeriksaan..."></textarea>
+                                                                                                    <small class="text-muted">Deskripsi detail hasil pemeriksaan</small>
+                                                                                                </div>
+
+                                                                                                {{-- Kesimpulan --}}
+                                                                                                <div class="col-12">
+                                                                                                    <label class="form-label">Kesimpulan</label>
+                                                                                                    <textarea name="kesimpulan"
+                                                                                                            class="form-control"
+                                                                                                            rows="3"
+                                                                                                            placeholder="Masukkan kesimpulan pemeriksaan..."></textarea>
+                                                                                                    <small class="text-muted">Kesimpulan akhir dari pemeriksaan</small>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
                                                                         </div>
 
                                                                     </div>
                                                                 </div>
                                                             </div>
                                                         </div>
+
                                                         {{-- DAFTAR DOKUMEN PEMERIKSAAN --}}
                                                         <div class="row mt-4">
                                                             <div class="col-12">
@@ -3051,7 +3093,6 @@
                                                                             </div>
                                                                         </div>
                                                                     </div>
-
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -3067,7 +3108,69 @@
                                                     </div>
 
                                                 </form>
+                                            </div>
 
+                                           <!-- Tab Hasil Pemeriksaan -->
+                                            <div class="tab-pane fade" id="hasil-pemeriksaan" role="tabpanel">
+                                                <form method="POST" action="{{ route('form.hasil-pemeriksaan.store') }}"
+                                                    id="formHasilPemeriksaan">
+                                                    @csrf
+                                                    <input type="hidden" name="employee_id" id="employee_id_hasil_pemeriksaan">
+
+                                                    <div class="row g-3">
+                                                        <div class="col-12">
+                                                            <div class="card">
+                                                                <div class="card-header">
+                                                                    <h6 class="card-title mb-0">Hasil Pemeriksaan MCU</h6>
+                                                                </div>
+                                                                <div class="card-body">
+                                                                    <div class="row g-3">
+                                                                        <!-- Kategori Hasil -->
+                                                                        <div class="col-md-6">
+                                                                            <label class="form-label">Kategori Hasil <span class="text-danger">*</span></label>
+                                                                            <select name="kategori_hasil" class="form-select" id="kategoriHasil" required>
+                                                                                <option value="">-- Pilih Kategori --</option>
+                                                                                <option value="fit">Fit</option>
+                                                                                <option value="fit_dengan_catatan">Fit dengan Catatan</option>
+                                                                                <option value="unfit">Unfit</option>
+                                                                                <option value="pending">Pending</option>
+                                                                            </select>
+                                                                        </div>
+
+                                                                        <!-- Tim Medis dengan Quill Editor -->
+                                                                        <div class="col-12">
+                                                                            <label class="form-label">Tim Medis <span class="text-danger">*</span></label>
+                                                                            <div id="quillTimMedis" style="height: 150px;"></div>
+                                                                            <input type="hidden" name="tim_medis" id="timMedisInput" required>
+                                                                        </div>
+
+                                                                        <!-- Kesimpulan dengan Quill Editor -->
+                                                                        <div class="col-12">
+                                                                            <label class="form-label">Kesimpulan <span class="text-danger">*</span></label>
+                                                                            <div id="quillKesimpulan" style="height: 200px;"></div>
+                                                                            <input type="hidden" name="kesimpulan" id="kesimpulanInput" required>
+                                                                        </div>
+
+                                                                        <!-- Saran dengan Quill Editor -->
+                                                                        <div class="col-12">
+                                                                            <label class="form-label">Saran <span class="text-danger">*</span></label>
+                                                                            <div id="quillSaran" style="height: 200px;"></div>
+                                                                            <input type="hidden" name="saran" id="saranInput" required>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="row mt-4">
+                                                        <div class="col-12">
+                                                            <button type="submit" class="btn btn-primary">
+                                                                <i class="bi bi-save me-1"></i> Simpan Hasil Pemeriksaan
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </form>
                                             </div>
                                         </div>
                                     </div>
@@ -3386,11 +3489,52 @@
             }
         }
 
+        // Event listener untuk menampilkan/menyembunyikan form hasil & kesimpulan
+        document.getElementById('jenisDokumenSelect').addEventListener('change', function() {
+            const jenisDokumen = this.value;
+            const hasilKesimpulanContainer = document.getElementById('hasilKesimpulanContainer');
+
+            // Tampilkan hanya untuk Radiologi dan EKG
+            if (jenisDokumen === 'Radiologi' || jenisDokumen === 'EKG') {
+                hasilKesimpulanContainer.style.display = 'block';
+
+                // Tambahkan required untuk textarea jika diperlukan
+                document.querySelectorAll('#hasilKesimpulanContainer textarea').forEach(textarea => {
+                    textarea.required = true;
+                });
+            } else {
+                hasilKesimpulanContainer.style.display = 'none';
+
+                // Hapus required dan kosongkan value
+                document.querySelectorAll('#hasilKesimpulanContainer textarea').forEach(textarea => {
+                    textarea.required = false;
+                    textarea.value = '';
+                });
+            }
+        });
+
         function renderDokumenRow(data) {
+            // Tambahkan hasil dan kesimpulan jika ada
+            const hasilInfo = data.hasil ? `
+                <div class="mt-2">
+                    <small class="text-muted"><strong>Hasil:</strong> ${data.hasil}</small>
+                </div>
+            ` : '';
+
+            const kesimpulanInfo = data.kesimpulan ? `
+                <div class="mt-1">
+                    <small class="text-muted"><strong>Kesimpulan:</strong> ${data.kesimpulan}</small>
+                </div>
+            ` : '';
+
             return `
                 <tr>
                     <td>#</td>
-                    <td>${data.jenis_dokumen}</td>
+                    <td>
+                        <div>${data.jenis_dokumen}</div>
+                        ${hasilInfo}
+                        ${kesimpulanInfo}
+                    </td>
                     <td>
                         <a href="${data.url}" target="_blank">
                             ${data.nama_file}
@@ -3438,16 +3582,22 @@
                          * KHUSUS FORM DOKUMEN PEMERIKSAAN
                          */
                         if (this.id === 'formDokumenPemeriksaan') {
-
                             // reset form upload (biar file input kosong)
                             this.reset();
+
+                            // Sembunyikan form hasil & kesimpulan
+                            document.getElementById('hasilKesimpulanContainer').style.display = 'none';
+
+                            // Reset required attribute pada textarea
+                            document.querySelectorAll('#hasilKesimpulanContainer textarea').forEach(textarea => {
+                                textarea.required = false;
+                            });
 
                             // load ulang data dokumen
                             if (typeof loadDokumenPemeriksaan === 'function') {
                                 loadDokumenPemeriksaan();
                             }
                         }
-
 
                         // Pindah ke tab berikutnya setelah 1.5 detik
                         setTimeout(() => {
@@ -3484,9 +3634,7 @@
         });
 
         async function loadDokumenPemeriksaan() {
-
             const employeeId = document.getElementById('employee_id_dokumen_pemeriksaan')?.value;
-            console.log(employeeId);
             const tbody = document.getElementById('dokumenPemeriksaanList');
 
             if (!employeeId || !tbody) return;
@@ -3508,44 +3656,230 @@
 
                 if (!result.data || result.data.length === 0) {
                     tbody.innerHTML = `
-                <tr>
-                    <td colspan="4" class="text-center text-muted">
-                        Belum ada dokumen
-                    </td>
-                </tr>
-            `;
+                        <tr>
+                            <td colspan="4" class="text-center text-muted">
+                                Belum ada dokumen
+                            </td>
+                        </tr>
+                    `;
                     return;
                 }
 
                 tbody.innerHTML = '';
                 result.data.forEach((item, index) => {
+                    // Tampilkan hasil dan kesimpulan jika ada
+                    const hasilInfo = item.hasil ? `
+                        <div class="mt-2">
+                            <small class="text-muted"><strong>Hasil:</strong> ${item.hasil}</small>
+                        </div>
+                    ` : '';
+
+                    const kesimpulanInfo = item.kesimpulan ? `
+                        <div class="mt-1">
+                            <small class="text-muted"><strong>Kesimpulan:</strong> ${item.kesimpulan}</small>
+                        </div>
+                    ` : '';
+
                     tbody.insertAdjacentHTML('beforeend', `
-                <tr>
-                    <td>${index + 1}</td>
-                    <td>${item.jenis_dokumen}</td>
-                    <td>
-                        <a href="${item.url}" target="_blank">${item.nama_file}</a>
-                    </td>
-                    <td class="text-center">
-                        <button type="button"
-                                class="btn btn-sm btn-danger"
-                                onclick="hapusDokumen(${item.id})">
-                            <i class="bi bi-trash"></i>
-                        </button>
-                    </td>
-                </tr>
-            `);
+                        <tr>
+                            <td>${index + 1}</td>
+                            <td>
+                                <div>${item.jenis_dokumen}</div>
+                                ${hasilInfo}
+                                ${kesimpulanInfo}
+                            </td>
+                            <td>
+                                <a href="${item.url}" target="_blank">${item.nama_file}</a>
+                            </td>
+                            <td class="text-center">
+                                <button type="button"
+                                        class="btn btn-sm btn-danger"
+                                        onclick="hapusDokumen(${item.id})">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    `);
                 });
 
             } catch (e) {
                 tbody.innerHTML = `
-            <tr>
-                <td colspan="4" class="text-danger text-center">
-                    Gagal memuat data
-                </td>
-            </tr>
-        `;
+                    <tr>
+                        <td colspan="4" class="text-danger text-center">
+                            Gagal memuat data
+                        </td>
+                    </tr>
+                `;
             }
         }
+
+        // Global variables untuk Quill editors
+        let quillTimMedis = null;
+        let quillKesimpulan = null;
+        let quillSaran = null;
+
+        // Inisialisasi form hasil pemeriksaan
+        document.addEventListener('DOMContentLoaded', function() {
+            // Inisialisasi Quill Editor jika tersedia
+            if (typeof Quill !== 'undefined') {
+                // Inisialisasi editor untuk Tim Medis
+                quillTimMedis = new Quill('#quillTimMedis', {
+                    theme: 'snow',
+                    modules: {
+                        toolbar: [
+                            ['bold', 'italic', 'underline'],
+                            [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                            ['clean']
+                        ]
+                    },
+                    placeholder: 'Masukkan nama tim medis/dokter...'
+                });
+
+                // Inisialisasi editor untuk Kesimpulan
+                quillKesimpulan = new Quill('#quillKesimpulan', {
+                    theme: 'snow',
+                    modules: {
+                        toolbar: [
+                            ['bold', 'italic', 'underline'],
+                            [{ 'header': [1, 2, 3, false] }],
+                            [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                            ['link'],
+                            ['clean']
+                        ]
+                    },
+                    placeholder: 'Masukkan kesimpulan pemeriksaan...'
+                });
+
+                // Inisialisasi editor untuk Saran
+                quillSaran = new Quill('#quillSaran', {
+                    theme: 'snow',
+                    modules: {
+                        toolbar: [
+                            ['bold', 'italic', 'underline'],
+                            [{ 'header': [1, 2, 3, false] }],
+                            [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                            ['link'],
+                            ['clean']
+                        ]
+                    },
+                    placeholder: 'Masukkan saran dan rekomendasi...'
+                });
+
+                // Update hidden inputs saat content berubah
+                quillTimMedis.on('text-change', function() {
+                    document.getElementById('timMedisInput').value = quillTimMedis.root.innerHTML;
+                });
+
+                quillKesimpulan.on('text-change', function() {
+                    document.getElementById('kesimpulanInput').value = quillKesimpulan.root.innerHTML;
+                });
+
+                quillSaran.on('text-change', function() {
+                    document.getElementById('saranInput').value = quillSaran.root.innerHTML;
+                });
+            }
+
+            // Event listener untuk form submission
+            const formHasilPemeriksaan = document.getElementById('formHasilPemeriksaan');
+            if (formHasilPemeriksaan) {
+                formHasilPemeriksaan.addEventListener('submit', async function(e) {
+                    e.preventDefault();
+                    await submitFormHasilPemeriksaan(this);
+                });
+            }
+        });
+
+        // Fungsi untuk submit form via AJAX
+        async function submitFormHasilPemeriksaan(form) {
+            // Validasi
+            const kategori = document.getElementById('kategoriHasil').value;
+            const timMedis = document.getElementById('timMedisInput').value;
+            const kesimpulan = document.getElementById('kesimpulanInput').value;
+            const saran = document.getElementById('saranInput').value;
+
+            // Simple validation
+            if (!kategori) {
+                showNotificationModal('danger', 'Harap pilih kategori hasil!');
+                return;
+            }
+
+            if (!timMedis || timMedis.trim() === '' || timMedis === '<p><br></p>' || timMedis === '<p></p>') {
+                showNotificationModal('danger', 'Tim Medis tidak boleh kosong!');
+                return;
+            }
+
+            if (!kesimpulan || kesimpulan.trim() === '' || kesimpulan === '<p><br></p>' || kesimpulan === '<p></p>') {
+                showNotificationModal('danger', 'Kesimpulan tidak boleh kosong!');
+                return;
+            }
+
+            if (!saran || saran.trim() === '' || saran === '<p><br></p>' || saran === '<p></p>') {
+                showNotificationModal('danger', 'Saran tidak boleh kosong!');
+                return;
+            }
+
+            const formData = new FormData(form);
+            const submitBtn = form.querySelector('button[type="submit"]');
+
+            // Simpan state tombol asli
+            const originalState = {
+                html: submitBtn.innerHTML,
+                disabled: submitBtn.disabled
+            };
+
+            // Set loading state
+            submitBtn.innerHTML = '<i class="bi bi-hourglass-split me-1"></i> Menyimpan...';
+            submitBtn.disabled = true;
+
+            try {
+                const response = await fetch(form.action, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Accept': 'application/json',
+                    }
+                });
+
+                const result = await response.json();
+
+                // Restore tombol terlebih dahulu
+                submitBtn.innerHTML = originalState.html;
+                submitBtn.disabled = originalState.disabled;
+
+                if (result.success) {
+                    // Tandai tab sebagai tersimpan
+                    markTabAsSaved('hasil-pemeriksaan');
+
+                    // Tampilkan modal notifikasi sukses
+                    showNotificationModal('success', result.message || 'Hasil pemeriksaan berhasil disimpan!');
+
+                } else {
+                    let errorMessage = result.message || 'Terjadi kesalahan!';
+
+                    if (result.errors) {
+                        errorMessage = '<ul class="mb-0">';
+                        Object.values(result.errors).forEach(messages => {
+                            messages.forEach(msg => {
+                                errorMessage += `<li>${msg}</li>`;
+                            });
+                        });
+                        errorMessage += '</ul>';
+                    }
+
+                    showNotificationModal('danger', errorMessage);
+                }
+            } catch (error) {
+                console.error('Error submitting form:', error);
+
+                // Restore tombol jika error
+                submitBtn.innerHTML = originalState.html;
+                submitBtn.disabled = originalState.disabled;
+
+                showNotificationModal('danger', 'Terjadi kesalahan jaringan! Silakan coba lagi.');
+            }
+        }
+
     </script>
+
 @endpush

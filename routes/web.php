@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DokterController;
 use App\Http\Controllers\FormController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\EmployeeController;
@@ -52,7 +53,8 @@ Route::middleware(['auth'])->group(function () {
         Route::post('neurologis-khusus', [FormController::class, 'storeNeurologisKhusus'])->name('neurologis-khusus.store');
         Route::post('dokumen-pemeriksaan', [FormController::class, 'storeDokumenPemeriksaan'])->name('dokumen-pemeriksaan.store');
         Route::get('dokumen-pemeriksaan/{employee_id}', [FormController::class, 'getDokumenPemeriksaan'])->name('dokumen-pemeriksaan.get');
-//        Route::d('dokumen-pemeriksaan/{employee_id}', [FormController::class, 'getDokumenPemeriksaan'])->name('dokumen-pemeriksaan.get');
+        Route::post('/hasil-pemeriksaan', [FormController::class, 'storeHasilPemeriksaan'])->name('hasil-pemeriksaan.store');
+        Route::get('/hasil-pemeriksaan/{employeeId}', [FormController::class, 'showHasilPemeriksaan'])->name('hasil-pemeriksaan.show');
     });
 
     Route::prefix('dokumen-hasil')->group(function () {
@@ -60,19 +62,25 @@ Route::middleware(['auth'])->group(function () {
 
         // Untuk AJAX/data
         Route::get('/employee/{employeeId}/checkins', [FormController::class, 'getCheckinHistory'])->name('dokumen.checkin.history');
-        Route::get('/mcu/{mcuId}/data', [FormController::class, 'getMcuData'])->name('dokumen.mcu.data');
-        Route::get('/mcu/{mcuId}/data-full', [FormController::class, 'getFullMcuData'])->name('dokumen.mcu.data.full');
 
         // Preview PDF (tampil di browser)
-        Route::get('/mcu/{mcuId}/preview', [FormController::class, 'previewPDF'])->name('dokumen.mcu.preview');
         Route::get('/mcu/{mcuId}/preview-full', [FormController::class, 'previewFullPDF'])->name('dokumen.mcu.preview.full');
 
         // Download PDF (langsung download)
-        Route::get('/mcu/{mcuId}/download', [FormController::class, 'downloadPDF'])->name('dokumen.mcu.download');
         Route::get('/mcu/{mcuId}/download-full', [FormController::class, 'downloadFullPDF'])->name('dokumen.mcu.download.full');
-
-        // Print view (HTML)
-        Route::get('/mcu/{mcuId}/print', [FormController::class, 'printView'])->name('dokumen.mcu.print');
-        Route::get('/mcu/{mcuId}/print-full', [FormController::class, 'printFullView'])->name('dokumen.mcu.print.full');
     });
+
+    // Routes untuk CRUD Dokter
+    Route::prefix('dokter')->name('dokter.')->group(function () {
+        Route::get('/', [DokterController::class, 'index'])->name('index');
+        Route::get('/create', [DokterController::class, 'create'])->name('create');
+        Route::post('/', [DokterController::class, 'store'])->name('store');
+        Route::get('/{id}/edit', [DokterController::class, 'edit'])->name('edit');
+        Route::put('/{id}', [DokterController::class, 'update'])->name('update');
+        Route::delete('/{id}', [DokterController::class, 'destroy'])->name('destroy');
+        Route::get('/{id}/restore', [DokterController::class, 'restore'])->name('restore');
+    });
+
+    // API untuk mendapatkan list dokter
+    Route::get('/api/dokter/list', [DokterController::class, 'getDokterList'])->name('api.dokter.list');
 });

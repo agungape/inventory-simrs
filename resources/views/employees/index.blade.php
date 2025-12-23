@@ -14,7 +14,7 @@
                         </a>
 
                         <!-- Search Form -->
-                        {{-- <div class="row mb-3">
+                        <div class="row mb-3">
                             <div class="col-md-6">
                                 <form method="GET" action="{{ route('employees.index') }}" class="d-flex">
                                     <input type="text" name="search" class="form-control me-2"
@@ -24,7 +24,7 @@
                                     </button>
                                 </form>
                             </div>
-                        </div> --}}
+                        </div>
 
                         <!-- Tabel -->
                         <div class="table-responsive">
