@@ -134,6 +134,12 @@
                                                     <i class="bi bi-cpu me-1"></i> Neurologis Khusus
                                                 </button>
                                             </li>
+                                            <li class="nav-item" role="presentation">
+                                                <button class="nav-link" id="dokumen-pemeriksaan-tab" data-bs-toggle="tab"
+                                                        data-bs-target="#dokumen-pemeriksaan" type="button" role="tab">
+                                                    <i class="bi bi-file-check me-1"></i> Upload Dokumen Hasil Pemeriksaan
+                                                </button>
+                                            </li>
                                         </ul>
 
                                         <div class="tab-content pt-3" id="mcuTabContent">
@@ -3141,6 +3147,110 @@
                                                     </div>
                                                 </form>
                                             </div>
+
+                                            <!-- Tab Dokumen Pemeriksaan -->
+                                            <div class="tab-pane fade" id="dokumen-pemeriksaan" role="tabpanel">
+                                                <form method="POST"
+                                                      action="{{ route('form.dokumen-pemeriksaan.store') }}"
+                                                      id="formDokumenPemeriksaan"
+                                                      enctype="multipart/form-data">
+                                                    @csrf
+                                                    {{-- relasi ke MCU / employee --}}
+                                                    <input type="hidden" name="employee_id" id="employee_id_dokumen_pemeriksaan">
+
+                                                    <div class="row g-3">
+
+                                                        <div class="col-12">
+                                                            <div class="card">
+                                                                <div class="card-header">
+                                                                    <h6 class="card-title mb-0">Dokumen Pemeriksaan</h6>
+                                                                </div>
+
+                                                                <div class="card-body">
+                                                                    <div class="row g-3">
+
+                                                                        {{-- Jenis Dokumen --}}
+                                                                        <div class="col-12 col-md-6 col-lg-4">
+                                                                            <label class="form-label">Jenis Dokumen</label>
+                                                                            <select name="jenis_dokumen"
+                                                                                    class="form-select"
+                                                                                    required>
+                                                                                <option value="">-- Pilih Jenis Dokumen --</option>
+                                                                                <option value="Laboratorium">Laboratorium</option>
+                                                                                <option value="EKG">EKG</option>
+                                                                                <option value="Radiologi">Radiologi</option>
+                                                                                <option value="Audiometri">Audiometri</option>
+                                                                                <option value="Spirometri">Spirometri</option>
+                                                                                <option value="Lainnya">Lainnya</option>
+                                                                            </select>
+                                                                        </div>
+
+                                                                        {{-- Upload File --}}
+                                                                        <div class="col-12 col-md-6 col-lg-8">
+                                                                            <label class="form-label">File Dokumen</label>
+                                                                            <input type="file"
+                                                                                   name="file"
+                                                                                   class="form-control"
+                                                                                   required>
+                                                                            <small class="text-muted">
+                                                                                PDF / JPG / PNG (Maks 5MB)
+                                                                            </small>
+                                                                        </div>
+
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        {{-- DAFTAR DOKUMEN PEMERIKSAAN --}}
+                                                        <div class="row mt-4">
+                                                            <div class="col-12">
+                                                                <div class="card">
+                                                                    <div class="card-header">
+                                                                        <h6 class="card-title mb-0">Dokumen Pemeriksaan Terupload</h6>
+                                                                    </div>
+
+                                                                    <div class="card-body">
+                                                                        <div class="row g-3">
+                                                                            <div class="table-responsive">
+                                                                                <table class="table table-striped table-bordered mb-0">
+                                                                                    <thead class="table-light">
+                                                                                    <tr>
+                                                                                        <th width="5%">No</th>
+                                                                                        <th width="25%">Jenis Dokumen</th>
+                                                                                        <th>Nama File</th>
+                                                                                        <th width="15%">Aksi</th>
+                                                                                    </tr>
+                                                                                    </thead>
+                                                                                    <tbody id="dokumenPemeriksaanList">
+                                                                                    {{-- Diisi via AJAX --}}
+                                                                                    <tr>
+                                                                                        <td colspan="4" class="text-center text-muted">
+                                                                                            Belum ada dokumen
+                                                                                        </td>
+                                                                                    </tr>
+                                                                                    </tbody>
+                                                                                </table>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+
+                                                    <div class="row mt-4">
+                                                        <div class="col-12">
+                                                            <button type="submit" class="btn btn-primary">
+                                                                <i class="bi bi-save me-1"></i> Simpan Dokumen Pemeriksaan
+                                                            </button>
+                                                        </div>
+                                                    </div>
+
+                                                </form>
+
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -3458,6 +3568,25 @@
             }
         }
 
+        function renderDokumenRow(data) {
+            return `
+                <tr>
+                    <td>#</td>
+                    <td>${data.jenis_dokumen}</td>
+                    <td>
+                        <a href="${data.url}" target="_blank">
+                            ${data.nama_file}
+                        </a>
+                    </td>
+                    <td class="text-center">
+                        <a href="${data.url}" target="_blank" class="btn btn-sm btn-info">
+                            <i class="bi bi-eye"></i>
+                        </a>
+                    </td>
+                </tr>
+            `;
+        }
+
         // Event listener untuk form submission
         document.querySelectorAll('form').forEach(form => {
             form.addEventListener('submit', async function(e) {
@@ -3473,7 +3602,7 @@
                         body: formData,
                         headers: {
                             'X-Requested-With': 'XMLHttpRequest',
-                            'Accept': 'application/json'
+                            'Accept': 'application/json',
                         }
                     });
 
@@ -3487,12 +3616,47 @@
                         // Tampilkan notifikasi sukses
                         showNotification('success', result.message || 'Data berhasil disimpan!');
 
+                        /**
+                         * KHUSUS FORM DOKUMEN PEMERIKSAAN
+                         */
+                        if (this.id === 'formDokumenPemeriksaan') {
+
+                            // reset form upload (biar file input kosong)
+                            this.reset();
+
+                            // load ulang data dokumen
+                            if (typeof loadDokumenPemeriksaan === 'function') {
+                                loadDokumenPemeriksaan();
+                            }
+                        }
+
+
                         // Pindah ke tab berikutnya setelah 1.5 detik
                         setTimeout(() => {
                             showNextTabAfterSave();
                         }, 1500);
                     } else {
-                        showNotification('danger', result.message || 'Terjadi kesalahan!');
+                        let errorMessage = result.message || 'Terjadi kesalahan!';
+
+                        // Jika ada error validasi dari Laravel
+                        if (result.errors) {
+                            errorMessage = '<ul class="mb-0">';
+
+                            Object.values(result.errors).forEach(messages => {
+                                messages.forEach(msg => {
+                                    errorMessage += `<li>${msg}</li>`;
+                                });
+                            });
+
+                            errorMessage += '</ul>';
+                        }
+
+                        // Jika error server
+                        if (result.error) {
+                            errorMessage = result.error;
+                        }
+
+                        showNotification('danger', errorMessage);
                     }
                 } catch (error) {
                     console.error('Error submitting form:', error);
@@ -3500,5 +3664,70 @@
                 }
             });
         });
+
+        async function loadDokumenPemeriksaan() {
+
+            const employeeId = document.getElementById('employee_id_dokumen_pemeriksaan')?.value;
+            console.log(employeeId);
+            const tbody = document.getElementById('dokumenPemeriksaanList');
+
+            if (!employeeId || !tbody) return;
+
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="4" class="text-center text-muted">
+                        Memuat data...
+                    </td>
+                </tr>
+            `;
+
+            try {
+                const response = await fetch(`/form/dokumen-pemeriksaan/${employeeId}`, {
+                    headers: { 'Accept': 'application/json' }
+                });
+
+                const result = await response.json();
+
+                if (!result.data || result.data.length === 0) {
+                    tbody.innerHTML = `
+                <tr>
+                    <td colspan="4" class="text-center text-muted">
+                        Belum ada dokumen
+                    </td>
+                </tr>
+            `;
+                    return;
+                }
+
+                tbody.innerHTML = '';
+                result.data.forEach((item, index) => {
+                    tbody.insertAdjacentHTML('beforeend', `
+                <tr>
+                    <td>${index + 1}</td>
+                    <td>${item.jenis_dokumen}</td>
+                    <td>
+                        <a href="${item.url}" target="_blank">${item.nama_file}</a>
+                    </td>
+                    <td class="text-center">
+                        <button type="button"
+                                class="btn btn-sm btn-danger"
+                                onclick="hapusDokumen(${item.id})">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            `);
+                });
+
+            } catch (e) {
+                tbody.innerHTML = `
+            <tr>
+                <td colspan="4" class="text-danger text-center">
+                    Gagal memuat data
+                </td>
+            </tr>
+        `;
+            }
+        }
     </script>
 @endpush
