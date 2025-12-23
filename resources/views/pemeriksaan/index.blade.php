@@ -144,7 +144,7 @@
                                                     @csrf
                                                     <input type="hidden" name="employee_id" id="employee_id_tab">
                                                     <div class="row g-3">
-                                                        <div class="col-md-6">
+                                                        {{-- <div class="col-md-6">
                                                             <label class="form-label">Jenis MCU</label>
                                                             <select class="form-select" name="jenis_mcu">
                                                                 <option value="">Pilih Jenis MCU</option>
@@ -152,7 +152,7 @@
                                                                 <option value="annual_periodik">Annual Periodik</option>
                                                                 <option value="purnakarya">Purnakarya</option>
                                                             </select>
-                                                        </div>
+                                                        </div> --}}
                                                         <div class="col-md-6">
                                                             <label class="form-label">Puasa</label>
                                                             <select class="form-select" name="puasa">
@@ -1648,156 +1648,122 @@
                                                                     <div class="col-md-6">
                                                                         <div class="card">
                                                                             <div class="card-header">
-                                                                                <h6 class="card-title mb-0">Mata - Kondisi
-                                                                                </h6>
+                                                                                <h6 class="card-title mb-0">Mata - Kondisi</h6>
                                                                             </div>
                                                                             <div class="card-body">
+                                                                                <!-- Bagian Kondisi Mata -->
                                                                                 <div class="row">
                                                                                     <div class="col-md-6">
                                                                                         <div class="form-check">
-                                                                                            <input class="form-check-input"
-                                                                                                type="checkbox"
-                                                                                                name="mata_normal"
-                                                                                                id="mata_normal"
-                                                                                                value="1">
-                                                                                            <label class="form-check-label"
-                                                                                                for="mata_normal">Normal</label>
+                                                                                            <input class="form-check-input" type="checkbox" name="mata_normal" id="mata_normal" value="1">
+                                                                                            <label class="form-check-label" for="mata_normal">Normal</label>
                                                                                         </div>
                                                                                         <div class="form-check">
-                                                                                            <input class="form-check-input"
-                                                                                                type="checkbox"
-                                                                                                name="hiperemis"
-                                                                                                id="hiperemis"
-                                                                                                value="1">
-                                                                                            <label class="form-check-label"
-                                                                                                for="hiperemis">Hiperemis</label>
+                                                                                            <input class="form-check-input" type="checkbox" name="hiperemis" id="hiperemis" value="1">
+                                                                                            <label class="form-check-label" for="hiperemis">Hiperemis</label>
                                                                                         </div>
                                                                                         <div class="form-check">
-                                                                                            <input class="form-check-input"
-                                                                                                type="checkbox"
-                                                                                                name="strabismus"
-                                                                                                id="strabismus"
-                                                                                                value="1">
-                                                                                            <label class="form-check-label"
-                                                                                                for="strabismus">Strabismus</label>
+                                                                                            <input class="form-check-input" type="checkbox" name="strabismus" id="strabismus" value="1">
+                                                                                            <label class="form-check-label" for="strabismus">Strabismus</label>
                                                                                         </div>
                                                                                         <div class="form-check">
-                                                                                            <input class="form-check-input"
-                                                                                                type="checkbox"
-                                                                                                name="sekret"
-                                                                                                id="sekret"
-                                                                                                value="1">
-                                                                                            <label class="form-check-label"
-                                                                                                for="sekret">Sekret</label>
+                                                                                            <input class="form-check-input" type="checkbox" name="sekret" id="sekret" value="1">
+                                                                                            <label class="form-check-label" for="sekret">Sekret</label>
                                                                                         </div>
                                                                                     </div>
                                                                                     <div class="col-md-6">
                                                                                         <div class="form-check">
-                                                                                            <input class="form-check-input"
-                                                                                                type="checkbox"
-                                                                                                name="ikterik_mata"
-                                                                                                id="ikterik_mata"
-                                                                                                value="1">
-                                                                                            <label class="form-check-label"
-                                                                                                for="ikterik_mata">Ikterik</label>
+                                                                                            <input class="form-check-input" type="checkbox" name="ikterik_mata" id="ikterik_mata" value="1">
+                                                                                            <label class="form-check-label" for="ikterik_mata">Ikterik</label>
                                                                                         </div>
                                                                                         <div class="form-check">
-                                                                                            <input class="form-check-input"
-                                                                                                type="checkbox"
-                                                                                                name="anemis"
-                                                                                                id="anemis"
-                                                                                                value="1">
-                                                                                            <label class="form-check-label"
-                                                                                                for="anemis">Anemis</label>
+                                                                                            <input class="form-check-input" type="checkbox" name="anemis" id="anemis" value="1">
+                                                                                            <label class="form-check-label" for="anemis">Anemis</label>
                                                                                         </div>
                                                                                         <div class="form-check">
-                                                                                            <input class="form-check-input"
-                                                                                                type="checkbox"
-                                                                                                name="pterigium"
-                                                                                                id="pterigium"
-                                                                                                value="1">
-                                                                                            <label class="form-check-label"
-                                                                                                for="pterigium">Pterigium</label>
+                                                                                            <input class="form-check-input" type="checkbox" name="pterigium" id="pterigium" value="1">
+                                                                                            <label class="form-check-label" for="pterigium">Pterigium</label>
+                                                                                        </div>
+                                                                                        <div class="form-check">
+                                                                                            <input class="form-check-input" type="checkbox" name="od_os" id="od_os" value="1">
+                                                                                            <label class="form-check-label" for="od_os">OD/OS</label>
                                                                                         </div>
                                                                                     </div>
                                                                                 </div>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
 
-                                                                <div class="row mt-3">
-                                                                    <div class="col-md-6">
-                                                                        <div class="card">
-                                                                            <div class="card-header">
-                                                                                <h6 class="card-title mb-0">OD / OS</h6>
-                                                                            </div>
-                                                                            <div class="card-body">
-                                                                                <div class="row">
-                                                                                    <div class="col-md-6">
-                                                                                        <div class="form-check">
-                                                                                            <input class="form-check-input"
-                                                                                                type="checkbox"
-                                                                                                name="od_os"
-                                                                                                id="od_os"
-                                                                                                value="1">
-                                                                                            <label class="form-check-label"
-                                                                                                for="od_os">OD/OS</label>
-                                                                                        </div>
+                                                                                <!-- Input Nilai OD/OS -->
+                                                                                <div class="row mt-2">
+                                                                                    <div class="col-md-3">
+                                                                                        <label class="form-label small">OD Nilai</label>
+                                                                                        <input type="text" class="form-control" name="od_nilai" placeholder="Nilai OD">
                                                                                     </div>
                                                                                     <div class="col-md-3">
-                                                                                        <label class="form-label small">OD
-                                                                                            Nilai</label>
-                                                                                        <input type="text"
-                                                                                            class="form-control"
-                                                                                            name="od_nilai"
-                                                                                            placeholder="Nilai OD">
-                                                                                    </div>
-                                                                                    <div class="col-md-3">
-                                                                                        <label class="form-label small">OS
-                                                                                            Nilai</label>
-                                                                                        <input type="text"
-                                                                                            class="form-control"
-                                                                                            name="os_nilai"
-                                                                                            placeholder="Nilai OS">
+                                                                                        <label class="form-label small">OS Nilai</label>
+                                                                                        <input type="text" class="form-control" name="os_nilai" placeholder="Nilai OS">
                                                                                     </div>
                                                                                 </div>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
 
-                                                                    <div class="col-md-6">
-                                                                        <div class="card">
-                                                                            <div class="card-header">
-                                                                                <h6 class="card-title mb-0">Buta Warna</h6>
-                                                                            </div>
-                                                                            <div class="card-body">
-                                                                                <div class="row">
+                                                                                <!-- Visus Jauh dan Dekat -->
+                                                                                <div class="row mt-3">
                                                                                     <div class="col-md-6">
                                                                                         <div class="form-check">
-                                                                                            <input class="form-check-input"
-                                                                                                type="checkbox"
-                                                                                                name="buta_warna_check"
-                                                                                                id="buta_warna_check"
-                                                                                                value="1"
-                                                                                                data-target="buta_warna-select">
-                                                                                            <label class="form-check-label"
-                                                                                                for="buta_warna_check">Buta
-                                                                                                Warna</label>
+                                                                                            <input class="form-check-input" type="checkbox" name="visus_jauh" id="visus_jauh" value="1" data-target="visus_jauh-nilai">
+                                                                                            <label class="form-check-label" for="visus_jauh">Visus Jauh</label>
+                                                                                        </div>
+                                                                                        <div id="visus_jauh-nilai" style="display: none;" class="mt-2">
+                                                                                            <label class="form-label small">Nilai</label>
+                                                                                            <input type="text" class="form-control" name="nilai_visus_jauh" placeholder="Nilai visus jauh">
                                                                                         </div>
                                                                                     </div>
                                                                                     <div class="col-md-6">
-                                                                                        <div id="buta_warna-select"
-                                                                                            style="display: none;">
-                                                                                            <label
-                                                                                                class="form-label small">Jenis
-                                                                                                Buta Warna</label>
-                                                                                            <select class="form-select"
-                                                                                                name="buta_warna">
-                                                                                                <option value="parsial">
-                                                                                                    Parsial</option>
-                                                                                                <option value="total">Total
-                                                                                                </option>
+                                                                                        <div class="form-check">
+                                                                                            <input class="form-check-input" type="checkbox" name="visus_dekat" id="visus_dekat" value="1" data-target="visus_dekat-nilai">
+                                                                                            <label class="form-check-label" for="visus_dekat">Visus Dekat</label>
+                                                                                        </div>
+                                                                                        <div id="visus_dekat-nilai" style="display: none;" class="mt-2">
+                                                                                            <label class="form-label small">Nilai</label>
+                                                                                            <input type="text" class="form-control" name="nilai_visus_dekat" placeholder="Nilai visus dekat">
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+
+                                                                                <!-- Lapang Pandang dan Tiga Dimensi -->
+                                                                                <div class="row mt-3">
+                                                                                    <div class="col-md-6">
+                                                                                        <div class="form-check">
+                                                                                            <input class="form-check-input" type="checkbox" name="lapang_pandang" id="lapang_pandang" value="1" data-target="lapang_pandang-nilai">
+                                                                                            <label class="form-check-label" for="lapang_pandang">Lapang Pandang</label>
+                                                                                        </div>
+                                                                                        <div id="lapang_pandang-nilai" style="display: none;" class="mt-2">
+                                                                                            <label class="form-label small">Nilai</label>
+                                                                                            <input type="text" class="form-control" name="nilai_lapang_pandang" placeholder="Nilai lapang pandang">
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="col-md-6">
+                                                                                        <div class="form-check">
+                                                                                            <input class="form-check-input" type="checkbox" name="tiga_dimensi" id="tiga_dimensi" value="1" data-target="tiga_dimensi-nilai">
+                                                                                            <label class="form-check-label" for="tiga_dimensi">Tiga Dimensi</label>
+                                                                                        </div>
+                                                                                        <div id="tiga_dimensi-nilai" style="display: none;" class="mt-2">
+                                                                                            <label class="form-label small">Nilai</label>
+                                                                                            <input type="text" class="form-control" name="nilai_tiga_dimensi" placeholder="Nilai tiga dimensi">
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+
+                                                                                <!-- Buta Warna -->
+                                                                                <div class="row mt-3">
+                                                                                    <div class="col-md-12">
+                                                                                        <div class="form-check">
+                                                                                            <input class="form-check-input" type="checkbox" name="buta_warna" id="buta_warna" value="1" data-target="buta_warna-select">
+                                                                                            <label class="form-check-label" for="buta_warna">Buta Warna</label>
+                                                                                        </div>
+                                                                                        <div id="buta_warna-select" style="display: none;" class="mt-2">
+                                                                                            <label class="form-label small">Tipe Buta Warna</label>
+                                                                                            <select class="form-select" name="nilai_buta_warna">
+                                                                                                <option value="">Pilih tipe...</option>
+                                                                                                <option value="parsial">Parsial</option>
+                                                                                                <option value="total">Total</option>
                                                                                             </select>
                                                                                         </div>
                                                                                     </div>
@@ -1807,154 +1773,6 @@
                                                                     </div>
                                                                 </div>
 
-                                                                <div class="row mt-3">
-                                                                    <div class="col-md-6">
-                                                                        <div class="card">
-                                                                            <div class="card-header">
-                                                                                <h6 class="card-title mb-0">Visus Jauh</h6>
-                                                                            </div>
-                                                                            <div class="card-body">
-                                                                                <div class="row">
-                                                                                    <div class="col-md-6">
-                                                                                        <div class="form-check">
-                                                                                            <input class="form-check-input"
-                                                                                                type="checkbox"
-                                                                                                name="visus_jauh"
-                                                                                                id="visus_jauh"
-                                                                                                value="1"
-                                                                                                data-target="visus_jauh-nilai">
-                                                                                            <label class="form-check-label"
-                                                                                                for="visus_jauh">Visus
-                                                                                                Jauh</label>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                    <div class="col-md-6">
-                                                                                        <div id="visus_jauh-nilai"
-                                                                                            style="display: none;">
-                                                                                            <label
-                                                                                                class="form-label small">Nilai</label>
-                                                                                            <input type="text"
-                                                                                                class="form-control"
-                                                                                                name="nilai_visus_jauh"
-                                                                                                placeholder="Nilai visus jauh">
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-
-                                                                    <div class="col-md-6">
-                                                                        <div class="card">
-                                                                            <div class="card-header">
-                                                                                <h6 class="card-title mb-0">Visus Dekat</h6>
-                                                                            </div>
-                                                                            <div class="card-body">
-                                                                                <div class="row">
-                                                                                    <div class="col-md-6">
-                                                                                        <div class="form-check">
-                                                                                            <input class="form-check-input"
-                                                                                                type="checkbox"
-                                                                                                name="visus_dekat"
-                                                                                                id="visus_dekat"
-                                                                                                value="1"
-                                                                                                data-target="visus_dekat-nilai">
-                                                                                            <label class="form-check-label"
-                                                                                                for="visus_dekat">Visus
-                                                                                                Dekat</label>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                    <div class="col-md-6">
-                                                                                        <div id="visus_dekat-nilai"
-                                                                                            style="display: none;">
-                                                                                            <label
-                                                                                                class="form-label small">Nilai</label>
-                                                                                            <input type="text"
-                                                                                                class="form-control"
-                                                                                                name="nilai_visus_dekat"
-                                                                                                placeholder="Nilai visus dekat">
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-
-                                                                <div class="row mt-3">
-                                                                    <div class="col-md-6">
-                                                                        <div class="card">
-                                                                            <div class="card-header">
-                                                                                <h6 class="card-title mb-0">Lapang Pandang
-                                                                                </h6>
-                                                                            </div>
-                                                                            <div class="card-body">
-                                                                                <div class="row">
-                                                                                    <div class="col-md-6">
-                                                                                        <div class="form-check">
-                                                                                            <input class="form-check-input"
-                                                                                                type="checkbox"
-                                                                                                name="lapang_pandang"
-                                                                                                id="lapang_pandang"
-                                                                                                value="1"
-                                                                                                data-target="lapang_pandang-nilai">
-                                                                                            <label class="form-check-label"
-                                                                                                for="lapang_pandang">Lapang
-                                                                                                Pandang</label>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                    <div class="col-md-6">
-                                                                                        <div id="lapang_pandang-nilai"
-                                                                                            style="display: none;">
-                                                                                            <label
-                                                                                                class="form-label small">Nilai</label>
-                                                                                            <input type="text"
-                                                                                                class="form-control"
-                                                                                                name="nilai_lapang_pandang"
-                                                                                                placeholder="Nilai lapang pandang">
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-
-                                                                    <div class="col-md-6">
-                                                                        <div class="card">
-                                                                            <div class="card-header">
-                                                                                <h6 class="card-title mb-0">Tiga Dimensi</h6>
-                                                                            </div>
-                                                                            <div class="card-body">
-                                                                                <div class="row">
-                                                                                    <div class="col-md-6">
-                                                                                        <div class="form-check">
-                                                                                            <input class="form-check-input"
-                                                                                                type="checkbox"
-                                                                                                name="tiga_dimensi"
-                                                                                                id="tiga_dimensi"
-                                                                                                value="1"
-                                                                                                data-target="tiga_dimensi-nilai">
-                                                                                            <label class="form-check-label"
-                                                                                                for="tiga_dimensi">Tiga
-                                                                                                Dimensi</label>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                    <div class="col-md-6">
-                                                                                        <div id="tiga_dimensi-nilai"
-                                                                                            style="display: none;">
-                                                                                            <label
-                                                                                                class="form-label small">Nilai</label>
-                                                                                            <input type="text"
-                                                                                                class="form-control"
-                                                                                                name="nilai_tiga_dimensi"
-                                                                                                placeholder="Nilai tiga dimensi">
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
                                                             </div>
                                                         </div>
                                                     <div class="row mt-4">

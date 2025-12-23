@@ -55,5 +55,24 @@ Route::middleware(['auth'])->group(function () {
 //        Route::d('dokumen-pemeriksaan/{employee_id}', [FormController::class, 'getDokumenPemeriksaan'])->name('dokumen-pemeriksaan.get');
     });
 
-    // Route::post('form', [FormController::class, 'store'])->name('form.store');
+    Route::prefix('dokumen-hasil')->group(function () {
+        Route::get('/', [FormController::class, 'getDokumenHasil'])->name('dokumen.hasil');
+
+        // Untuk AJAX/data
+        Route::get('/employee/{employeeId}/checkins', [FormController::class, 'getCheckinHistory'])->name('dokumen.checkin.history');
+        Route::get('/mcu/{mcuId}/data', [FormController::class, 'getMcuData'])->name('dokumen.mcu.data');
+        Route::get('/mcu/{mcuId}/data-full', [FormController::class, 'getFullMcuData'])->name('dokumen.mcu.data.full');
+
+        // Preview PDF (tampil di browser)
+        Route::get('/mcu/{mcuId}/preview', [FormController::class, 'previewPDF'])->name('dokumen.mcu.preview');
+        Route::get('/mcu/{mcuId}/preview-full', [FormController::class, 'previewFullPDF'])->name('dokumen.mcu.preview.full');
+
+        // Download PDF (langsung download)
+        Route::get('/mcu/{mcuId}/download', [FormController::class, 'downloadPDF'])->name('dokumen.mcu.download');
+        Route::get('/mcu/{mcuId}/download-full', [FormController::class, 'downloadFullPDF'])->name('dokumen.mcu.download.full');
+
+        // Print view (HTML)
+        Route::get('/mcu/{mcuId}/print', [FormController::class, 'printView'])->name('dokumen.mcu.print');
+        Route::get('/mcu/{mcuId}/print-full', [FormController::class, 'printFullView'])->name('dokumen.mcu.print.full');
+    });
 });

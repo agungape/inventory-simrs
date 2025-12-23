@@ -23,6 +23,7 @@ use App\Models\Riwayatpenyakitpasien;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Barryvdh\DomPDF\Facade\Pdf as PDF;
 
 class FormController extends Controller
 {
@@ -744,5 +745,514 @@ class FormController extends Controller
     private function getRadioValue(Request $request, $fieldName)
     {
         return $request->has($fieldName) ? $request->$fieldName : null;
+    }
+
+    public function getDokumenHasil(Request $request)
+    {
+        $query = Employee::with(['medicalCheckUps' => function ($q) {
+            $q->with('kategori_mcu')
+                ->orderBy('tanggal_mcu', 'desc');
+        }]);
+
+        if ($request->has('search') && $request->search != '') {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('nama', 'like', "%{$search}%")
+                    ->orWhere('nrp', 'like', "%{$search}%")
+                    ->orWhere('nik', 'like', "%{$search}%");
+            });
+        }
+
+        $employees = $query->orderBy('nama', 'asc')->paginate(20);
+
+        return view('pemeriksaan.result', compact('employees'));
+    }
+
+    /**
+     * Get complete MCU data for document
+     */
+    public function getMcuData($mcuId)
+    {
+        try {
+            // Ambil data MCU dengan semua relasi menggunakan query manual
+            $mcu = MedicalCheckUp::with([
+                'employee',
+                'kategori_mcu',
+                'jenisPemeriksaans',
+                'dataAwal',
+                'pemeriksaanTandaVitalStatusGizi',
+                'pemeriksaanFisik',
+                'riwayatPenyakitPasien',
+                'kebiasaan',
+                'riwayatBahayaLingkunganKerja',
+                'riwayatKecelakaanKerja',
+                'riwayatPenyakitKeluarga'
+            ])->findOrFail($mcuId);
+
+            // Load relasi lainnya jika ada
+            $additionalData = $this->loadAdditionalPemeriksaan($mcuId);
+
+            // Format data untuk response
+            $data = $this->formatMcuData($mcu, $additionalData);
+
+            return response()->json([
+                'success' => true,
+                'data' => $data
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Data MCU tidak ditemukan',
+                'error' => $e->getMessage()
+            ], 404);
+        }
+    }
+
+    /**
+     * Load additional pemeriksaan data
+     */
+    private function loadAdditionalPemeriksaan($mcuId)
+    {
+        return [
+            'tht' => PemeriksaanTht::where('mcu_id', $mcuId)->first(),
+            'thorax' => PemeriksaanThorax::where('mcu_id', $mcuId)->first(),
+            'abdomen' => PemeriksaanAbdomen::where('mcu_id', $mcuId)->first(),
+            'neurologis' => PemeriksaanNeurologis::where('mcu_id', $mcuId)->first(),
+            'neurologis_khusus' => PemeriksaanNeurologisKhusus::where('mcu_id', $mcuId)->first(),
+            'muskuloskeletal' => PemeriksaanMuskuloskeletal::where('mcu_id', $mcuId)->first(),
+            'gigi_mulut' => PemeriksaanGigiMulut::where('mcu_id', $mcuId)->first(),
+            'odontogram' => Odontogram::where('pemeriksaan_gigi_mulut_id', function ($query) use ($mcuId) {
+                $query->select('id')
+                    ->from('pemeriksaan_gigi_mulut')
+                    ->where('mcu_id', $mcuId);
+            })->get(),
+        ];
+    }
+
+    /**
+     * Format MCU data for document
+     */
+    private function formatMcuData($mcu, $additionalData = [])
+    {
+        $employee = $mcu->employee;
+
+        return [
+            'employee' => [
+                'nama' => $employee->nama,
+                'nrp' => $employee->nrp,
+                'nik' => $employee->nik,
+                'usia' => $employee->usia,
+                'tanggal_lahir' => $employee->tanggal_lahir,
+                'jenis_kelamin' => $employee->jenis_kelamin,
+                'departement' => $employee->departement,
+                'jabatan' => $employee->jabatan,
+                'bagian' => $employee->bagian,
+                'perusahaan' => $employee->nama_perusahaan,
+                'no_hp' => $employee->no_hp,
+                'no_rm' => $employee->no_rm,
+            ],
+            'mcu' => [
+                'id' => $mcu->id,
+                'tanggal' => $mcu->tanggal_mcu ? Carbon::parse($mcu->tanggal_mcu)->format('d F Y H:i') : '-',
+                'tanggal_short' => $mcu->tanggal_mcu ? Carbon::parse($mcu->tanggal_mcu)->format('d/m/Y') : '-',
+                'kategori' => $mcu->kategori_mcu ? $mcu->kategori_mcu->nama : '-',
+                'jenis_pemeriksaan' => $mcu->jenisPemeriksaans->pluck('nama_pemeriksaan')->toArray(),
+                'status' => $mcu->status,
+            ],
+            'data_awal' => $mcu->dataAwal ? [
+                'jenis_mcu' => $mcu->dataAwal->jenis_mcu,
+                'keluhan_sekarang' => $mcu->dataAwal->keluhan_sekarang,
+                'puasa' => $mcu->dataAwal->puasa,
+            ] : null,
+            'tanda_vital' => $mcu->pemeriksaanTandaVitalStatusGizi ? [
+                'tinggi_badan' => $mcu->pemeriksaanTandaVitalStatusGizi->tinggi_badan,
+                'berat_badan' => $mcu->pemeriksaanTandaVitalStatusGizi->berat_badan,
+                'lingkar_perut' => $mcu->pemeriksaanTandaVitalStatusGizi->lingkar_perut,
+                'pernafasan' => $mcu->pemeriksaanTandaVitalStatusGizi->pernafasan,
+                'nadi' => $mcu->pemeriksaanTandaVitalStatusGizi->nadi,
+                'tekanan_darah' => $mcu->pemeriksaanTandaVitalStatusGizi->tekanan_darah,
+            ] : null,
+            'pemeriksaan_fisik' => $mcu->pemeriksaanFisik ? [
+                'kesan_umum' => $mcu->pemeriksaanFisik->kesan_umum,
+                'kepala_dan_wajah' => $mcu->pemeriksaanFisik->kepala_dan_wajah,
+                'kulit_pucat' => $mcu->pemeriksaanFisik->kulit_pucat,
+                'kulit_ikterik' => $mcu->pemeriksaanFisik->kulit_ikterik,
+                'mata_normal' => $mcu->pemeriksaanFisik->mata_normal,
+                'hiperemis' => $mcu->pemeriksaanFisik->hiperemis,
+            ] : null,
+            'riwayat_penyakit' => $mcu->riwayatPenyakitPasien ? [
+                'hipertensi' => $mcu->riwayatPenyakitPasien->hipertensi,
+                'diabetes_melitus' => $mcu->riwayatPenyakitPasien->diabetes_melitus,
+                'alergi' => $mcu->riwayatPenyakitPasien->alergi_obat_makanan_keterangan,
+                'riwayat_operasi' => $mcu->riwayatPenyakitPasien->riwayat_operasi_keterangan,
+            ] : null,
+            'kebiasaan' => $mcu->kebiasaan ? [
+                'merokok' => $mcu->kebiasaan->merokok,
+                'merokok_jumlah' => $mcu->kebiasaan->merokok_jumlah,
+                'minum_alkohol' => $mcu->kebiasaan->minum_alkohol,
+                'minum_alkohol_jumlah' => $mcu->kebiasaan->minum_alkohol_jumlah,
+                'olahraga' => $mcu->kebiasaan->olahraga,
+                'olahraga_jumlah' => $mcu->kebiasaan->olahraga_jumlah,
+            ] : null,
+            'lingkungan_kerja' => $mcu->riwayatBahayaLingkunganKerja ? [
+                'bising' => $mcu->riwayatBahayaLingkunganKerja->bising,
+                'debu' => $mcu->riwayatBahayaLingkunganKerja->debu,
+                'zat_kimia' => $mcu->riwayatBahayaLingkunganKerja->zat_kimia,
+            ] : null,
+            'kecelakaan_kerja' => $mcu->riwayatKecelakaanKerja ? [
+                'jatuh_dari_ketinggian' => $mcu->riwayatKecelakaanKerja->jatuh_dari_ketinggian,
+                'tersayat_benda_tajam' => $mcu->riwayatKecelakaanKerja->tersayat_benda_tajam,
+            ] : null,
+            'riwayat_keluarga' => $mcu->riwayatPenyakitKeluarga ? [
+                'penyakit_jantung' => $mcu->riwayatPenyakitKeluarga->penyakit_jantung,
+                'penyakit_darah_tinggi' => $mcu->riwayatPenyakitKeluarga->penyakit_darah_tinggi,
+                'penyakit_kencing_manis' => $mcu->riwayatPenyakitKeluarga->penyakit_kencing_manis,
+            ] : null,
+            'pemeriksaan_lainnya' => $additionalData,
+        ];
+    }
+
+    /**
+     * Preview PDF document in browser (tidak langsung download)
+     */
+    public function previewPDF($mcuId)
+    {
+        try {
+            $mcu = MedicalCheckUp::with([
+                'employee',
+                'kategori_mcu',
+                'jenisPemeriksaans',
+                'dataAwal',
+                'pemeriksaanTandaVitalStatusGizi',
+                'pemeriksaanFisik',
+                'riwayatPenyakitPasien',
+                'kebiasaan',
+            ])->findOrFail($mcuId);
+
+            $additionalData = $this->loadAdditionalPemeriksaan($mcuId);
+            $data = $this->formatMcuData($mcu, $additionalData);
+            $data['today'] = Carbon::now()->format('d F Y');
+
+            $pdf = Pdf::loadView('pdf.hasil-pemeriksaan', $data)
+                ->setPaper('A4', 'portrait')
+                ->setOption('enable_html5_parser', true)
+                ->setOption('isRemoteEnabled', true);
+
+            return $pdf->stream('Hasil_Pemeriksaan_' . $mcu->employee->nrp . '.pdf');
+        } catch (\Exception $e) {
+            return back()->with('error', 'Gagal membuat PDF: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Download PDF document (langsung download)
+     */
+    public function downloadPDF($mcuId)
+    {
+        try {
+            $mcu = MedicalCheckUp::with([
+                'employee',
+                'kategori_mcu',
+                'jenisPemeriksaans',
+                'dataAwal',
+                'pemeriksaanTandaVitalStatusGizi',
+                'pemeriksaanFisik',
+                'riwayatPenyakitPasien',
+                'kebiasaan',
+            ])->findOrFail($mcuId);
+
+            $additionalData = $this->loadAdditionalPemeriksaan($mcuId);
+            $data = $this->formatMcuData($mcu, $additionalData);
+            $data['today'] = Carbon::now()->format('d F Y');
+
+            $filename = 'Hasil_Pemeriksaan_' . $mcu->employee->nrp . '_' .
+                Carbon::parse($mcu->tanggal_mcu)->format('Ymd') . '.pdf';
+
+            $pdf = Pdf::loadView('pdf.hasil-pemeriksaan', $data)
+                ->setPaper('A4', 'portrait')
+                ->setOption('enable_html5_parser', true)
+                ->setOption('isRemoteEnabled', true);
+
+            return $pdf->download($filename);
+        } catch (\Exception $e) {
+            return back()->with('error', 'Gagal membuat PDF: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Print document view (HTML view untuk print)
+     */
+    public function printView($mcuId)
+    {
+        try {
+            $mcu = MedicalCheckUp::with([
+                'employee',
+                'kategori_mcu',
+                'jenisPemeriksaans',
+                'dataAwal',
+                'pemeriksaanTandaVitalStatusGizi',
+                'pemeriksaanFisik',
+                'riwayatPenyakitPasien',
+                'kebiasaan',
+            ])->findOrFail($mcuId);
+
+            $additionalData = $this->loadAdditionalPemeriksaan($mcuId);
+            $data = $this->formatMcuData($mcu, $additionalData);
+            $data['today'] = Carbon::now()->format('d F Y');
+
+            return view('print.hasil-pemeriksaan', $data);
+        } catch (\Exception $e) {
+            return back()->with('error', 'Gagal menampilkan dokumen: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Get complete MCU data for full document
+     */
+    public function getFullMcuData($mcuId)
+    {
+        try {
+            // Ambil data MCU utama
+            $mcu = MedicalCheckUp::with([
+                'employee',
+                'kategori_mcu',
+                'jenisPemeriksaans',
+            ])->findOrFail($mcuId);
+
+            // Ambil SEMUA data pemeriksaan dari semua tabel
+            $allPemeriksaan = $this->getAllPemeriksaanData($mcuId);
+
+            // Ambil odontogram jika ada
+            $gigiMulutId = $allPemeriksaan['pemeriksaan_gigi_mulut']->id ?? null;
+            $odontogram = $gigiMulutId ? Odontogram::where('pemeriksaan_gigi_mulut_id', $gigiMulutId)->get() : collect();
+
+            // Format data untuk response
+            $data = [
+                'success' => true,
+                'data' => [
+                    'employee' => $mcu->employee,
+                    'mcu' => $mcu,
+                    'kategori_mcu' => $mcu->kategori_mcu,
+                    'jenis_pemeriksaan' => $mcu->jenisPemeriksaans,
+                    'all_pemeriksaan' => $allPemeriksaan,
+                    'odontogram' => $odontogram,
+                    'tanggal_mcu_formatted' => $mcu->tanggal_mcu ? Carbon::parse($mcu->tanggal_mcu)->format('d F Y H:i') : '-',
+                    'tanggal_mcu_short' => $mcu->tanggal_mcu ? Carbon::parse($mcu->tanggal_mcu)->format('d/m/Y') : '-',
+                ]
+            ];
+
+            return response()->json($data);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Data MCU tidak ditemukan',
+                'error' => $e->getMessage()
+            ], 404);
+        }
+    }
+
+    /**
+     * Get all pemeriksaan data
+     */
+    private function getAllPemeriksaanData($mcuId)
+    {
+        return [
+            'kesimpulan' => [], // array of strings
+            'saran' => [], // array of strings
+            'data_awal' => Dataawal::where('mcu_id', $mcuId)->first(),
+            'riwayat_lingkungan_kerja' => Riwayatlingkungankerja::where('mcu_id', $mcuId)->first(),
+            'riwayat_kecelakaan_kerja' => Riwayatkecelakaankerja::where('mcu_id', $mcuId)->first(),
+            'kebiasaan' => Kebiasaan::where('mcu_id', $mcuId)->first(),
+            'riwayat_penyakit_keluarga' => Riwayatpenyakitkeluarga::where('mcu_id', $mcuId)->first(),
+            'riwayat_penyakit_pasien' => Riwayatpenyakitpasien::where('mcu_id', $mcuId)->first(),
+            'pemeriksaan_tanda_vital_gizi' => Pemeriksaanvitalgizi::where('mcu_id', $mcuId)->first(),
+            'pemeriksaan_fisik' => Pemeriksaanfisik::where('mcu_id', $mcuId)->first(),
+            'pemeriksaan_tht' => PemeriksaanTht::where('mcu_id', $mcuId)->first(),
+            'pemeriksaan_thorax' => PemeriksaanThorax::where('mcu_id', $mcuId)->first(),
+            'pemeriksaan_abdomen' => PemeriksaanAbdomen::where('mcu_id', $mcuId)->first(),
+            'pemeriksaan_neurologis' => PemeriksaanNeurologis::where('mcu_id', $mcuId)->first(),
+            'pemeriksaan_neurologis_khusus' => PemeriksaanNeurologisKhusus::where('mcu_id', $mcuId)->first(),
+            'pemeriksaan_muskuloskeletal' => PemeriksaanMuskuloskeletal::where('mcu_id', $mcuId)->first(),
+            'pemeriksaan_gigi_mulut' => PemeriksaanGigiMulut::where('mcu_id', $mcuId)->first(),
+            'laboratorium' => $employee->laboratoriumResults ?? collect(), // collection
+            'radiologi' => $employee->radiologi ?? null,
+            'ekg' => $employee->ekg ?? null,
+        ];
+    }
+
+    /**
+     * Preview full PDF document in browser (tidak langsung download)
+     */
+    public function previewFullPDF($mcuId)
+    {
+        try {
+            // Ambil data MCU utama
+            $mcu = MedicalCheckUp::with([
+                'employee',
+                'kategori_mcu',
+                'jenisPemeriksaans',
+            ])->findOrFail($mcuId);
+
+            // Ambil SEMUA data pemeriksaan
+            $allPemeriksaan = $this->getAllPemeriksaanData($mcuId);
+
+            // Ambil odontogram
+            $gigiMulutId = $allPemeriksaan['pemeriksaan_gigi_mulut']->id ?? null;
+            $odontogram = $gigiMulutId ? Odontogram::where('pemeriksaan_gigi_mulut_id', $gigiMulutId)->get() : collect();
+
+            // Data untuk PDF
+            $data = [
+                'employee' => $mcu->employee,
+                'mcu' => $mcu,
+                'kategori_mcu' => $mcu->kategori_mcu,
+                'jenis_pemeriksaan' => $mcu->jenisPemeriksaans,
+                'all_pemeriksaan' => $allPemeriksaan,
+                'odontogram' => $odontogram,
+                'tanggal_mcu' => $mcu->tanggal_mcu ? Carbon::parse($mcu->tanggal_mcu)->format('d F Y H:i') : '-',
+                'today' => Carbon::now()->format('d F Y'),
+            ];
+
+            $pdf = Pdf::loadView('pemeriksaan.pdf', $data)
+                ->setPaper('A4', 'portrait')
+                ->setOption('enable_html5_parser', true)
+                ->setOption('isRemoteEnabled', true);
+
+            return $pdf->stream('Hasil_Pemeriksaan_Lengkap_' . $mcu->employee->nrp . '.pdf');
+        } catch (\Exception $e) {
+            return back()->with('error', 'Gagal membuat PDF: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Download full PDF document (langsung download)
+     */
+    public function downloadFullPDF($mcuId)
+    {
+        try {
+            // Ambil data MCU utama
+            $mcu = MedicalCheckUp::with([
+                'employee',
+                'kategori_mcu',
+                'jenisPemeriksaans',
+            ])->findOrFail($mcuId);
+
+            // Ambil SEMUA data pemeriksaan
+            $allPemeriksaan = $this->getAllPemeriksaanData($mcuId);
+
+            // Ambil odontogram
+            $gigiMulutId = $allPemeriksaan['pemeriksaan_gigi_mulut']->id ?? null;
+            $odontogram = $gigiMulutId ? Odontogram::where('pemeriksaan_gigi_mulut_id', $gigiMulutId)->get() : collect();
+
+            // Data untuk PDF
+            $data = [
+                'employee' => $mcu->employee,
+                'mcu' => $mcu,
+                'kategori_mcu' => $mcu->kategori_mcu,
+                'jenis_pemeriksaan' => $mcu->jenisPemeriksaans,
+                'all_pemeriksaan' => $allPemeriksaan,
+                'odontogram' => $odontogram,
+                'tanggal_mcu' => $mcu->tanggal_mcu ? Carbon::parse($mcu->tanggal_mcu)->format('d F Y H:i') : '-',
+                'today' => Carbon::now()->format('d F Y'),
+            ];
+
+            $filename = 'Hasil_Pemeriksaan_Lengkap_' . $mcu->employee->nrp . '_' .
+                Carbon::parse($mcu->tanggal_mcu)->format('Ymd') . '.pdf';
+
+            $pdf = Pdf::loadView('pemeriksaan.pdf', $data)
+                ->setPaper('A4', 'portrait')
+                ->setOption('enable_html5_parser', true)
+                ->setOption('isRemoteEnabled', true);
+
+            return $pdf->download($filename);
+        } catch (\Exception $e) {
+            return back()->with('error', 'Gagal mendownload PDF: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Print full document view (HTML view untuk print)
+     */
+    public function printFullView($mcuId)
+    {
+        try {
+            $mcu = MedicalCheckUp::with([
+                'employee',
+                'kategori_mcu',
+                'jenisPemeriksaans',
+            ])->findOrFail($mcuId);
+
+            $allPemeriksaan = $this->getAllPemeriksaanData($mcuId);
+
+            $gigiMulutId = $allPemeriksaan['pemeriksaan_gigi_mulut']->id ?? null;
+            $odontogram = $gigiMulutId ? Odontogram::where('pemeriksaan_gigi_mulut_id', $gigiMulutId)->get() : collect();
+
+            $data = [
+                'employee' => $mcu->employee,
+                'mcu' => $mcu,
+                'kategori_mcu' => $mcu->kategori_mcu,
+                'jenis_pemeriksaan' => $mcu->jenisPemeriksaans,
+                'all_pemeriksaan' => $allPemeriksaan,
+                'odontogram' => $odontogram,
+                'tanggal_mcu' => $mcu->tanggal_mcu ? Carbon::parse($mcu->tanggal_mcu)->format('d F Y H:i') : '-',
+                'today' => Carbon::now()->format('d F Y'),
+            ];
+
+            return view('print.hasil-pemeriksaan-lengkap', $data);
+        } catch (\Exception $e) {
+            return back()->with('error', 'Gagal menampilkan dokumen: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Get employee checkin history
+     */
+    public function getCheckinHistory($employeeId)
+    {
+        try {
+            $employee = Employee::with(['medicalCheckUps' => function ($query) {
+                $query->with(['kategori_mcu', 'jenisPemeriksaans'])
+                    ->orderBy('tanggal_mcu', 'desc');
+            }])->findOrFail($employeeId);
+
+            $checkins = $employee->medicalCheckUps->map(function ($checkin) {
+                return [
+                    'id' => $checkin->id,
+                    'tanggal' => $checkin->tanggal_mcu ? Carbon::parse($checkin->tanggal_mcu)->format('d/m/Y') : '-',
+                    'kategori' => $checkin->kategori_mcu ? $checkin->kategori_mcu->nama : '-',
+                    'jenis_pemeriksaan' => $checkin->jenisPemeriksaans->pluck('nama_pemeriksaan')->toArray(),
+                    'has_data' => $this->checkMcuHasData($checkin->id),
+                ];
+            });
+
+            return response()->json([
+                'success' => true,
+                'employee' => [
+                    'id' => $employee->id,
+                    'nama' => $employee->nama,
+                    'nrp' => $employee->nrp,
+                    'departement' => $employee->departement,
+                    'perusahaan' => $employee->nama_perusahaan,
+                ],
+                'checkins' => $checkins,
+                'total' => $checkins->count()
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Data tidak ditemukan'
+            ], 404);
+        }
+    }
+
+    /**
+     * Check if MCU has data
+     */
+    private function checkMcuHasData($mcuId)
+    {
+        $hasData = Dataawal::where('mcu_id', $mcuId)->exists() ||
+            Pemeriksaanvitalgizi::where('mcu_id', $mcuId)->exists() ||
+            Pemeriksaanfisik::where('mcu_id', $mcuId)->exists();
+
+        return $hasData;
     }
 }

@@ -52,8 +52,9 @@ class Employee extends Model
 
         return $diff->y . ' tahun ' . $diff->m . ' bulan ' . $diff->d . ' hari';
     }
+
     /**
-     * Relasi ke MedicalCheckUp
+     * Relasi ke MedicalCheckUp (checkins)
      */
     public function medicalCheckUps(): HasMany
     {
@@ -61,8 +62,32 @@ class Employee extends Model
     }
 
     /**
+     * Alias untuk checkins (agar konsisten dengan controller)
+     */
+    public function checkins(): HasMany
+    {
+        return $this->hasMany(MedicalCheckUp::class);
+    }
+
+    /**
+     * Relasi untuk checkin hari ini
+     */
+    public function checkin_today()
+    {
+        return $this->hasOne(MedicalCheckUp::class)
+            ->whereDate('tanggal_mcu', Carbon::today());
+    }
+
+    /**
+     * Relasi untuk checkin terbaru
+     */
+    public function latestCheckin()
+    {
+        return $this->hasOne(MedicalCheckUp::class)->latestOfMany();
+    }
+
+    /**
      * Cek apakah sudah check-in hari ini
-     * NOTE: Ini adalah method biasa, bukan relationship
      */
     public function sudahCheckinHariIni($tanggal = null)
     {
@@ -77,7 +102,6 @@ class Employee extends Model
 
     /**
      * Ambil data check-in hari ini
-     * NOTE: Ini adalah method biasa, bukan relationship
      */
     public function getCheckinHariIni($tanggal = null)
     {
@@ -88,5 +112,74 @@ class Employee extends Model
         return $this->medicalCheckUps()
             ->whereDate('tanggal_mcu', $tanggal)
             ->first();
+    }
+
+    /**
+     * Scope untuk pegawai yang pernah checkin
+     */
+    public function scopeHasCheckins($query)
+    {
+        return $query->whereHas('medicalCheckUps');
+    }
+
+    /**
+     * Scope untuk pegawai dengan checkin di tanggal tertentu
+     */
+    public function scopeWithCheckinDate($query, $date)
+    {
+        return $query->whereHas('medicalCheckUps', function ($q) use ($date) {
+            $q->whereDate('tanggal_mcu', $date);
+        });
+    }
+
+    /**
+     * Ambil semua checkin dengan relasi
+     */
+    public function getAllCheckinsWithRelations()
+    {
+        return $this->checkins()
+            ->with(['kategoriMcu', 'jenisPemeriksaans'])
+            ->orderBy('tanggal_mcu', 'desc')
+            ->get();
+    }
+
+    /**
+     * Hitung total checkin
+     */
+    public function getTotalCheckinsAttribute()
+    {
+        return $this->medicalCheckUps()->count();
+    }
+
+    /**
+     * Ambil tanggal checkin terbaru
+     */
+    public function getLatestCheckinDateAttribute()
+    {
+        $latest = $this->medicalCheckUps()
+            ->orderBy('tanggal_mcu', 'desc')
+            ->first();
+
+        return $latest ? Carbon::parse($latest->tanggal_mcu)->format('d/m/Y H:i') : null;
+    }
+
+    /**
+     * Ambil jenis pemeriksaan untuk label
+     */
+    public function getLabelPemeriksaanAttribute()
+    {
+        $checkin = $this->getCheckinHariIni();
+
+        if (!$checkin || !$checkin->jenisPemeriksaans) {
+            return collect();
+        }
+
+        return $checkin->jenisPemeriksaans->map(function ($jenis) {
+            return [
+                'id' => $jenis->id,
+                'nama' => $jenis->nama_pemeriksaan,
+                'parent_id' => $jenis->parent_id,
+            ];
+        });
     }
 }

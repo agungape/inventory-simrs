@@ -28,5 +28,11 @@
                 <span>Pemeriksaan MCU</span>
             </a>
         </li>
+        <li class="nav-item">
+            <a class="nav-link @yield('MenuDocument', 'collapsed')" href="{{ route('dokumen.hasil') }}">
+                <i class="bi bi-file-post-fill"></i>
+                <span>Document Hasil</span>
+            </a>
+        </li>
     </ul>
 </aside>
