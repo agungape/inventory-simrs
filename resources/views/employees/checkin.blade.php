@@ -696,65 +696,40 @@
             // ========== FUNGSI CETAK LABEL ==========
 
             function createLabelContent(data) {
-
-                const waktu = new Date(data.checkinDate).toLocaleTimeString('id-ID', {
-                    hour: '2-digit',
-                    minute: '2-digit'
-                });
-
-                const childHTML = (data.children && data.children.length) ?
-                    `<div class="child">
-                ${data.children.map(c => `<div>• ${c}</div>`).join('')}
-                </div>` :
-                    '';
-
-                return `
-                <!DOCTYPE html>
-                <html>
-                <head>
-                <meta charset="UTF-8">
-                <title>Label ${data.parent}</title>
-
-                <style>
-                @page  {
-                    margin: 0;
-                    padding: 0;
-                }
-                body {
+    return `
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="UTF-8">
+        <style>
+            @page { margin: 0; padding: 0; }
+            body {
                 width: 50mm;
                 margin-top: 8px;
                 font-family: Arial, sans-serif;
                 font-size: 12px;
-                }
-
-                .value-col {
-                flex: 1;
-                }
-                .parent-box {
-                margin: 1px 0;
-                padding: 1px;
+                padding: 5px;
+            }
+            .parent-box {
+                margin: 5px 0;
+                padding: 4px;
                 text-align: center;
                 font-weight: bold;
-                font-size: 13px;
+                font-size: 14px;
                 background: #f2f2f2;
-                border-radius: 4px;
                 border: 1px solid #ccc;
-                letter-spacing: 1px;
-                }
-
-                </style>
-                </head>
-
-                <body>
-
-                <div class="value-col">${data.noRM}</div>
-                <div class="value-col" style="font-weight: bold">${data.nama}</div>
-                <div class="value-col">${data.tglLahir} / ${data.usia}</div>
-
-                <div class="parent-box">${data.parent.toUpperCase()}</div>
-                </body>
-                </html>`;
+                text-transform: uppercase;
             }
+        </style>
+    </head>
+    <body>
+        <div>RM: ${data.noRM}</div>
+        <div style="font-weight: bold">${data.nama}</div>
+        <div>${data.tglLahir} / ${data.usia}</div>
+        <div class="parent-box">${data.parent}</div>
+    </body>
+    </html>`;
+}
 
             function createLabelDataContent(data) {
 
@@ -878,34 +853,45 @@
 
             // Fungsi untuk mencetak label
             function printLabels(employee, labels, checkinDate) {
+    // Pastikan labels adalah array dan memiliki isi
+    if (!labels || labels.length === 0) {
+        alert("Data pemeriksaan tidak ditemukan.");
+        return;
+    }
 
-                const win = window.open('', '_blank');
-                let html = '';
+    let htmlContent = '';
 
-                Object.keys(labels).forEach(parent => {
-                    html += createLabelContent({
-                        noRM: employee.noRM ?? '0000000',
-                        nrp: employee.nrp,
-                        nama: employee.nama,
-                        usia: employee.usia,
-                        tglLahir: employee.tglLahir,
-                        telp: employee.telp,
-                        perusahaan: employee.perusahaan,
-                        parent: parent,
-                        children: labels[parent],
-                        checkinDate: checkinDate
-                    });
+    // Karena di PHP sudah array_values, labels di sini adalah array murni ["LAB", "RAD"]
+    // Langsung looping isinya (bukan keys-nya)
+    labels.forEach(namaPemeriksaan => {
+        htmlContent += createLabelContent({
+            noRM: employee.noRM || '0000000',
+            nrp: employee.nrp,
+            nama: employee.nama,
+            usia: employee.usia,
+            tglLahir: employee.tglLahir,
+            telp: employee.telp,
+            perusahaan: employee.perusahaan,
+            parent: namaPemeriksaan, // Ini akan berisi teks nama pemeriksaan
+            checkinDate: checkinDate
+        });
+        htmlContent += `<div style="page-break-after:always"></div>`;
+    });
 
-                    html += `<div style="page-break-after:always"></div>`;
-                });
+    const win = window.open('', '_blank');
+    if (win) {
+        win.document.write(htmlContent);
+        win.document.close();
 
-                win.document.write(html);
-                win.document.close();
-
-                setTimeout(() => {
-                    win.print();
-                }, 500);
-            }
+        // Berikan sedikit waktu untuk render sebelum print
+        setTimeout(() => {
+            win.focus();
+            win.print();
+        }, 500);
+    } else {
+        alert("Mohon izinkan popup pada browser Anda untuk mencetak label.");
+    }
+}
 
             // Fungsi untuk mencetak label
             function printLabelsData(employee, labels, checkinDate) {

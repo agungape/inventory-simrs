@@ -57,7 +57,8 @@
                                             {{ $employee->nama }}
                                             @if($employee->medicalCheckUps->count() > 0)
                                                 <span class="badge bg-success ms-1">
-                                                    {{ $employee->medicalCheckUps->count() }} MCU
+                                                    {{ $employee->medicalCheckUps->count() }}
+                                                      MCU
                                                 </span>
                                             @endif
                                         </td>

@@ -1321,25 +1321,29 @@
                                                                     </div>
                                                                 </div>
 
-                                                                <div class="row mb-3">
-                                                                    <div class="col-md-6">
-                                                                        <div class="form-check">
-                                                                            <input class="form-check-input" type="checkbox"
-                                                                                name="hipertensi" id="hipertensi"
-                                                                                value="1">
-                                                                            <label class="form-check-label"
-                                                                                for="hipertensi">Hipertensi / Tekanan Darah
-                                                                                Tinggi</label>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-md-6">
-                                                                        <div class="form-check">
-                                                                            <input class="form-check-input" type="checkbox"
-                                                                                name="diabetes_melitus"
-                                                                                id="diabetes_melitus" value="1">
-                                                                            <label class="form-check-label"
-                                                                                for="diabetes_melitus">Diabetes Melitus /
-                                                                                Kencing Manis</label>
+                                                                <div class="card mb-3">
+                                                                    <div class="card-body">
+                                                                        <div class="row align-items-center">
+                                                                            <div class="col-md-6">
+                                                                                <div class="form-check">
+                                                                                    <input class="form-check-input" type="checkbox"
+                                                                                        name="hipertensi" id="hipertensi"
+                                                                                        value="1">
+                                                                                    <label class="form-check-label"
+                                                                                        for="hipertensi">Hipertensi / Tekanan Darah
+                                                                                        Tinggi</label>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-md-6">
+                                                                                <div class="form-check">
+                                                                                    <input class="form-check-input" type="checkbox"
+                                                                                        name="diabetes_melitus"
+                                                                                        id="diabetes_melitus" value="1">
+                                                                                    <label class="form-check-label"
+                                                                                        for="diabetes_melitus">Diabetes Melitus /
+                                                                                        Kencing Manis</label>
+                                                                                </div>
+                                                                            </div>
                                                                         </div>
                                                                     </div>
                                                                 </div>
