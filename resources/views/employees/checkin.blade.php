@@ -128,7 +128,7 @@
                                                                 data-employee-perusahaan="{{ $employee->nama_perusahaan }}"
                                                                 data-employee-tgl_lahir="{{ $employee->tanggal_lahir }}"
                                                                 data-checkin-date="{{ optional($employee->checkin_today)->tanggal_mcu }}"
-                                                                data-labels='@json($employee->label_pemeriksaan)'>
+                                                                data-labels='@json($employee->label_pemeriksaan_checkin)'>
                                                                 <i class="bi bi-printer"></i> Cetak Label
                                                             </button>
                                                             <button type="button"
@@ -141,7 +141,7 @@
                                                                     data-employee-perusahaan="{{ $employee->nama_perusahaan }}"
                                                                     data-employee-tgl_lahir="{{ $employee->tanggal_lahir }}"
                                                                     data-checkin-date="{{ optional($employee->checkin_today)->tanggal_mcu }}"
-                                                                    data-labels='@json($employee->label_pemeriksaan)'>
+                                                                    data-labels='@json($employee->label_pemeriksaan_checkin)'>
                                                                 <i class="bi bi-printer"></i> Cetak Data Pegawai
                                                             </button>
                                                         @endif

@@ -271,9 +271,9 @@ class EmployeeController extends Controller
                             $labels[$jenis->nama_pemeriksaan] = [];
                         }
                     }
-                    $employee->label_pemeriksaan = $labels;
+                    $employee->label_pemeriksaan_checkin = $labels;
                 } else {
-                    $employee->label_pemeriksaan = [];
+                    $employee->label_pemeriksaan_checkin = [];
                 }
 
 
