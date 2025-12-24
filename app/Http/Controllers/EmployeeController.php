@@ -264,6 +264,22 @@ class EmployeeController extends Controller
                 $labels = [];
 
                 if ($employee->checkin_today) {
+
+                    $labels = [];
+
+                    foreach ($employee->checkin_today->jenisPemeriksaans as $jenis) {
+                        if ($jenis->parent) {
+                            $labels[$jenis->parent->nama_pemeriksaan][] = $jenis->nama_pemeriksaan;
+                        } else {
+                            // jika parent langsung dipilih (tanpa child)
+                            $labels[$jenis->nama_pemeriksaan] = [];
+                        }
+                    }
+                    $employee->label_pemeriksaan_checkin = $labels;
+                } else {
+                    $employee->label_pemeriksaan_checkin = [];
+                }
+
                     // Pastikan relasi jenisPemeriksaans tidak null
                     $pemeriksaans = $employee->checkin_today->jenisPemeriksaans ?? [];
 
