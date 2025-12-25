@@ -133,7 +133,7 @@ class MedicalCheckUp extends Model
     }
 
     // Untuk mengambil file lab
-    public function dokumenLab()
+    public function dokumenLaboratorium()
     {
         return $this->hasMany(DokumenMcu::class, 'mcu_id')
             ->where('jenis_dokumen', 'Laboratorium');

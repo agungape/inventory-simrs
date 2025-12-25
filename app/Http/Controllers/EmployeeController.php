@@ -259,10 +259,6 @@ class EmployeeController extends Controller
                     ->first();
 
                 // ===== GROUP JENIS PEMERIKSAAN =====
-                // Di dalam loop transform Employee pada Controller Anda:
-                // Di dalam Controller (bagian transform data)
-                $labels = [];
-
                 if ($employee->checkin_today) {
 
                     $labels = [];
@@ -280,21 +276,6 @@ class EmployeeController extends Controller
                     $employee->label_pemeriksaan_checkin = [];
                 }
 
-                    // Pastikan relasi jenisPemeriksaans tidak null
-                    $pemeriksaans = $employee->checkin_today->jenisPemeriksaans ?? [];
-
-                    foreach ($pemeriksaans as $jenis) {
-                        // Ambil nama parent atau namanya sendiri
-                        $p = $jenis->parent ? $jenis->parent->nama_pemeriksaan : $jenis->nama_pemeriksaan;
-
-                        // Simpan ke array dengan key agar otomatis unik (tidak duplikat)
-                        $labels[$p] = $p;
-                    }
-                }
-
-                // Gunakan array_values agar di JSON menjadi ["LABORATORIUM", "RADIOLOGI"]
-                // Jika kosong, hasilnya adalah array kosong [] bukan null
-                $employee->label_pemeriksaan = array_values($labels);
 
 
                 return $employee;

@@ -9,6 +9,7 @@ use App\Models\Dataawal;
 use App\Models\HasilBacaEkg;
 use App\Models\HasilBacaRadiologi;
 use App\Models\HasilPemeriksaan;
+use App\Models\KategoriMcu;
 use App\Models\Kebiasaan;
 use App\Models\PemeriksaanTht;
 use App\Models\PemeriksaanGigiMulut;
@@ -943,7 +944,7 @@ class FormController extends Controller
             'pemeriksaanMuskuloskeletal',
             'pemeriksaanGigiMulut',
             'hasilPemeriksaan',
-            'dokumenLab',
+            'dokumenLaboratorium',
             'dokumenRadiologi' => function ($query) {
                 $query->with('hasilBacaRadiologi');
             },
@@ -972,7 +973,7 @@ class FormController extends Controller
             'pemeriksaan_neurologis_khusus' => $mcu->pemeriksaanNeurologisKhusus,
             'pemeriksaan_muskuloskeletal' => $mcu->pemeriksaanMuskuloskeletal,
             'pemeriksaan_gigi_mulut' => $mcu->pemeriksaanGigiMulut,
-            'laboratorium_files' => $mcu->dokumenLab, // file-file lab (upload)
+            'laboratorium_files' => $mcu->dokumenLaboratorium, // file-file lab (upload)
             'radiologi_files' => $mcu->dokumenRadiologi, // file-file radiologi dengan hasil baca
             'ekg_files' => $mcu->dokumenEkg, // file-file EKG dengan hasil baca
             'hasil_pemeriksaan' => $mcu->hasilPemeriksaan,
@@ -989,18 +990,19 @@ class FormController extends Controller
                 'jenisPemeriksaans',
             ])->findOrFail($mcuId);
 
+            $KategoriMcu = KategoriMcu::where('id', $mcu->kategori_mcu)->first();
             // Ambil SEMUA data pemeriksaan
             $allPemeriksaan = $this->getAllPemeriksaanData($mcuId);
 
             // Ambil odontogram
             $gigiMulutId = $allPemeriksaan['pemeriksaan_gigi_mulut']->id ?? null;
             $odontogram = $gigiMulutId ? Odontogram::where('pemeriksaan_gigi_mulut_id', $gigiMulutId)->get() : collect();
-
             // Data untuk PDF
             $data = [
                 'employee' => $mcu->employee,
                 'mcu' => $mcu,
                 'kategori_mcu' => $mcu->kategori_mcu,
+                'KategoriMcu' => $KategoriMcu,
                 'jenis_pemeriksaan' => $mcu->jenisPemeriksaans,
                 'all_pemeriksaan' => $allPemeriksaan,
                 'odontogram' => $odontogram,
@@ -1008,27 +1010,55 @@ class FormController extends Controller
                 'today' => Carbon::now()->format('d F Y'),
             ];
 
-            $html = view('pemeriksaan.pdf', $data)->render();
-
             // Konfigurasi mPDF
             $mpdf = new Mpdf([
                 'mode' => 'utf-8',
                 'format' => 'A4',
                 'default_font' => 'dejavusans',
-                'margin_top' => 10,
-                'margin_bottom' => 10,
-                'margin_left' => 10,
-                'margin_right' => 10,
-                'margin_header' => 5,
-                'margin_footer' => 10,
+                'margin_top' => 0,
+                'margin_bottom' => 0,
+                'margin_left' => 2,
+                'margin_right' => 2,
+                'margin_header' => 0,
+                'margin_footer' => 0,
                 'orientation' => 'P',
             ]);
+
+
+            $html = view('pemeriksaan.pdf', $data)->render();
+
+
 
             // Set metadata
             $mpdf->SetTitle('Medical Checkup Report - ' . $mcu->employee->nrp);
 
             // Write HTML to PDF
             $mpdf->WriteHTML($html);
+
+            if (isset($allPemeriksaan['laboratorium_files'])) {
+                foreach ($allPemeriksaan['laboratorium_files'] as $labFile) {
+                    $filePath = storage_path('app/public/dokumen-mcu/' . $labFile->nama_file);
+
+                    if (!file_exists($filePath)) continue;
+
+                    $extension = strtolower(pathinfo($labFile->nama_file, PATHINFO_EXTENSION));
+
+                    if ($extension === 'pdf') {
+                        // JIKA PDF: Import setiap halamannya
+                        $pageCount = $mpdf->setSourceFile($filePath);
+                        for ($i = 1; $i <= $pageCount; $i++) {
+                            $tplId = $mpdf->importPage($i);
+                            $mpdf->AddPage();
+                            $mpdf->useTemplate($tplId);
+                        }
+                    } elseif (in_array($extension, ['jpg', 'jpeg', 'png'])) {
+                        // JIKA GAMBAR: Tambah halaman baru dan tampilkan full
+                        $mpdf->AddPage();
+                        $mpdf->WriteHTML('<div style="text-align:center"><img src="' . $filePath . '" style="width:100%;" /></div>');
+                    }
+                }
+            }
+
 
             // Output PDF
             $filename = 'Medical_Checkup_Report_' . $mcu->employee->nrp . '_' . date('Ymd_His') . '.pdf';
