@@ -313,10 +313,8 @@
                         <td style="font-weight:bold; vertical-align:top;">Tanggal Lahir</td>
                         <td style="vertical-align:top;">:</td>
                         <td>
-                            {{ \Carbon\Carbon::parse($employee->tanggal_lahir)->format('d F Y') }}
-                            ({{ \Carbon\Carbon::parse($employee->tanggal_lahir)->age }} Tahun
-                            {{ \Carbon\Carbon::parse($employee->tanggal_lahir)->diffInMonths(\Carbon\Carbon::now()) % 12 }} Bulan
-                            {{ \Carbon\Carbon::parse($employee->tanggal_lahir)->diffInDays(\Carbon\Carbon::now()) % 30 }} Hari)
+                            {{ $employee->tanggal_lahir }}
+                            ({{ $employee->usai }})
                         </td>
                     </tr>
                 </table>
@@ -335,7 +333,7 @@
                 <tr>
                     <td style="font-weight:bold;">Tanggal Kunjungan / Lokasi</td>
                     <td>:</td>
-                    <td>{{ \Carbon\Carbon::parse($mcu->tanggal_mcu)->format('d F Y') }} / Morowali</td>
+                    <td>{{ $mcu->tanggal_mcu }} / Morowali</td>
                 </tr>
             </table>
         </div>
@@ -1230,8 +1228,8 @@
                 @else
                     <div class="image-placeholder">
                         <p style="font-size: 14px; margin-bottom: 10px;">{{ str_pad($mcu->id, 12, '0', STR_PAD_LEFT) }}</p>
-                        <p style="font-size: 11px; margin-bottom: 5px;">{{ \Carbon\Carbon::parse($employee->tanggal_lahir)->age }}Y</p>
-                        <p style="font-size: 11px; margin-bottom: 5px;">{{ \Carbon\Carbon::parse($mcu->tanggal_mcu)->format('d.m.Y') }}</p>
+                        <p style="font-size: 11px; margin-bottom: 5px;">{{ $employee->tanggal_lahir }}Y</p>
+                        <p style="font-size: 11px; margin-bottom: 5px;">{{ $mcu->tanggal_mcu)->format('d.m.Y') }}</p>
                         <p style="font-size: 11px;">{{ $employee->jenis_kelamin == 'L' ? 'M' : 'F' }}</p>
                         <br><br>
                         <p style="font-size: 24px; font-weight: bold; letter-spacing: 3px;">L</p>

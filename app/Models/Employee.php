@@ -30,28 +30,28 @@ class Employee extends Model
         'tanggal_lahir' => 'date'
     ];
 
-    // public function getTanggalLahirAttribute($value)
-    // {
-    //     if (!$value) {
-    //         return null;
-    //     }
+    public function getTanggalLahirAttribute($value)
+    {
+        if (!$value) {
+            return null;
+        }
 
-    //     return Carbon::parse($value)->format('d/m/Y');
-    // }
+        return Carbon::parse($value)->format('d/m/Y');
+    }
 
-    // public function getUsiaAttribute()
-    // {
-    //     if (!$this->attributes['tanggal_lahir']) {
-    //         return '-';
-    //     }
+    public function getUsiaAttribute()
+    {
+        if (!$this->attributes['tanggal_lahir']) {
+            return '-';
+        }
 
-    //     // Ambil RAW value dari database (Y-m-d)
-    //     $lahir = Carbon::parse($this->attributes['tanggal_lahir']);
-    //     $sekarang = Carbon::now();
-    //     $diff = $lahir->diff($sekarang);
+        // Ambil RAW value dari database (Y-m-d)
+        $lahir = Carbon::parse($this->attributes['tanggal_lahir']);
+        $sekarang = Carbon::now();
+        $diff = $lahir->diff($sekarang);
 
-    //     return $diff->y . ' tahun ' . $diff->m . ' bulan ' . $diff->d . ' hari';
-    // }
+        return $diff->y . ' tahun ' . $diff->m . ' bulan ' . $diff->d . ' hari';
+    }
 
     /**
      * Relasi ke MedicalCheckUp (checkins)
