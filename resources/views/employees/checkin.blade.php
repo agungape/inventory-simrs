@@ -58,6 +58,7 @@
                                             @php
                                                 $sudahCheckin = $employee->sudahCheckinHariIni();
                                                 $checkinData = $employee->getCheckinHariIni();
+                                                $checkinBulanIni = $employee->getCheckinBulanIni();
                                                 // Ambil data jenis pemeriksaan untuk label
                                                 $jenisLabels = $checkinData
                                                     ? $checkinData->jenisPemeriksaans
@@ -81,7 +82,7 @@
                                                 <td>{{ $employee->departement }}</td>
                                                 <td>{{ $employee->nama_perusahaan }}</td>
                                                 <td>
-                                                    @if ($sudahCheckin && $checkinData)
+                                                    @if (($sudahCheckin && $checkinData) || $checkinBulanIni)
                                                         <div class="d-flex flex-column">
                                                             <span class="badge bg-success mb-1">
                                                                 <i class="bi bi-check-circle me-1"></i> Sudah Check-in

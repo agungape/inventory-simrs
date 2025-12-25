@@ -114,6 +114,17 @@ class Employee extends Model
             ->first();
     }
 
+    public function getCheckinBulanIni($tanggal = null)
+    {
+        if (!$tanggal) {
+            $tanggal = date('Y-m-d');
+        }
+
+        return $this->medicalCheckUps()
+            ->whereMonth('tanggal_mcu', $tanggal)
+            ->first();
+    }
+
     /**
      * Scope untuk pegawai yang pernah checkin
      */
