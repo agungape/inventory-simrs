@@ -49,10 +49,10 @@ class MedicalCheckUp extends Model
 
     public function dataAwal()
     {
-        return $this->hasOne(Dataawal::class, 'mcu_id');
+        return $this->hasOne(DataAwal::class, 'mcu_id');
     }
 
-    public function riwayatBahayaLingkunganKerja()
+    public function riwayatLingkunganKerja()
     {
         return $this->hasOne(Riwayatlingkungankerja::class, 'mcu_id');
     }
@@ -77,7 +77,7 @@ class MedicalCheckUp extends Model
         return $this->hasOne(Riwayatpenyakitpasien::class, 'mcu_id');
     }
 
-    public function pemeriksaanTandaVitalStatusGizi()
+    public function pemeriksaanVitalGizi()
     {
         return $this->hasOne(Pemeriksaanvitalgizi::class, 'mcu_id');
     }
@@ -86,8 +86,70 @@ class MedicalCheckUp extends Model
     {
         return $this->hasOne(Pemeriksaanfisik::class, 'mcu_id');
     }
+
+    public function pemeriksaanTht()
+    {
+        return $this->hasOne(PemeriksaanTht::class, 'mcu_id');
+    }
+
+    public function pemeriksaanThorax()
+    {
+        return $this->hasOne(PemeriksaanThorax::class, 'mcu_id');
+    }
+
+    public function pemeriksaanAbdomen()
+    {
+        return $this->hasOne(PemeriksaanAbdomen::class, 'mcu_id');
+    }
+
+    public function pemeriksaanNeurologis()
+    {
+        return $this->hasOne(PemeriksaanNeurologis::class, 'mcu_id');
+    }
+
+    public function pemeriksaanNeurologisKhusus()
+    {
+        return $this->hasOne(PemeriksaanNeurologisKhusus::class, 'mcu_id');
+    }
+
+    public function pemeriksaanMuskuloskeletal()
+    {
+        return $this->hasOne(PemeriksaanMuskuloskeletal::class, 'mcu_id');
+    }
+
+    public function pemeriksaanGigiMulut()
+    {
+        return $this->hasOne(PemeriksaanGigiMulut::class, 'mcu_id');
+    }
+
+    public function hasilPemeriksaan()
+    {
+        return $this->hasOne(HasilPemeriksaan::class, 'mcu_id');
+    }
+
     public function dokumenMcu()
     {
-        return $this->hasOne(DokumenMcu::class, 'mcu_id');
+        return $this->hasMany(DokumenMcu::class, 'mcu_id');
+    }
+
+    // Untuk mengambil file lab
+    public function dokumenLaboratorium()
+    {
+        return $this->hasMany(DokumenMcu::class, 'mcu_id')
+            ->where('jenis_dokumen', 'Laboratorium');
+    }
+
+    // Untuk mengambil file radiologi
+    public function dokumenRadiologi()
+    {
+        return $this->hasMany(DokumenMcu::class, 'mcu_id')
+            ->where('jenis_dokumen', 'Radiologi');
+    }
+
+    // Untuk mengambil file EKG
+    public function dokumenEkg()
+    {
+        return $this->hasMany(DokumenMcu::class, 'mcu_id')
+            ->where('jenis_dokumen', 'EKG');
     }
 }
