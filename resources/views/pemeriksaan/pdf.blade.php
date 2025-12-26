@@ -439,11 +439,23 @@
                                 <div class="photo-container">
                                     <div class="photo-frame">
 
-                                        @if($foto_compressed)
-                                        <img src="{{ $foto_compressed }}" alt="Foto" style="width: 100px; height: auto;">
-                                    @else
-                                        <p>Tidak ada foto</p>
-                                    @endif
+                                        @php
+                                        // Ambil hanya nama filenya saja (untuk berjaga-jaga jika di DB tersimpan path)
+                                        $pureFileName = basename($mcu->foto);
+
+                                        // Bangun path dengan benar
+                                        $path = storage_path('app' . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR . 'employee-mcu-foto' . DIRECTORY_SEPARATOR . $pureFileName);
+                                        @endphp
+
+                                        @if(!empty($mcu->foto) && file_exists($path))
+                                            @php
+                                                $data = file_get_contents($path);
+                                                $base64 = 'data:image/' . pathinfo($path, PATHINFO_EXTENSION) . ';base64,' . base64_encode($data);
+                                            @endphp
+                                            <img src="{{ $base64 }}" alt="Foto" style="width: 100px">
+                                        @else
+                                            <p style="color:red;">File tidak ditemukan di: {{ $path }}</p>
+                                        @endif
                                     </div>
                                 </div>
 
@@ -469,7 +481,7 @@
                 <tr>
                     <td style="font-weight:bold;">Tanggal Kunjungan / Lokasi</td>
                     <td>:</td>
-                    <td>{{ $mcu->tanggal_mcu }} / Morowali</td>
+                    <td>{{ $mcu->tanggal_mcu }} / Routa (Konawe)</td>
                 </tr>
             </table>
         </div>
