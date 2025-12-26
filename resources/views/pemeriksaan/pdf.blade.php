@@ -439,22 +439,10 @@
                                 <div class="photo-container">
                                     <div class="photo-frame">
 
-                                        @php
-                                        // Ambil hanya nama filenya saja (untuk berjaga-jaga jika di DB tersimpan path)
-                                        $pureFileName = basename($mcu->foto);
-
-                                        // Bangun path dengan benar
-                                        $path = storage_path('app' . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR . 'employee-mcu-foto' . DIRECTORY_SEPARATOR . $pureFileName);
-                                    @endphp
-
-                                    @if(!empty($mcu->foto) && file_exists($path))
-                                        @php
-                                            $data = file_get_contents($path);
-                                            $base64 = 'data:image/' . pathinfo($path, PATHINFO_EXTENSION) . ';base64,' . base64_encode($data);
-                                        @endphp
-                                        <img src="{{ $base64 }}" alt="Foto" style="width: 100px">
+                                        @if($foto_compressed)
+                                        <img src="{{ $foto_compressed }}" alt="Foto" style="width: 100px; height: auto;">
                                     @else
-                                        <p style="color:red;">File tidak ditemukan di: {{ $path }}</p>
+                                        <p>Tidak ada foto</p>
                                     @endif
                                     </div>
                                 </div>

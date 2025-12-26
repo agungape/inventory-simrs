@@ -33,6 +33,7 @@ use Illuminate\Support\Facades\Log;
 use Mpdf\Mpdf;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Cache;
+use Intervention\Image\Facades\Image;
 
 class FormController extends Controller
 {
@@ -983,8 +984,11 @@ class FormController extends Controller
 
     public function previewFullPDF($mcuId)
     {
+        // 1. Tingkatkan limit untuk menangani HTML besar
         ini_set("pcre.backtrack_limit", "5000000");
         ini_set("pcre.recursion_limit", "2000000");
+        ini_set("memory_limit", "512M");
+
         try {
             // Ambil data MCU utama dengan semua relationship
             $mcu = MedicalCheckUp::with([
@@ -994,29 +998,26 @@ class FormController extends Controller
             ])->findOrFail($mcuId);
 
             $KategoriMcu = KategoriMcu::where('id', $mcu->kategori_mcu)->first();
+
             // Ambil SEMUA data pemeriksaan
             $allPemeriksaan = $this->getAllPemeriksaanData($mcuId);
 
             // Ambil odontogram
             $gigiMulutId = $allPemeriksaan['pemeriksaan_gigi_mulut']->id ?? null;
             $odontogram = $gigiMulutId ? Odontogram::where('pemeriksaan_gigi_mulut_id', $gigiMulutId)->get() : collect();
-            // Data untuk PDF
 
-            // GENERATE VALIDATION CODE UNTUK QR CODE
-            // Generate validation code
-            $validationCode = 'MC' . str_pad($mcu->id, 12, '0', STR_PAD_LEFT) . '-' .
-                substr(md5($mcu->employee->nrp . $mcu->tanggal_mcu), 0, 8);
-
-            // Simpan ke cache
-            Cache::put('mcu_validate_' . $validationCode, [
-                'mcu_id' => $mcuId,
-                'employee_id' => $mcu->employee->id,
-                'expires_at' => now()->addDays(30)->toDateTimeString()
-            ], now()->addDays(30));
+            // 2. Proses Kompresi Foto Profil (mcu->foto) ke Base64
+            $fotoCompressed = null;
+            if ($mcu->foto) {
+                $pureFileName = basename(trim($mcu->foto));
+                $pathFoto = storage_path('app/public/employee-mcu-foto/' . $pureFileName);
+                $fotoCompressed = $this->compressImageToBase64($pathFoto, 300); // Resize ke lebar 300px
+            }
 
             $data = [
                 'employee' => $mcu->employee,
                 'mcu' => $mcu,
+                'foto_compressed' => $fotoCompressed, // Gunakan ini di Blade
                 'kategori_mcu' => $mcu->kategori_mcu,
                 'KategoriMcu' => $KategoriMcu,
                 'jenis_pemeriksaan' => $mcu->jenisPemeriksaans,
@@ -1024,10 +1025,9 @@ class FormController extends Controller
                 'odontogram' => $odontogram,
                 'tanggal_mcu' => $mcu->tanggal_mcu ? Carbon::parse($mcu->tanggal_mcu)->format('d F Y H:i') : '-',
                 'today' => Carbon::now()->format('d F Y'),
-                // 'validation_code' => $validationCode, // Tambahkan ini
             ];
 
-            // Konfigurasi mPDF
+            // 3. Konfigurasi mPDF
             $mpdf = new Mpdf([
                 'mode' => 'utf-8',
                 'format' => 'A4',
@@ -1035,24 +1035,19 @@ class FormController extends Controller
                 'default_font' => 'dejavusans',
                 'margin_top' => 0,
                 'margin_bottom' => 0,
-                'margin_left' => 2,
-                'margin_right' => 2,
-                'margin_header' => 0,
-                'margin_footer' => 0,
-                'orientation' => 'P',
+                'margin_left' => 1,
+                'margin_right' => 1,
             ]);
 
-
             $html = view('pemeriksaan.pdf', $data)->render();
-
-
 
             // Set metadata
             $mpdf->SetTitle('Medical Checkup Report - ' . $mcu->employee->nrp);
 
-            // Write HTML to PDF
+            // Write HTML utama
             $mpdf->WriteHTML($html);
 
+            // 4. Proses Lampiran (Laboratorium Files)
             if (isset($allPemeriksaan['laboratorium_files'])) {
                 foreach ($allPemeriksaan['laboratorium_files'] as $labFile) {
                     $filePath = storage_path('app/public/dokumen-mcu/' . $labFile->nama_file);
@@ -1062,26 +1057,31 @@ class FormController extends Controller
                     $extension = strtolower(pathinfo($labFile->nama_file, PATHINFO_EXTENSION));
 
                     if ($extension === 'pdf') {
-                        // JIKA PDF: Import setiap halamannya
-                        $pageCount = $mpdf->setSourceFile($filePath);
-                        for ($i = 1; $i <= $pageCount; $i++) {
-                            $tplId = $mpdf->importPage($i);
-                            $mpdf->AddPage();
-                            $mpdf->useTemplate($tplId);
+                        // Jika PDF: Import halaman
+                        try {
+                            $pageCount = $mpdf->setSourceFile($filePath);
+                            for ($i = 1; $i <= $pageCount; $i++) {
+                                $tplId = $mpdf->importPage($i);
+                                $mpdf->AddPage();
+                                $mpdf->useTemplate($tplId);
+                            }
+                        } catch (\Exception $e) {
+                            Log::warning("Gagal import PDF lab: " . $labFile->nama_file);
                         }
                     } elseif (in_array($extension, ['jpg', 'jpeg', 'png'])) {
-                        // JIKA GAMBAR: Tambah halaman baru dan tampilkan full
-                        $mpdf->AddPage();
-                        $mpdf->WriteHTML('<div style="text-align:center"><img src="' . $filePath . '" style="width:100%;" /></div>');
+                        // Jika GAMBAR: Kompres dulu sebelum tempel agar file PDF tidak bengkak
+                        $imgBase64 = $this->compressImageToBase64($filePath, 800); // Resize lebar 800px untuk lampiran
+                        if ($imgBase64) {
+                            $mpdf->AddPage();
+                            $mpdf->WriteHTML('<div style="text-align:center"><img src="' . $imgBase64 . '" style="width:100%;" /></div>');
+                        }
                     }
                 }
             }
 
-
-            // Output PDF
+            // 5. Output PDF dengan pembersihan buffer
             $filename = 'Medical_Checkup_Report_' . $mcu->employee->nrp . '_' . date('Ymd_His') . '.pdf';
 
-            // REVISI BAGIAN INI:
             if (ob_get_length()) {
                 ob_end_clean();
             }
@@ -1093,6 +1093,58 @@ class FormController extends Controller
             Log::error('PDF Generation Error: ' . $e->getMessage());
             return back()->with('error', 'Gagal membuat PDF: ' . $e->getMessage());
         }
+    }
+
+    /**
+     * Fungsi pembantu untuk kompres gambar ke Base64 tanpa library tambahan
+     */
+    private function compressImageToBase64($path, $newWidth = 600)
+    {
+        if (!file_exists($path)) return null;
+
+        // Tambahkan ini untuk mencegah peringatan libpng mengganggu output
+        if (!extension_loaded('gd')) return null;
+
+        $info = @getimagesize($path);
+        if (!$info) return null;
+
+        list($width, $height, $type) = $info;
+        $newHeight = ($height / $width) * $newWidth;
+        $dst = imagecreatetruecolor($newWidth, $newHeight);
+
+        // Gunakan @ untuk meredam warning sRGB profile
+        switch ($type) {
+            case IMAGETYPE_JPEG:
+                $src = @imagecreatefromjpeg($path);
+                break;
+            case IMAGETYPE_PNG:
+                $src = @imagecreatefrompng($path);
+                break;
+            case IMAGETYPE_GIF:
+                $src = @imagecreatefromgif($path);
+                break;
+            default:
+                return null;
+        }
+
+        if (!$src) return null;
+
+        // Pertahankan transparansi jika PNG (Opsional, tapi aman untuk JPEG output)
+        imagealphablending($dst, false);
+        imagesavealpha($dst, true);
+
+        imagecopyresampled($dst, $src, 0, 0, 0, 0, $newWidth, $newHeight, $width, $height);
+
+        ob_start();
+        // Kita simpan sebagai JPEG kualitas 75% karena mPDF jauh lebih ringan memproses JPEG
+        imagejpeg($dst, null, 75);
+        $binaryData = ob_get_contents();
+        ob_end_clean();
+
+        imagedestroy($src);
+        imagedestroy($dst);
+
+        return 'data:image/jpeg;base64,' . base64_encode($binaryData);
     }
 
 
