@@ -438,8 +438,8 @@
                             <div class="patient-photo">
                                 <div class="photo-container">
                                     <div class="photo-frame">
-                                        @if(file_exists(storage_path('app/public/employee-mcu-foto/foto_mcu_1_694d19c97c10e.png')))
-                                            <img src="{{ storage_path('app/public/employee-mcu-foto/foto_mcu_1_694d19c97c10e.png') }}" alt="Foto" style="width: 100px">
+                                        @if(file_exists(storage_path('app/public/employee-mcu-foto/'. $mcu->foto)))
+                                            <img src="{{ storage_path('app/public/employee-mcu-foto/'. $mcu->foto) }}" alt="Foto" style="width: 100px">
                                         @endif
                                     </div>
                                 </div>

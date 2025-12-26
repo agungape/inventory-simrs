@@ -92,16 +92,16 @@
                                                                href="{{ route('dokumen.mcu.preview.full', $mcu->id) }}"
                                                                target="_blank">
                                                                 <i class="bi bi-eye me-2"></i>
-                                                                Preview PDF Lengkap
+                                                                Preview PDF
                                                             </a>
                                                         </li>
-                                                        <li>
+                                                        {{-- <li>
                                                             <a class="dropdown-item"
                                                                href="{{ route('dokumen.mcu.download.full', $mcu->id) }}">
                                                                 <i class="bi bi-download me-2"></i>
                                                                 Download PDF Lengkap
                                                             </a>
-                                                        </li>
+                                                        </li> --}}
                                                         <li>
                                                             <span class="dropdown-item-text text-muted small">
                                                                 <i class="bi bi-calendar me-1"></i>
