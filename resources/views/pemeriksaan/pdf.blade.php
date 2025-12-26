@@ -38,6 +38,30 @@
             align-items: center;
         }
 
+        .hospital-logo-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .hospital-logo {
+            width: 40px;
+            height: 40px;
+            border: 2px solid #1e5a9e;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #1e5a9e;
+            background: white;
+            font-size: 14px;
+        }
+
+        .hospital-text {
+            flex: 1;
+        }
+
         .hospital-name {
             font-size: 14px;
             font-weight: bold;
@@ -67,19 +91,25 @@
         }
 
         .patient-photo {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
             margin-right: 25px;
+        }
+
+        .photo-container {
             text-align: center;
         }
 
         .photo-frame {
             width: 85px;
             height: 102px;
-            border: 3px solid #1e5a9e;
+            border: 1px solid #90accc;
             background: white;
             overflow: hidden;
             border-radius: 3px;
             margin-bottom: 5px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 4px rgba(136, 133, 133, 0.1);
         }
 
         .photo-frame img {
@@ -93,6 +123,44 @@
             color: #666;
             font-style: italic;
             margin-top: 3px;
+        }
+
+        .qrcode-container {
+            text-align: center;
+            padding: 10px 0;
+        }
+
+        .qrcode-frame {
+            width: 80px;
+            height: 80px;
+            background: white;
+            overflow: hidden;
+            border-radius: 3px;
+            margin-bottom: 15px; /* Tambahkan margin bawah untuk jarak */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .qrcode-frame img {
+            width: 80px;
+            height: 80px;
+            object-fit: contain;
+        }
+
+        .qrcode-label {
+            font-size: 9px;
+            font-weight: bold;
+            color: #1e5a9e;
+            margin-top: 0; /* Reset margin top */
+            margin-bottom: 5px; /* Tambahkan margin bawah */
+            letter-spacing: 0.5px;
+        }
+
+        .qrcode-info {
+            font-size: 8px;
+            color: #666;
+            line-height: 1.1;
         }
 
         .patient-data {
@@ -136,12 +204,42 @@
         .medical-team h4 {
             font-size: 10px;
             margin-bottom: 5px;
+            color: #1e5a9e;
+        }
+
+        .medical-team-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .medical-team-column {
+            padding: 5px;
+        }
+
+        .medical-team-column h5 {
+            font-size: 9px;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #333;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 3px;
+        }
+
+        .medical-team-list {
+            list-style: none;
+        }
+
+        .medical-team-list li {
+            margin-bottom: 3px;
+            padding-left: 5px;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
-            margin: 10px 0;
+            margin: 0px 0;
             font-size: 10px;
         }
 
@@ -155,7 +253,7 @@
 
         table td {
             padding: 5px 8px;
-            border-bottom: 1px solid #ddd;
+            border-bottom: 0px solid #ddd;
         }
 
         table tr:nth-child(even) {
@@ -238,6 +336,10 @@
             .ekg-container img {
                 max-height: 500px; /* Sesuaikan dengan tinggi halaman */
             }
+
+            .medical-team-grid {
+                page-break-inside: avoid;
+            }
         }
 
         /* Untuk halaman EKG khusus */
@@ -254,71 +356,102 @@
             margin: 8px 0 5px 0;
             padding: 4px 8px;
         }
+        .logo {
+            width: 80px;
+        }
     </style>
 </head>
 <body>
+
+
     <!-- Page 1: Summary Report -->
     <div class="page">
         <div class="header">
             <div class="header-content">
-                <div>
-                    <div class="hospital-name">RSUD KONAWE</div>
-                    <div class="hospital-address">Jl. Jend. Sudirman, KAB. Konawe - SULAWESI TENGGARA</div>
-                    <div class="hospital-contact">Telepon: 0822 4559 3648 | Email: bludrsudkonawe.com</div>
+                <div class="hospital-logo-container">
+                    <div class="row align-items-center">
+                        <table border="0">
+                            <tr>
+                                <td>
+                                    <div class="col-2">
+                                        <img src="{{ public_path('assets/img/logo-konawe.png') }}" alt="Logo"
+                                            class="logo">
+                                    </div>
+                                </td>
+
+                                 <td class="text-center">
+                                    <div class="col-10">
+                                        <h5 style="font-weight: bold; margin: 0;" class="hospital-name">RUMAH SAKIT UMUM DAERAH KABUPATEN KONAWE</h5>
+                                        <p class="mb-0 hospital-address" style="font-size: 8pt;">
+                                            Jl. Diponegoro No. 301 Konawe - Sulawesi Tenggara<br>Telepon: 0822 4559 3648 | Email : bludrsudkonawe.com
+                                        </p>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
-
         <div class="patient-info">
-            <div class="patient-photo">
-                <div class="photo-frame">
-                    @if($mcu->foto && file_exists(storage_path('app/public/' . $mcu->foto)))
-                        <img src="{{ storage_path('app/public/' . $mcu->foto) }}" alt="Foto">
-                    @elseif($employee->foto && file_exists(storage_path('app/public/' . $employee->foto)))
-                        <img src="{{ storage_path('app/public/' . $employee->foto) }}" alt="Foto">
-                    @else
-                        <div style="height: 100%; display: flex; align-items: center; justify-content: center; color: #999; font-size: 9px; text-align: center; padding: 10px; line-height: 1.3;">
-                            <div>
-                                <div style="font-size: 20px; margin-bottom: 5px;">📷</div>
-                                FOTO<br>3X4<br>TIDAK<br>TERSEDIA
+            <table>
+                <tr>
+                    <td>
+                        <div class="col-8">
+                            <div class="patient-data">
+                                <table style="width:100%; border-collapse:collapse; font-size:10px;">
+                                    <tr>
+                                        <td style="width:130px; font-weight:bold; vertical-align:top;">No. Registrasi</td>
+                                        <td style="width:10px; vertical-align:top;">:</td>
+                                        <td style="font-weight:bold; color:#e63946;">MC{{ str_pad($mcu->id, 12, '0', STR_PAD_LEFT) }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="font-weight:bold;">Nama Lengkap</td>
+                                        <td>:</td>
+                                        <td style="font-weight:bold;">{{ strtoupper($employee->nama) }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="font-weight:bold;">No. MR</td>
+                                        <td>:</td>
+                                        <td>{{ $employee->no_rm ?? '-' }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="font-weight:bold;">Jenis Kelamin</td>
+                                        <td>:</td>
+                                        <td>{{ $employee->jenis_kelamin == 'L' ? 'Pria' : 'Wanita' }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="font-weight:bold; vertical-align:top;">Tanggal Lahir</td>
+                                        <td style="vertical-align:top;">:</td>
+                                        <td>
+                                            {{ $employee->tanggal_lahir }}
+                                            ({{ $employee->usia }})
+                                        </td>
+                                    </tr>
+                                </table>
                             </div>
                         </div>
-                    @endif
-                </div>
-            </div>
+                    </td>
+                    <td>
+                        <div class="col-4">
 
-            <div class="patient-data">
-                <table style="width:100%; border-collapse:collapse; font-size:10px;">
-                    <tr>
-                        <td style="width:130px; font-weight:bold; vertical-align:top;">No. Registrasi</td>
-                        <td style="width:10px; vertical-align:top;">:</td>
-                        <td style="font-weight:bold; color:#e63946;">MC{{ str_pad($mcu->id, 12, '0', STR_PAD_LEFT) }}</td>
-                    </tr>
-                    <tr>
-                        <td style="font-weight:bold;">Nama Lengkap</td>
-                        <td>:</td>
-                        <td style="font-weight:bold;">{{ strtoupper($employee->nama) }}</td>
-                    </tr>
-                    <tr>
-                        <td style="font-weight:bold;">No. MR</td>
-                        <td>:</td>
-                        <td>{{ $employee->no_rm ?? '-' }}</td>
-                    </tr>
-                    <tr>
-                        <td style="font-weight:bold;">Jenis Kelamin</td>
-                        <td>:</td>
-                        <td>{{ $employee->jenis_kelamin == 'L' ? 'Pria' : 'Wanita' }}</td>
-                    </tr>
-                    <tr>
-                        <td style="font-weight:bold; vertical-align:top;">Tanggal Lahir</td>
-                        <td style="vertical-align:top;">:</td>
-                        <td>
-                            {{ $employee->tanggal_lahir }}
-                            ({{ $employee->usai }})
-                        </td>
-                    </tr>
-                </table>
-            </div>
+                            <div class="patient-photo">
+                                <div class="photo-container">
+                                    <div class="photo-frame">
+                                        @if(file_exists(storage_path('app/public/employee-mcu-foto/foto_mcu_1_694d19c97c10e.png')))
+                                            <img src="{{ storage_path('app/public/employee-mcu-foto/foto_mcu_1_694d19c97c10e.png') }}" alt="Foto" style="width: 100px">
+                                        @endif
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+
+
+
         </div>
 
         <div class="section-title">{{ $employee->nama_perusahaan ?? '-' }}</div>
@@ -375,12 +508,69 @@
                 @endswitch
             </div>
 
-            @if($all_pemeriksaan['hasil_pemeriksaan']->tim_medis)
-                <div class="medical-team">
-                    <h4>Tim Medis :</h4>
-                    <p>{!! $all_pemeriksaan['hasil_pemeriksaan']->tim_medis !!}</p>
-                </div>
-            @endif
+
+            <!-- Tim Medis -->
+            <table style="width: 100%; border-collapse: collapse; margin-top: 0px;">
+                <tr>
+                    <td style="width: 70%; vertical-align: top; padding-right: 20px;">
+                        <div class="medical-team">
+                            <h4 style="margin-bottom: 10px; color: #1e5a9e;">TIM MEDIS:</h4>
+
+                            <div style="margin-bottom: 15px; font-size: 10px;">
+                                <strong>KOORDINATOR</strong>: dr. Joddy Satrio Ariezal
+                            </div>
+
+                            <div style="margin-bottom: 5px;">
+                                <strong>ANGGOTA</strong>:
+                            </div>
+                            <div style="font-size: 10px; line-height: 1.4;">
+                                1. dr. Budi Arisandi<br>
+                                2. dr. Muh. Yusni Chandratirta A<br>
+                                3. dr. Aspita Riskiana<br>
+                                4. dr. Sovia Pratwi Lahida<br>
+                                5. dr. Ade Chandra Multazazam<br>
+                                6. dr. Nur Sahfahria<br>
+                                7. dr. Abdianto Ilman<br>
+                                8. dr. Dyah Nilasari, Sp.Rad.<br>
+                                9. dr. Sumiaty, Sp. Rad.<br>
+                                10. dr. Arfandy, Sp. PK.
+                            </div>
+                        </div>
+                    </td>
+                    <td style="width: 30%; vertical-align: middle; text-align: center;">
+                        <!-- QR Code Container -->
+                        <div class="qrcode-container" style="text-align: center;">
+                            @php
+                                // Generate validation code
+                                $validationCode = 'MC' . str_pad($mcu->id, 12, '0', STR_PAD_LEFT) . '-' .
+                                                substr(md5($mcu->employee->nrp . $mcu->tanggal_mcu), 0, 8);
+
+                                // Generate validation URL
+                                $validationUrl = route('mcu.validate', ['code' => $validationCode]);
+
+                                // Generate QR Code menggunakan milon/barcode
+                                $qrCodeBase64 = 'data:image/png;base64,' . DNS2D::getBarcodePNG(
+                                    $validationUrl,
+                                    'QRCODE',
+                                    5,
+                                    5,
+                                    [30, 90, 158] // Warna biru RSUD
+                                );
+                            @endphp
+                            <div class="qrcode-frame">
+                                <img src="{{ $qrCodeBase64 }}" alt="QR Code Validasi MCU">
+                            </div><br>
+                            <div class="qrcode-label">
+                                SCAN UNTUK VALIDASI
+                            </div>
+                            <div class="qrcode-info">
+                                No: MC{{ str_pad($mcu->id, 12, '0', STR_PAD_LEFT) }}
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+
         @endif
 
     </div>
@@ -389,10 +579,28 @@
     <div class="page">
         <div class="header">
             <div class="header-content">
-                <div>
-                    <div class="hospital-name">RSUD KONAWE</div>
-                    <div class="hospital-address">Jl. Jend. Sudirman, KAB. Konawe - SULAWESI TENGGARA</div>
-                    <div class="hospital-contact">Telepon: 0822 4559 3648 | Email: bludrsudkonawe.com</div>
+                <div class="hospital-logo-container">
+                    <div class="row align-items-center">
+                        <table border="0">
+                            <tr>
+                                <td>
+                                    <div class="col-2">
+                                        <img src="{{ public_path('assets/img/logo-konawe.png') }}" alt="Logo"
+                                            class="logo">
+                                    </div>
+                                </td>
+
+                                 <td class="text-center">
+                                    <div class="col-10">
+                                        <h5 style="font-weight: bold; margin: 0;" class="hospital-name">RUMAH SAKIT UMUM DAERAH KABUPATEN KONAWE</h5>
+                                        <p class="mb-0 hospital-address" style="font-size: 8pt;">
+                                            Jl. Diponegoro No. 301 Konawe - Sulawesi Tenggara<br>Telepon: 0822 4559 3648 | Email : bludrsudkonawe.com
+                                        </p>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
@@ -637,10 +845,28 @@
     <div class="page">
         <div class="header">
             <div class="header-content">
-                <div>
-                    <div class="hospital-name">RSUD KONAWE</div>
-                    <div class="hospital-address">Jl. Jend. Sudirman, KAB. Konawe - SULAWESI TENGGARA</div>
-                    <div class="hospital-contact">Telepon: 0822 4559 3648 | Email: bludrsudkonawe.com</div>
+                <div class="hospital-logo-container">
+                    <div class="row align-items-center">
+                        <table border="0">
+                            <tr>
+                                <td>
+                                    <div class="col-2">
+                                        <img src="{{ public_path('assets/img/logo-konawe.png') }}" alt="Logo"
+                                            class="logo">
+                                    </div>
+                                </td>
+
+                                 <td class="text-center">
+                                    <div class="col-10">
+                                        <h5 style="font-weight: bold; margin: 0;" class="hospital-name">RUMAH SAKIT UMUM DAERAH KABUPATEN KONAWE</h5>
+                                        <p class="mb-0 hospital-address" style="font-size: 8pt;">
+                                            Jl. Diponegoro No. 301 Konawe - Sulawesi Tenggara<br>Telepon: 0822 4559 3648 | Email : bludrsudkonawe.com
+                                        </p>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
@@ -956,10 +1182,28 @@
     <div class="page">
         <div class="header">
             <div class="header-content">
-                <div>
-                    <div class="hospital-name">RSUD KONAWE</div>
-                    <div class="hospital-address">Jl. Jend. Sudirman, KAB. Konawe - SULAWESI TENGGARA</div>
-                    <div class="hospital-contact">Telepon: 0822 4559 3648 | Email: bludrsudkonawe.com</div>
+                <div class="hospital-logo-container">
+                    <div class="row align-items-center">
+                        <table border="0">
+                            <tr>
+                                <td>
+                                    <div class="col-2">
+                                        <img src="{{ public_path('assets/img/logo-konawe.png') }}" alt="Logo"
+                                            class="logo">
+                                    </div>
+                                </td>
+
+                                 <td class="text-center">
+                                    <div class="col-10">
+                                        <h5 style="font-weight: bold; margin: 0;" class="hospital-name">RUMAH SAKIT UMUM DAERAH KABUPATEN KONAWE</h5>
+                                        <p class="mb-0 hospital-address" style="font-size: 8pt;">
+                                            Jl. Diponegoro No. 301 Konawe - Sulawesi Tenggara<br>Telepon: 0822 4559 3648 | Email : bludrsudkonawe.com
+                                        </p>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1174,10 +1418,28 @@
     <div class="page">
         <div class="header">
             <div class="header-content">
-                <div>
-                    <div class="hospital-name">RSUD KONAWE</div>
-                    <div class="hospital-address">Jl. Jend. Sudirman, KAB. Konawe - SULAWESI TENGGARA</div>
-                    <div class="hospital-contact">Telepon: 0822 4559 3648 | Email: bludrsudkonawe.com</div>
+                <div class="hospital-logo-container">
+                    <div class="row align-items-center">
+                        <table border="0">
+                            <tr>
+                                <td>
+                                    <div class="col-2">
+                                        <img src="{{ public_path('assets/img/logo-konawe.png') }}" alt="Logo"
+                                            class="logo">
+                                    </div>
+                                </td>
+
+                                 <td class="text-center">
+                                    <div class="col-10">
+                                        <h5 style="font-weight: bold; margin: 0;" class="hospital-name">RUMAH SAKIT UMUM DAERAH KABUPATEN KONAWE</h5>
+                                        <p class="mb-0 hospital-address" style="font-size: 8pt;">
+                                            Jl. Diponegoro No. 301 Konawe - Sulawesi Tenggara<br>Telepon: 0822 4559 3648 | Email : bludrsudkonawe.com
+                                        </p>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1229,7 +1491,7 @@
                     <div class="image-placeholder">
                         <p style="font-size: 14px; margin-bottom: 10px;">{{ str_pad($mcu->id, 12, '0', STR_PAD_LEFT) }}</p>
                         <p style="font-size: 11px; margin-bottom: 5px;">{{ $employee->tanggal_lahir }}Y</p>
-                        <p style="font-size: 11px; margin-bottom: 5px;">{{ $mcu->tanggal_mcu)->format('d.m.Y') }}</p>
+                        <p style="font-size: 11px; margin-bottom: 5px;">{{ $mcu->tanggal_mcu->format('d.m.Y') }}</p>
                         <p style="font-size: 11px;">{{ $employee->jenis_kelamin == 'L' ? 'M' : 'F' }}</p>
                         <br><br>
                         <p style="font-size: 24px; font-weight: bold; letter-spacing: 3px;">L</p>
@@ -1251,10 +1513,28 @@
     <div class="page">
         <div class="header">
             <div class="header-content">
-                <div>
-                    <div class="hospital-name">RSUD KONAWE</div>
-                    <div class="hospital-address">Jl. Jend. Sudirman, KAB. Konawe - SULAWESI TENGGARA</div>
-                    <div class="hospital-contact">Telepon: 0822 4559 3648 | Email: bludrsudkonawe.com</div>
+                <div class="hospital-logo-container">
+                    <div class="row align-items-center">
+                        <table border="0">
+                            <tr>
+                                <td>
+                                    <div class="col-2">
+                                        <img src="{{ public_path('assets/img/logo-konawe.png') }}" alt="Logo"
+                                            class="logo">
+                                    </div>
+                                </td>
+
+                                 <td class="text-center">
+                                    <div class="col-10">
+                                        <h5 style="font-weight: bold; margin: 0;" class="hospital-name">RUMAH SAKIT UMUM DAERAH KABUPATEN KONAWE</h5>
+                                        <p class="mb-0 hospital-address" style="font-size: 8pt;">
+                                            Jl. Diponegoro No. 301 Konawe - Sulawesi Tenggara<br>Telepon: 0822 4559 3648 | Email : bludrsudkonawe.com
+                                        </p>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1313,20 +1593,36 @@
             </p>
         @endif
 
-        {{-- @if($all_pemeriksaan['hasil_pemeriksaan'] && $all_pemeriksaan['hasil_pemeriksaan']->tim_medis)
-            <div class="medical-team" style="margin-top: 30px;">
-                <h4>Dokter Penanggung Jawab :</h4>
-                <p>{{ $all_pemeriksaan['hasil_pemeriksaan']->tim_medis }}</p>
-            </div>
-        @endif --}}
-
     </div>
 
     <!-- Page 7: Laboratorium -->
     <div class="page">
-        <div class="header" style="border-bottom: 2px solid #333; padding-bottom: 10px; margin-bottom: 20px;">
-            <div class="hospital-name" style="font-size: 16px; font-weight: bold;">RSUD KONAWE</div>
-            <div class="hospital-address" style="font-size: 10px;">Jl. Jend. Sudirman, KAB. Konawe - SULAWESI TENGGARA</div>
+        <div class="header">
+            <div class="header-content">
+                <div class="hospital-logo-container">
+                    <div class="row align-items-center">
+                        <table border="0">
+                            <tr>
+                                <td>
+                                    <div class="col-2">
+                                        <img src="{{ public_path('assets/img/logo-konawe.png') }}" alt="Logo"
+                                            class="logo">
+                                    </div>
+                                </td>
+
+                                 <td class="text-center">
+                                    <div class="col-10">
+                                        <h5 style="font-weight: bold; margin: 0;" class="hospital-name">RUMAH SAKIT UMUM DAERAH KABUPATEN KONAWE</h5>
+                                        <p class="mb-0 hospital-address" style="font-size: 8pt;">
+                                            Jl. Diponegoro No. 301 Konawe - Sulawesi Tenggara<br>Telepon: 0822 4559 3648 | Email : bludrsudkonawe.com
+                                        </p>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div class="patient-info">

@@ -84,3 +84,7 @@ Route::middleware(['auth'])->group(function () {
     // API untuk mendapatkan list dokter
     Route::get('/api/dokter/list', [DokterController::class, 'getDokterList'])->name('api.dokter.list');
 });
+
+// routes/web.php
+Route::get('/mcu/validate/{code}', [FormController::class, 'validateQRCode'])
+    ->name('mcu.validate');

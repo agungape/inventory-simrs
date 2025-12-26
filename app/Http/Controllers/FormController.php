@@ -32,6 +32,7 @@ use Barryvdh\DomPDF\Facade\Pdf as PDF;
 use Illuminate\Support\Facades\Log;
 use Mpdf\Mpdf;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Cache;
 
 class FormController extends Controller
 {
@@ -998,6 +999,19 @@ class FormController extends Controller
             $gigiMulutId = $allPemeriksaan['pemeriksaan_gigi_mulut']->id ?? null;
             $odontogram = $gigiMulutId ? Odontogram::where('pemeriksaan_gigi_mulut_id', $gigiMulutId)->get() : collect();
             // Data untuk PDF
+
+            // GENERATE VALIDATION CODE UNTUK QR CODE
+            // Generate validation code
+            $validationCode = 'MC' . str_pad($mcu->id, 12, '0', STR_PAD_LEFT) . '-' .
+                substr(md5($mcu->employee->nrp . $mcu->tanggal_mcu), 0, 8);
+
+            // Simpan ke cache
+            Cache::put('mcu_validate_' . $validationCode, [
+                'mcu_id' => $mcuId,
+                'employee_id' => $mcu->employee->id,
+                'expires_at' => now()->addDays(30)->toDateTimeString()
+            ], now()->addDays(30));
+
             $data = [
                 'employee' => $mcu->employee,
                 'mcu' => $mcu,
@@ -1008,6 +1022,7 @@ class FormController extends Controller
                 'odontogram' => $odontogram,
                 'tanggal_mcu' => $mcu->tanggal_mcu ? Carbon::parse($mcu->tanggal_mcu)->format('d F Y H:i') : '-',
                 'today' => Carbon::now()->format('d F Y'),
+                'validation_code' => $validationCode, // Tambahkan ini
             ];
 
             // Konfigurasi mPDF
@@ -1068,6 +1083,42 @@ class FormController extends Controller
             Log::error('PDF Generation Error: ' . $e->getMessage());
             return back()->with('error', 'Gagal membuat PDF: ' . $e->getMessage());
         }
+    }
+
+
+    public function validateQRCode($code)
+    {
+        // Ambil data dari cache
+        $cachedData = Cache::get('mcu_validate_' . $code);
+
+        if (!$cachedData) {
+            return view('mcu.validation-error', [
+                'message' => 'QR Code tidak valid atau telah kedaluwarsa'
+            ]);
+        }
+
+        // Cek expiration
+        if (isset($cachedData['expires_at'])) {
+            $expiresAt = Carbon::parse($cachedData['expires_at']);
+            if (now()->gt($expiresAt)) {
+                Cache::forget('mcu_validate_' . $code);
+                return view('mcu.validation-error', [
+                    'message' => 'QR Code telah kedaluwarsa'
+                ]);
+            }
+        }
+
+        // Ambil data lengkap
+        $mcu = MedicalCheckUp::with(['employee'])->findOrFail($cachedData['mcu_id']);
+        $allPemeriksaan = $this->getAllPemeriksaanData($cachedData['mcu_id']);
+
+        return view('pemeriksaan.validation-qrcode', [
+            'mcu' => $mcu,
+            'employee' => $mcu->employee,
+            'all_pemeriksaan' => $allPemeriksaan,
+            'scan_date' => now()->format('d F Y H:i:s'),
+            'validation_code' => $code
+        ]);
     }
 
     public function downloadFullPDF($mcuId)
