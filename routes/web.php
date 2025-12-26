@@ -52,9 +52,11 @@ Route::middleware(['auth'])->group(function () {
         Route::post('neurologis', [FormController::class, 'storeNeurologis'])->name('neurologis.store');
         Route::post('neurologis-khusus', [FormController::class, 'storeNeurologisKhusus'])->name('neurologis-khusus.store');
         Route::post('dokumen-pemeriksaan', [FormController::class, 'storeDokumenPemeriksaan'])->name('dokumen-pemeriksaan.store');
-        Route::get('dokumen-pemeriksaan/{employee_id}', [FormController::class, 'getDokumenPemeriksaan'])->name('dokumen-pemeriksaan.get');
+        Route::get('/dokumen-pemeriksaan/{employee_id}', [FormController::class, 'getDokumenPemeriksaan'])->name('dokumen-pemeriksaan.get');
         Route::post('/hasil-pemeriksaan', [FormController::class, 'storeHasilPemeriksaan'])->name('hasil-pemeriksaan.store');
         Route::get('/hasil-pemeriksaan/{employeeId}', [FormController::class, 'showHasilPemeriksaan'])->name('hasil-pemeriksaan.show');
+        Route::delete('/dokumen-pemeriksaan/{id}', [FormController::class, 'deleteDokumenPemeriksaan'])
+            ->name('dokumen-pemeriksaan.delete');
     });
 
     Route::prefix('dokumen-hasil')->group(function () {

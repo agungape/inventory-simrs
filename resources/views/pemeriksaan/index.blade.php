@@ -3370,6 +3370,9 @@
 
                 // Cek status MCU untuk employee ini
                 checkMCUStatus(employeeId);
+
+                    // 🔥 TAMBAHKAN INI
+                loadDokumenPemeriksaan();
             });
 
             // Inisialisasi diagram gigi
@@ -3637,7 +3640,7 @@
         });
 
         async function loadDokumenPemeriksaan() {
-            const employeeId = document.getElementById('employee_id_dokumen_pemeriksaan')?.value;
+            const employeeId = document.getElementById('employee_id')?.value;
             const tbody = document.getElementById('dokumenPemeriksaanList');
 
             if (!employeeId || !tbody) return;
@@ -3713,6 +3716,35 @@
                         </td>
                     </tr>
                 `;
+            }
+        }
+
+        async function hapusDokumen(id) {
+            if (!confirm('Yakin ingin menghapus dokumen ini?')) return;
+
+            try {
+                const response = await fetch(`/form/dokumen-pemeriksaan/${id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': document
+                            .querySelector('meta[name="csrf-token"]')
+                            .getAttribute('content')
+                    }
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showNotification('success', result.message);
+                    loadDokumenPemeriksaan(); // 🔥 refresh tabel
+                } else {
+                    showNotification('danger', result.message);
+                }
+            } catch (error) {
+                console.error(error);
+                showNotification('danger', 'Gagal menghapus dokumen');
             }
         }
 

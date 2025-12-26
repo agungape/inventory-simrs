@@ -771,6 +771,7 @@ class FormController extends Controller
         }
     }
 
+
     public function getDokumenPemeriksaan($employeeId)
     {
         $mcu = MedicalCheckUp::where('employee_id', $employeeId)->first();
@@ -795,15 +796,27 @@ class FormController extends Controller
         return response()->json(['data' => $dokumen]);
     }
 
-    public function hapusDokumenPemeriksaan(DokumenMcu $dokumen)
+    public function deleteDokumenPemeriksaan($id)
     {
-        Storage::disk('public')->delete('dokumen-mcu/'.$dokumen->nama_file);
-        $dokumen->delete();
+        try {
+            $dokumen = DokumenMcu::findOrFail($id);
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Dokumen berhasil dihapus'
-        ]);
+            // Hapus file dari storage
+            Storage::disk('public')->delete('dokumen-mcu/' . $dokumen->nama_file);
+
+            // Hapus dari database
+            $dokumen->delete();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Dokumen berhasil dihapus'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal menghapus dokumen: ' . $e->getMessage()
+            ], 500);
+        }
     }
 
     public function storeHasilPemeriksaan(Request $request)
