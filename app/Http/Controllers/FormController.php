@@ -1000,17 +1000,17 @@ class FormController extends Controller
             $odontogram = $gigiMulutId ? Odontogram::where('pemeriksaan_gigi_mulut_id', $gigiMulutId)->get() : collect();
             // Data untuk PDF
 
-            // GENERATE VALIDATION CODE UNTUK QR CODE
-            // Generate validation code
-            $validationCode = 'MC' . str_pad($mcu->id, 12, '0', STR_PAD_LEFT) . '-' .
-                substr(md5($mcu->employee->nrp . $mcu->tanggal_mcu), 0, 8);
+            // // GENERATE VALIDATION CODE UNTUK QR CODE
+            // // Generate validation code
+            // $validationCode = 'MC' . str_pad($mcu->id, 12, '0', STR_PAD_LEFT) . '-' .
+            //     substr(md5($mcu->employee->nrp . $mcu->tanggal_mcu), 0, 8);
 
-            // Simpan ke cache
-            Cache::put('mcu_validate_' . $validationCode, [
-                'mcu_id' => $mcuId,
-                'employee_id' => $mcu->employee->id,
-                'expires_at' => now()->addDays(30)->toDateTimeString()
-            ], now()->addDays(30));
+            // // Simpan ke cache
+            // Cache::put('mcu_validate_' . $validationCode, [
+            //     'mcu_id' => $mcuId,
+            //     'employee_id' => $mcu->employee->id,
+            //     'expires_at' => now()->addDays(30)->toDateTimeString()
+            // ], now()->addDays(30));
 
             $data = [
                 'employee' => $mcu->employee,
@@ -1022,7 +1022,7 @@ class FormController extends Controller
                 'odontogram' => $odontogram,
                 'tanggal_mcu' => $mcu->tanggal_mcu ? Carbon::parse($mcu->tanggal_mcu)->format('d F Y H:i') : '-',
                 'today' => Carbon::now()->format('d F Y'),
-                'validation_code' => $validationCode, // Tambahkan ini
+                // 'validation_code' => $validationCode, // Tambahkan ini
             ];
 
             // Konfigurasi mPDF
