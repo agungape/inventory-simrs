@@ -49,7 +49,7 @@ class MedicalCheckUp extends Model
 
     public function dataAwal()
     {
-        return $this->hasOne(DataAwal::class, 'mcu_id');
+        return $this->hasOne(Dataawal::class, 'mcu_id');
     }
 
     public function riwayatLingkunganKerja()
