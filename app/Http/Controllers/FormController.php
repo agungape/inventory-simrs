@@ -1000,17 +1000,17 @@ class FormController extends Controller
             $odontogram = $gigiMulutId ? Odontogram::where('pemeriksaan_gigi_mulut_id', $gigiMulutId)->get() : collect();
             // Data untuk PDF
 
-            // // GENERATE VALIDATION CODE UNTUK QR CODE
-            // // Generate validation code
-            // $validationCode = 'MC' . str_pad($mcu->id, 12, '0', STR_PAD_LEFT) . '-' .
-            //     substr(md5($mcu->employee->nrp . $mcu->tanggal_mcu), 0, 8);
+            // GENERATE VALIDATION CODE UNTUK QR CODE
+            // Generate validation code
+            $validationCode = 'MC' . str_pad($mcu->id, 12, '0', STR_PAD_LEFT) . '-' .
+                substr(md5($mcu->employee->nrp . $mcu->tanggal_mcu), 0, 8);
 
-            // // Simpan ke cache
-            // Cache::put('mcu_validate_' . $validationCode, [
-            //     'mcu_id' => $mcuId,
-            //     'employee_id' => $mcu->employee->id,
-            //     'expires_at' => now()->addDays(30)->toDateTimeString()
-            // ], now()->addDays(30));
+            // Simpan ke cache
+            Cache::put('mcu_validate_' . $validationCode, [
+                'mcu_id' => $mcuId,
+                'employee_id' => $mcu->employee->id,
+                'expires_at' => now()->addDays(30)->toDateTimeString()
+            ], now()->addDays(30));
 
             $data = [
                 'employee' => $mcu->employee,
@@ -1029,6 +1029,7 @@ class FormController extends Controller
             $mpdf = new Mpdf([
                 'mode' => 'utf-8',
                 'format' => 'A4',
+                'tempDir' => storage_path('app/mpdf'),
                 'default_font' => 'dejavusans',
                 'margin_top' => 0,
                 'margin_bottom' => 0,
@@ -1078,6 +1079,9 @@ class FormController extends Controller
             // Output PDF
             $filename = 'Medical_Checkup_Report_' . $mcu->employee->nrp . '_' . date('Ymd_His') . '.pdf';
 
+            if (ob_get_length()) {
+                ob_end_clean();
+            }
             return $mpdf->Output($filename, 'I');
         } catch (\Exception $e) {
             Log::error('PDF Generation Error: ' . $e->getMessage());

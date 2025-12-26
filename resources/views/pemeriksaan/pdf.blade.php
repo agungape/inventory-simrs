@@ -539,7 +539,7 @@
                     </td>
                     <td style="width: 30%; vertical-align: middle; text-align: center;">
                         <!-- QR Code Container -->
-                        {{-- <div class="qrcode-container" style="text-align: center;">
+                        <div class="qrcode-container" style="text-align: center;">
                             @php
                                 // Generate validation code
                                 $validationCode = 'MC' . str_pad($mcu->id, 12, '0', STR_PAD_LEFT) . '-' .
@@ -566,7 +566,7 @@
                             <div class="qrcode-info">
                                 No: MC{{ str_pad($mcu->id, 12, '0', STR_PAD_LEFT) }}
                             </div>
-                        </div> --}}
+                        </div>
                     </td>
                 </tr>
             </table>
