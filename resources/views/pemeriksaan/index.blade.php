@@ -3141,11 +3141,11 @@
                                                                             </select>
                                                                         </div>
                                                                         <!-- Tim Medis dengan Quill Editor -->
-                                                                        <div class="col-12">
+                                                                        {{-- <div class="col-12">
                                                                             <label class="form-label">Tim Medis <span class="text-danger">*</span></label>
                                                                             <div id="quillTimMedis" style="height: 150px;"></div>
                                                                             <input type="hidden" name="tim_medis" id="timMedisInput" required>
-                                                                        </div>
+                                                                        </div> --}}
 
                                                                         <!-- Kesimpulan dengan Quill Editor -->
                                                                         <div class="col-12">
@@ -3717,7 +3717,7 @@
         }
 
         // Global variables untuk Quill editors
-        let quillTimMedis = null;
+        // let quillTimMedis = null;
         let quillKesimpulan = null;
         let quillSaran = null;
 
@@ -3725,18 +3725,18 @@
         document.addEventListener('DOMContentLoaded', function() {
             // Inisialisasi Quill Editor jika tersedia
             if (typeof Quill !== 'undefined') {
-                // Inisialisasi editor untuk Tim Medis
-                quillTimMedis = new Quill('#quillTimMedis', {
-                    theme: 'snow',
-                    modules: {
-                        toolbar: [
-                            ['bold', 'italic', 'underline'],
-                            [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-                            ['clean']
-                        ]
-                    },
-                    placeholder: 'Masukkan nama tim medis/dokter...'
-                });
+                // // Inisialisasi editor untuk Tim Medis
+                // quillTimMedis = new Quill('#quillTimMedis', {
+                //     theme: 'snow',
+                //     modules: {
+                //         toolbar: [
+                //             ['bold', 'italic', 'underline'],
+                //             [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                //             ['clean']
+                //         ]
+                //     },
+                //     placeholder: 'Masukkan nama tim medis/dokter...'
+                // });
 
                 // Inisialisasi editor untuk Kesimpulan
                 quillKesimpulan = new Quill('#quillKesimpulan', {
@@ -3769,9 +3769,9 @@
                 });
 
                 // Update hidden inputs saat content berubah
-                quillTimMedis.on('text-change', function() {
-                    document.getElementById('timMedisInput').value = quillTimMedis.root.innerHTML;
-                });
+                // quillTimMedis.on('text-change', function() {
+                //     document.getElementById('timMedisInput').value = quillTimMedis.root.innerHTML;
+                // });
 
                 quillKesimpulan.on('text-change', function() {
                     document.getElementById('kesimpulanInput').value = quillKesimpulan.root.innerHTML;

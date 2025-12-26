@@ -816,7 +816,7 @@ class FormController extends Controller
                 'kesimpulan' => 'required|string',
                 'saran' => 'required|string',
                 'kategori_hasil' => 'required|in:fit,fit_dengan_catatan,unfit,pending',
-                'tim_medis' => 'required',
+                // 'tim_medis' => 'required',
             ]);
 
             $mcu = $this->getOrCreateMCU($request->employee_id);
@@ -827,7 +827,7 @@ class FormController extends Controller
                     'kesimpulan' => $request->kesimpulan,
                     'saran' => $request->saran,
                     'kategori_hasil' => $request->kategori_hasil,
-                    'tim_medis' => $request->tim_medis,
+                    // 'tim_medis' => $request->tim_medis,
                 ]
             );
 

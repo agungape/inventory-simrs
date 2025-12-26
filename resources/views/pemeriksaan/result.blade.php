@@ -1,4 +1,5 @@
 @extends('layouts.master')
+@section('MenuResult', '')
 @section('content')
 <section class="section">
     <div class="row">
