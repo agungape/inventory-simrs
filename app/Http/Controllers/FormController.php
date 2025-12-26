@@ -1079,10 +1079,14 @@ class FormController extends Controller
             // Output PDF
             $filename = 'Medical_Checkup_Report_' . $mcu->employee->nrp . '_' . date('Ymd_His') . '.pdf';
 
+            // REVISI BAGIAN INI:
             if (ob_get_length()) {
                 ob_end_clean();
             }
-            return $mpdf->Output($filename, 'I');
+
+            return response($mpdf->Output($filename, 'S'), 200)
+                ->header('Content-Type', 'application/pdf')
+                ->header('Content-Disposition', 'inline; filename="' . $filename . '"');
         } catch (\Exception $e) {
             Log::error('PDF Generation Error: ' . $e->getMessage());
             return back()->with('error', 'Gagal membuat PDF: ' . $e->getMessage());
