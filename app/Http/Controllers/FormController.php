@@ -983,6 +983,8 @@ class FormController extends Controller
 
     public function previewFullPDF($mcuId)
     {
+        ini_set("pcre.backtrack_limit", "5000000");
+        ini_set("pcre.recursion_limit", "2000000");
         try {
             // Ambil data MCU utama dengan semua relationship
             $mcu = MedicalCheckUp::with([

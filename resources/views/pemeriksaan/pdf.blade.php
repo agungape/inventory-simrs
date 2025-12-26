@@ -438,9 +438,24 @@
                             <div class="patient-photo">
                                 <div class="photo-container">
                                     <div class="photo-frame">
-                                        @if(file_exists(storage_path('app/public/employee-mcu-foto/'. $mcu->foto)))
-                                            <img src="{{ storage_path('app/public/employee-mcu-foto/'. $mcu->foto) }}" alt="Foto" style="width: 100px">
-                                        @endif
+
+                                        @php
+                                        // Ambil hanya nama filenya saja (untuk berjaga-jaga jika di DB tersimpan path)
+                                        $pureFileName = basename($mcu->foto);
+
+                                        // Bangun path dengan benar
+                                        $path = storage_path('app' . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR . 'employee-mcu-foto' . DIRECTORY_SEPARATOR . $pureFileName);
+                                    @endphp
+
+                                    @if(!empty($mcu->foto) && file_exists($path))
+                                        @php
+                                            $data = file_get_contents($path);
+                                            $base64 = 'data:image/' . pathinfo($path, PATHINFO_EXTENSION) . ';base64,' . base64_encode($data);
+                                        @endphp
+                                        <img src="{{ $base64 }}" alt="Foto" style="width: 100px">
+                                    @else
+                                        <p style="color:red;">File tidak ditemukan di: {{ $path }}</p>
+                                    @endif
                                     </div>
                                 </div>
 
