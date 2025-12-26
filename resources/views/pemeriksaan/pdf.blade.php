@@ -481,7 +481,7 @@
                 <tr>
                     <td style="font-weight:bold;">Tanggal Kunjungan / Lokasi</td>
                     <td>:</td>
-                    <td>{{ $mcu->tanggal_mcu }} / Routa (Konawe)</td>
+                    <td>{{ \Carbon\Carbon::parse($mcu->tanggal_mcu)->format('d F Y') }} / Routa (Konawe)</td>
                 </tr>
             </table>
         </div>
