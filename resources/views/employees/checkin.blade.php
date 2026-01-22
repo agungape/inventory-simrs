@@ -56,9 +56,9 @@
                                     <tbody>
                                         @foreach ($employees as $employee)
                                             @php
-                                                $sudahCheckin = $employee->sudahCheckinHariIni();
-                                                $checkinData = $employee->getCheckinHariIni();
-                                                $checkinBulanIni = $employee->getCheckinBulanIni();
+                                                $sudahCheckin = $employee->sudahPernahCheckin();
+                                                $checkinData = $employee->getCheckinTerakhir();
+
                                                 // Ambil data jenis pemeriksaan untuk label
                                                 $jenisLabels = $checkinData
                                                     ? $checkinData->jenisPemeriksaans
@@ -82,25 +82,26 @@
                                                 <td>{{ $employee->departement }}</td>
                                                 <td>{{ $employee->nama_perusahaan }}</td>
                                                 <td>
-                                                    @if (($sudahCheckin && $checkinData) || $checkinBulanIni)
+                                                    @if ($checkinData)
                                                         <div class="d-flex flex-column">
                                                             <span class="badge bg-success mb-1">
                                                                 <i class="bi bi-check-circle me-1"></i> Sudah Check-in
                                                             </span>
                                                             <small class="text-muted">
                                                                 <i class="bi bi-clock me-1"></i>
-                                                                {{ \Carbon\Carbon::parse($checkinData->tanggal_mcu)->format('H:i') }}
+                                                                {{ \Carbon\Carbon::parse($checkinData->tanggal_mcu)->format('d-m-Y H:i') }}
                                                             </small>
                                                         </div>
-                                                        <form action="{{ route('mcu.checkin.destroy', optional($employee->checkin_today)->id) }}"
-                                                              method="POST" class="d-inline"
-                                                              onsubmit="return confirm('Apakah Anda yakin ingin menghapus data checkin ini?')">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <button type="submit" class="btn btn-sm btn-danger" title="Hapus Check-In">
-                                                                <i class="bi bi-trash"></i>
-                                                            </button>
-                                                        </form>
+                                                        <form action="{{ route('mcu.checkin.destroy', $checkinData->id) }}"
+                                                            method="POST"
+                                                            class="d-inline"
+                                                            onsubmit="return confirm('Apakah Anda yakin ingin menghapus data checkin ini?')">
+                                                          @csrf
+                                                          @method('DELETE')
+                                                          <button type="submit" class="btn btn-sm btn-danger" title="Hapus Check-In">
+                                                              <i class="bi bi-trash"></i>
+                                                          </button>
+                                                      </form>
                                                     @else
                                                         <span class="badge bg-warning">
                                                             <i class="bi bi-clock me-1"></i> Belum Check-in
@@ -227,7 +228,7 @@
                                                                             <span>{{ $employee->departement }}</span>
                                                                         </div>
                                                                     </div>
-                                                                    <div class="col-md-6 mb-2">
+                                                                    {{-- <div class="col-md-6 mb-2">
                                                                         <div class="d-flex">
                                                                             <span class="fw-bold text-dark"
                                                                                 style="min-width: 100px;">Status</span>
@@ -242,7 +243,7 @@
                                                                                 @endif
                                                                             </span>
                                                                         </div>
-                                                                    </div>
+                                                                    </div> --}}
                                                                 </div>
                                                                 <hr>
                                                                 <!-- Bagian Kategori MCU -->
@@ -395,12 +396,11 @@
                                                                     <input type="datetime-local" class="form-control"
                                                                         id="tanggal_mcu_{{ $employee->id }}"
                                                                         name="tanggal_mcu"
-                                                                        value="{{ now()->format('Y-m-d\TH:i') }}" required
-                                                                        readonly>
+                                                                        value="{{ now()->format('Y-m-d\TH:i') }}" required>
                                                                 </div>
 
                                                                 <!-- Bagian Rekam Wajah -->
-                                                                <div class="mb-4 border rounded p-3 bg-light">
+                                                                {{-- <div class="mb-4 border rounded p-3 bg-light">
                                                                     <h6 class="text-primary mb-3">
                                                                         <i class="bi bi-camera me-2"></i>
                                                                         Rekam Wajah
@@ -439,7 +439,7 @@
                                                                             <span>Hapus Foto</span>
                                                                         </button>
                                                                     </div>
-                                                                </div>
+                                                                </div> --}}
 
                                                                 <div class="modal-footer">
                                                                     <button type="button" class="btn btn-secondary"
@@ -501,86 +501,86 @@
 
             // Set waktu default ke waktu sekarang saat modal dibuka
             var modals = document.querySelectorAll('[id^="checkinModal"]');
-            modals.forEach(function(modal) {
+            // modals.forEach(function(modal) {
 
-                let cameraStream = null;
-                modal.addEventListener('show.bs.modal', function() {
-                    var now = new Date();
-                    var formatted = now.toISOString().slice(0, 16);
-                    var employeeId = this.id.replace('checkinModal', '');
-                    var timeInput = document.getElementById('tanggal_mcu_' + employeeId);
-                    if (timeInput) {
-                        timeInput.value = formatted;
-                    }
+            //     let cameraStream = null;
+            //     modal.addEventListener('show.bs.modal', function() {
+            //         var now = new Date();
+            //         var formatted = now.toISOString().slice(0, 16);
+            //         var employeeId = this.id.replace('checkinModal', '');
+            //         var timeInput = document.getElementById('tanggal_mcu_' + employeeId);
+            //         if (timeInput) {
+            //             timeInput.value = formatted;
+            //         }
 
-                    const video = document.getElementById('video' + employeeId);
-                    const canvas = document.getElementById('canvas' + employeeId);
-                    const captureButton = document.getElementById('capture' + employeeId);
-                    const removeCaptureButton = document.getElementById('removeCapture' +
-                        employeeId);
-                    const saveButton = document.getElementById('saveButton' + employeeId);
+            //         const video = document.getElementById('video' + employeeId);
+            //         const canvas = document.getElementById('canvas' + employeeId);
+            //         const captureButton = document.getElementById('capture' + employeeId);
+            //         const removeCaptureButton = document.getElementById('removeCapture' +
+            //             employeeId);
+            //         const saveButton = document.getElementById('saveButton' + employeeId);
 
-                    var imageData = '';
-                    // Aktifkan Kamera
-                    navigator.mediaDevices.getUserMedia({
-                            video: {
-                                width: {
-                                    ideal: 300
-                                },
-                                height: {
-                                    ideal: 400
-                                },
-                                facingMode: "user"
-                            }
-                        })
-                        .then(stream => {
-                            cameraStream = stream;
-                            video.srcObject = stream;
-                        })
-                        .catch(error => {
-                            alert('Kamera tidak bisa diakses: ' + error.message);
-                        });
+            //         var imageData = '';
+            //         // Aktifkan Kamera
+            //         navigator.mediaDevices.getUserMedia({
+            //                 video: {
+            //                     width: {
+            //                         ideal: 300
+            //                     },
+            //                     height: {
+            //                         ideal: 400
+            //                     },
+            //                     facingMode: "user"
+            //                 }
+            //             })
+            //             .then(stream => {
+            //                 cameraStream = stream;
+            //                 video.srcObject = stream;
+            //             })
+            //             .catch(error => {
+            //                 alert('Kamera tidak bisa diakses: ' + error.message);
+            //             });
 
-                    // Ambil Foto
-                    captureButton.addEventListener('click', () => {
-                        const context = canvas.getContext('2d');
-                        // Tampilkan tombol hapus capture
-                        canvas.classList.remove('d-none');
-                        removeCaptureButton.classList.remove('d-none');
+            //         // Ambil Foto
+            //         captureButton.addEventListener('click', () => {
+            //             const context = canvas.getContext('2d');
+            //             // Tampilkan tombol hapus capture
+            //             canvas.classList.remove('d-none');
+            //             removeCaptureButton.classList.remove('d-none');
 
-                        // Sembunyikan tombol capture
-                        captureButton.classList.add('d-none');
-                        video.classList.add('d-none');
+            //             // Sembunyikan tombol capture
+            //             captureButton.classList.add('d-none');
+            //             video.classList.add('d-none');
 
-                        context.drawImage(video, 0, 0, canvas.width, canvas.height);
-                        imageData = canvas.toDataURL('image/png');
+            //             context.drawImage(video, 0, 0, canvas.width, canvas.height);
+            //             imageData = canvas.toDataURL('image/png');
 
-                        document.getElementById('imageInput' + employeeId).value =
-                            imageData;
-                    });
+            //             document.getElementById('imageInput' + employeeId).value =
+            //                 imageData;
+            //         });
 
-                    removeCaptureButton.addEventListener('click', () => {
-                        // Tampilkan tombol hapus capture
-                        canvas.classList.add('d-none');
-                        removeCaptureButton.classList.add('d-none');
+            //         removeCaptureButton.addEventListener('click', () => {
+            //             // Tampilkan tombol hapus capture
+            //             canvas.classList.add('d-none');
+            //             removeCaptureButton.classList.add('d-none');
 
-                        // Sembunyikan tombol capture
-                        captureButton.classList.remove('d-none');
-                        video.classList.remove('d-none');
+            //             // Sembunyikan tombol capture
+            //             captureButton.classList.remove('d-none');
+            //             video.classList.remove('d-none');
 
-                        imageData = '';
-                        document.getElementById('imageInput' + employeeId).value =
-                            imageData;
-                    });
+            //             imageData = '';
+            //             document.getElementById('imageInput' + employeeId).value =
+            //                 imageData;
+            //         });
 
-                });
-                modal.addEventListener('hide.bs.modal', function() {
-                    if (cameraStream) {
-                        cameraStream.getTracks().forEach(track => track.stop());
-                        cameraStream = null;
-                    }
-                });
-            });
+            //     });
+            //     modal.addEventListener('hide.bs.modal', function() {
+            //         if (cameraStream) {
+            //             cameraStream.getTracks().forEach(track => track.stop());
+            //             cameraStream = null;
+            //         }
+            //     });
+            // });
 
             // Initialize tooltips
             var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
@@ -1031,8 +1031,6 @@
                     printLabels(employee, labels, checkinDate);
                 });
             });
-
-
 
 
 

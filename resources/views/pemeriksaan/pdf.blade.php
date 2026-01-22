@@ -474,10 +474,8 @@
                                     <div class="photo-frame">
 
                                         @php
-                                        // Ambil hanya nama filenya saja (untuk berjaga-jaga jika di DB tersimpan path)
                                         $pureFileName = basename($mcu->foto);
 
-                                        // Bangun path dengan benar
                                         $path = storage_path('app' . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR . 'employee-mcu-foto' . DIRECTORY_SEPARATOR . $pureFileName);
                                         @endphp
 
@@ -489,17 +487,17 @@
                                             <img src="{{ $base64 }}" alt="Foto" style="width: 100px;">
                                         @else
                                             @php
-                                                    $path = storage_path('app' . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR . 'employee-mcu-foto' . DIRECTORY_SEPARATOR . 'default_avatar.png');
+                                                    $path = storage_path('app' . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR . 'employee-mcu-foto' . DIRECTORY_SEPARATOR . 'default_avatar3.png');
                                                     $data = file_get_contents($path);
                                                     $base64 = 'data:image/' . pathinfo($path, PATHINFO_EXTENSION) . ';base64,' . base64_encode($data);
                                             @endphp
                                             <img src="{{ $base64 }}" alt="Foto" style="width: 100px;">
-                                            {{--<p style="color:red;">File tidak ditemukan di: {{ $path }}</p>--}}
                                         @endif
                                     </div>
                                 </div>
 
                             </div>
+
                         </div>
                     </td>
                 </tr>

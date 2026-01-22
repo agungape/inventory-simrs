@@ -125,6 +125,19 @@ class Employee extends Model
             ->first();
     }
 
+    public function sudahPernahCheckin()
+    {
+        return $this->medicalCheckUps()->exists();
+    }
+
+    public function getCheckinTerakhir()
+    {
+        return $this->medicalCheckUps()
+            ->orderBy('tanggal_mcu', 'desc')
+            ->first();
+    }
+
+
     /**
      * Scope untuk pegawai yang pernah checkin
      */
