@@ -755,7 +755,7 @@ class FormController extends Controller
 
                     foreach ($request->file('file') as $file) {
                         $fileName = time() . '_' . uniqid() . '_' . $file->getClientOriginalName();
-                        $file->storeAs('dokumen-mcu', $fileName, 'public');
+                        $file->storeAs('dokumen-mcu/treadmill', $fileName, 'public');
 
                         DokumenTreadmill::create([
                             'dokumen_mcu_id' => $dokumenMcu->id,
