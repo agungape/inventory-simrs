@@ -1,0 +1,35 @@
+name: Deploy ke Server
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout kode
+        uses: actions/checkout@v3
+
+      - name: Deploy ke server via SSH
+        uses: appleboy/ssh-action@v0.1.7
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          port: ${{ secrets.SERVER_PORT }}
+          script: |
+            if [ ! -d "mcu-smc/.git" ]; then
+              cd mcu-smc
+              git clone https://github.com/agungape/inventory-simrs.git .
+            fi
+            cd mcu-smc
+            git pull origin main
+
+            php artisan config:cache
+            php artisan route:cache
+            php artisan view:cache
+            php artisan storage:link --force
+
