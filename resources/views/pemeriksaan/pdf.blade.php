@@ -1049,7 +1049,7 @@
                                     Normal (IMT: {{ number_format($imt, 1) }})
                                 </span>
                             @elseif($imt >= 25 && $imt < 30)
-                                <span style="color: #ca8a04; font-weight: bold;">
+                                <span style="color: #cc900f; font-weight: bold;">
                                     Overweight (IMT: {{ number_format($imt, 1) }})
                                 </span>
                             @else
@@ -1066,10 +1066,54 @@
 
                     </td>
                 </tr>
+                @php
+                    $td = $all_pemeriksaan['pemeriksaan_tanda_vital_gizi']->tekanan_darah ?? null;
+
+                    $status = '-';
+                    $class  = '';
+
+                    if ($td && str_contains($td, '/')) {
+                        [$sbp, $dbp] = array_map('intval', explode('/', $td));
+
+                        if ($sbp < 120 && $dbp < 80) {
+                            $status = 'Normal';
+                            $class  = 'color: #16a34a; font-weight: bold'; // hijau
+                        } elseif (($sbp >= 120 && $sbp <= 139) || ($dbp >= 80 && $dbp <= 89)) {
+                            $status = 'Pre-hipertensi';
+                            $class  = 'color: #cc900f; font-weight: bold'; // coklat (custom)
+                        } elseif (($sbp >= 140 && $sbp <= 159) || ($dbp >= 90 && $dbp <= 99)) {
+                            $status = 'Hipertensi Gr 1';
+                            $class  = 'color: #dc2626; font-weight: bold'; // merah
+                        } elseif ($sbp >= 160 || $dbp >= 100) {
+                            $status = 'Hipertensi Gr 2';
+                            $class  = 'color: #dc2626; font-weight: bold';
+                        }
+
+                        // tambahan: urgency (opsional, contoh ≥180/120)
+                        if ($sbp >= 180 || $dbp >= 120) {
+                            $status = 'Hipertensi Urgency';
+                            $class  = 'color: #dc2626; font-weight: bold';
+                        }
+                    }
+                @endphp
                 <tr>
                     <td class="indent">Tekanan Darah</td>
-                    <td>{{ $all_pemeriksaan['pemeriksaan_tanda_vital_gizi']->tekanan_darah ?? '-' }} mmHg</td>
+                    <td>
+                        @if($td)
+                            {{ $td }} mmHg
+                            <span style ="{{ $class }}">
+                                ({{ $status }})
+                            </span>
+                        @else
+                            -
+                        @endif
+                    </td>
                 </tr>
+
+                {{-- <tr>
+                    <td class="indent">Tekanan Darah</td>
+                    <td>{{ $all_pemeriksaan['pemeriksaan_tanda_vital_gizi']->tekanan_darah ?? '-' }} mmHg</td>
+                </tr> --}}
                 <tr>
                     <td class="indent">Nadi</td>
                     <td>{{ $all_pemeriksaan['pemeriksaan_tanda_vital_gizi']->nadi ?? '-' }} kali/menit</td>

@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('mcu_id')->constrained('medical_check_up')->onDelete('cascade');
             $table->string('jenis_dokumen');
-            $table->string('nama_file');
+            $table->string('nama_file')->nullable();
             $table->timestamps();
         });
     }
